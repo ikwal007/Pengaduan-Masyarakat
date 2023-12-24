@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Auth\LoginRequest;
+use App\Models\Role;
 use App\Providers\RouteServiceProvider;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -34,7 +35,9 @@ class AuthenticatedSessionController extends Controller
 
         $request->session()->regenerate();
 
-        return redirect()->intended(RouteServiceProvider::HOME);
+        $userOnRoleId = auth()->user()->roles->first()->id;
+
+        return $this->redirectBasedOnRole($userOnRoleId);
     }
 
     /**
@@ -49,5 +52,29 @@ class AuthenticatedSessionController extends Controller
         $request->session()->regenerateToken();
 
         return redirect('/');
+    }
+
+    /**
+     * Redirect user base on their role.
+     * 
+     * @param \App\Models\User $user
+     * @return \Illuminate\Http\RedirectResponse
+     */
+    public function redirectBasedOnRole($userOnRoleId): RedirectResponse
+    {
+        $role = new Role();
+
+        switch ($userOnRoleId) {
+            case $role->getRoleIdOnParamName('Super_Admin'):
+                return redirect()->intended('/super-admin/dashboard-manages-worker-accounts');
+            case $role->getRoleIdOnParamName('Pelayanan_Publik'):
+                return redirect()->intended('/pelayanan-publik/dashboard');
+            case $role->getRoleIdOnParamName('Seksi'):
+                return redirect()->intended('/seksi/dashboard');
+            case $role->getRoleIdOnParamName('Masyarakat'):
+                return redirect()->intended('/masyarakat/dashboard');
+            default:
+                return redirect('/');
+        }
     }
 }

@@ -18,5 +18,9 @@ class Role extends SpatieRole
      */
     protected $primaryKey = 'id';
 
+    public function getRoleIdOnParamName($paramName){
+        return $this->where('name', $paramName)->first()->id;
+    }
+
     
 }

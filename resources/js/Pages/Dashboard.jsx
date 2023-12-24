@@ -1,7 +1,10 @@
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import { Head } from '@inertiajs/react';
+import { usePage } from '@inertiajs/react'
 
-export default function Dashboard({ auth }) {
+export default function Dashboard({ auth, roleSearch }) {
+    const props = usePage().props
+    console.log(props);
     return (
         <AuthenticatedLayout
             user={auth.user}

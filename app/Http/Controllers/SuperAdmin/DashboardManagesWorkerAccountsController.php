@@ -1,19 +1,19 @@
 <?php
 
-namespace App\Http\Controllers\User;
+namespace App\Http\Controllers\SuperAdmin;
 
-use App\Http\Controllers\Controller;
-use App\Models\Complaint;
+use Inertia\Inertia;
 use Illuminate\Http\Request;
+use App\Http\Controllers\Controller;
 
-class ComplaintController extends Controller
+class DashboardManagesWorkerAccountsController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
     public function index()
     {
-        //
+        return Inertia::render('SuperAdmin/DashboardManagesWorkerAccounts/Index');
     }
 
     /**
@@ -29,18 +29,7 @@ class ComplaintController extends Controller
      */
     public function store(Request $request)
     {
-        $complaint = new Complaint();
-        $complaint->complaint_type_id = $request->complaintTypeId;
-        $complaint->complaint_media_types_id = $request->complaintMediaTypesId;
-        $complaint->user_email = $request->userEmail;
-        $complaint->complaint_village_id = $request->complaintVillageId;
-        $complaint->complaint_subdistrict_id = $request->complaintSubdistrictId;
-        $complaint->certificate_no = $request->certificateNo;
-        $complaint->description = $request->description;
-        $complaint->complaint_status_id = $request->complaintStatusId;
-        $complaint->save();
-
-        return redirect('/user/dashboard', 200);
+        //
     }
 
     /**

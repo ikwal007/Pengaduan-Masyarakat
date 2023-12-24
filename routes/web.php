@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\SuperAdmin\DashboardManagesWorkerAccountsController;
 use App\Http\Controllers\User\ComplaintController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
@@ -27,15 +28,30 @@ Route::get('/', function () {
 });
 
 Route::get('/dashboard', function () {
-    return Inertia::render('Dashboard');
+    $auth = auth()->user();
+    return Inertia::render('Dashboard', [
+        'roleSearch' => $auth->roles->first(),
+    ]);
 })->middleware(['auth', 'verified'])->name('dashboard');
 
 Route::post('/complaint-user', [ComplaintController::class, 'store'])->name('complaint.store');
 
 Route::middleware('auth')->group(function () {
-    Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
-    Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
-    Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+
+    Route::middleware('role:Super_Admin')->group(function () {
+        Route::prefix('super-admin')->group(function () {
+            Route::controller(DashboardManagesWorkerAccountsController::class)->group(function () {
+                Route::get('/dashboard-manages-worker-accounts', 'index')->name('super-admin.dashboard-manages-worker-accounts-index');     
+            });
+        });
+    });
+
+
+    Route::controller(ProfileController::class)->group(function () {
+        Route::get('/profile', 'edit')->name('profile.edit');
+        Route::patch('/profile', 'update')->name('profile.update');
+        Route::delete('/profile', 'destroy')->name('profile.destroy');
+    });
 });
 
-require __DIR__.'/auth.php';
+require __DIR__ . '/auth.php';
