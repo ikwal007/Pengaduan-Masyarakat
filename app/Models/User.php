@@ -48,4 +48,9 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
         'password' => 'hashed',
     ];
+
+    public function modelHasRole()
+    {
+        return $this->hasOne(ModelHasRole::class, 'model_id')->with('role');
+    }
 }

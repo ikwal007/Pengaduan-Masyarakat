@@ -4,7 +4,9 @@ import "../css/app.css";
 import { createRoot } from "react-dom/client";
 import { createInertiaApp } from "@inertiajs/react";
 import { resolvePageComponent } from "laravel-vite-plugin/inertia-helpers";
-import AuthenticatedLayout2 from "./Layouts/AuthenticatedLayout2";
+import AuthenticatedLayout from "./Layouts/AuthenticatedLayout2";
+import { EchoProvider } from "./utils/EchoContext";
+import React from "react";
 
 const appName = import.meta.env.VITE_APP_NAME || "Laravel";
 
@@ -16,14 +18,19 @@ createInertiaApp({
         });
         let page = pages[`./Pages/${name}.jsx`];
         page.default.layout =
-            page.default.layout || ((page) => <LogedLayouts children={page} />);
+            page.default.layout || ((page) => <AuthenticatedLayout children={page} />);
         return page;
     },
 
     setup({ el, App, props }) {
         const root = createRoot(el);
-
-        root.render(<App {...props} />);
+        root.render(
+            <React.StrictMode>
+                <EchoProvider>
+                    <App {...props} />
+                </EchoProvider>
+            </React.StrictMode>
+        );
     },
     progress: {
         color: "#4B5563",

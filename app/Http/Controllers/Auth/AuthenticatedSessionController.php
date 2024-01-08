@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Auth;
 
+use App\Events\SuperAdmin\UserStatusUpdated;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Auth\LoginRequest;
 use App\Models\Role;
@@ -37,6 +38,8 @@ class AuthenticatedSessionController extends Controller
 
         $userOnRoleId = auth()->user()->roles->first()->id;
 
+        event(new UserStatusUpdated(auth()->user()->email, 'online'));
+
         return $this->redirectBasedOnRole($userOnRoleId);
     }
 
@@ -45,6 +48,9 @@ class AuthenticatedSessionController extends Controller
      */
     public function destroy(Request $request): RedirectResponse
     {
+
+        event(new UserStatusUpdated(auth()->user()->email, 'offline'));
+
         Auth::guard('web')->logout();
 
         $request->session()->invalidate();

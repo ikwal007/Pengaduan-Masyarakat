@@ -5,16 +5,34 @@ namespace App\Http\Controllers\SuperAdmin;
 use Inertia\Inertia;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use App\Queries\UserQuery;
 
 class DashboardManagesWorkerAccountsController extends Controller
 {
     /**
-     * Display a listing of the resource.
+     * Display the dashboard for managing worker accounts.
+     *
+     * @return \Inertia\Response
      */
     public function index()
     {
-        return Inertia::render('SuperAdmin/DashboardManagesWorkerAccounts/Index');
+        // Get count of worker accounts
+        $countWorkerAccounts = UserQuery::getCountAccountWorker();
+
+        // Get count of 'Masyarakat' accounts
+        $countMasyarakat = UserQuery::getCountAccountMasyarakat();
+
+        // Get all worker account data with roles eager loaded
+        $allAccountWorkerDatas = UserQuery::getAllAccountWorkerDatas();
+
+        // Render the inertia view with the data
+        return Inertia::render('SuperAdmin/DashboardManagesWorkerAccounts/Index', [
+            'countWorkerAccounts' => $countWorkerAccounts,
+            'countMasyarakat' => $countMasyarakat,
+            'allAccountWorkerDatas' => $allAccountWorkerDatas,
+        ]);
     }
+
 
     /**
      * Show the form for creating a new resource.
@@ -45,7 +63,11 @@ class DashboardManagesWorkerAccountsController extends Controller
      */
     public function edit(string $id)
     {
-        //
+        // $status = $request->input('status');
+
+        // event(new UserStatusUpdated($userId, $status));
+
+        // return response()->json(['message' => 'User status updated successfully']);
     }
 
     /**

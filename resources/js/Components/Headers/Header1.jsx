@@ -1,66 +1,119 @@
 import { useEffect, useRef, useState } from "react";
+import Aside from "../Sidebars/Aside";
+import { Link } from "@inertiajs/react";
 
 const Header1 = () => {
+    // state variables
     const [dark, setDark] = useState(false);
     const [isProfileMenuOpen, setIsProfileMenuOpen] = useState(false);
     const [isNotificationsMenuOpen, setIsNotificationsMenuOpen] =
         useState(false);
+    const [isSideMenuOpenMobile, setIsSideMenuOpenMobile] = useState(false);
+
+    // refs for profile and notifications menus
     const profileMenuRef = useRef(null);
     const notificationsMenuRef = useRef(null);
+    const mobileMenuRef = useRef(null);
 
+    // Function to handle profile and notifications button clicks
     const handleButtonClick = (button) => {
-        button === 'profile' ? setIsProfileMenuOpen(!isProfileMenuOpen) : setIsNotificationsMenuOpen(!isNotificationsMenuOpen);
+        switch (button) {
+            case "profile":
+                setIsProfileMenuOpen(!isProfileMenuOpen);
+                break;
+            case "notifications":
+                setIsNotificationsMenuOpen(!isNotificationsMenuOpen);
+                break;
+
+            default:
+                setIsSideMenuOpenMobile(!isSideMenuOpenMobile);
+                break;
+        }
     };
 
+    // Function to handle dark mode toggle
+    const toggleDarkMode = () => {
+        setDark((prevDark) => !prevDark);
+
+        document.documentElement.classList.toggle("dark");
+    };
+
+    // Function to handle clicks outside of menus, and close them if necessary
     const handleClickOutside = (event) => {
+        // Close profile menu if clicked outside
         if (
             profileMenuRef.current &&
             !profileMenuRef.current.contains(event.target)
         ) {
             setIsProfileMenuOpen(false);
         }
+        // Close notifications menu if clicked outside
         if (
             notificationsMenuRef.current &&
             !notificationsMenuRef.current.contains(event.target)
         ) {
             setIsNotificationsMenuOpen(false);
         }
+        // Close notifications menu if clicked outside
+        if (
+            mobileMenuRef.current &&
+            !mobileMenuRef.current.contains(event.target)
+        ) {
+            setIsSideMenuOpenMobile(false);
+        }
     };
 
+    // Effect to add or remove click outside listener based on menu visibility
     useEffect(() => {
-        if (isProfileMenuOpen || isNotificationsMenuOpen) {
+        if (
+            isProfileMenuOpen ||
+            isNotificationsMenuOpen ||
+            isSideMenuOpenMobile
+        ) {
             document.addEventListener("click", handleClickOutside);
-          } else {
+        } else {
             document.removeEventListener("click", handleClickOutside);
-          }
-      
-          return () => {
-            document.removeEventListener("click", handleClickOutside);
-          };
-    }, [isProfileMenuOpen, isNotificationsMenuOpen]);
+        }
 
+        // Cleanup: remove the event listener when component unmounts or dependencies change
+        return () => {
+            document.removeEventListener("click", handleClickOutside);
+        };
+    }, [isProfileMenuOpen, isNotificationsMenuOpen, isSideMenuOpenMobile]);
+
+    // JSX structure for the header
     return (
         <>
             <header className="z-10 py-4 bg-white shadow-md dark:bg-gray-800">
                 <div className="container flex items-center justify-between h-full px-6 mx-auto text-purple-600 dark:text-purple-300">
                     {/* <!-- Mobile hamburger --> */}
-                    <button
-                        className="p-1 mr-5 -ml-1 rounded-md md:hidden focus:outline-none focus:shadow-outline-purple"
-                        aria-label="Menu"
-                    >
-                        <svg
-                            className="w-6 h-6"
-                            aria-hidden="true"
-                            fill="currentColor"
-                            viewBox="0 0 20 20"
+                    <div ref={mobileMenuRef}>
+                        <button
+                            className="p-1 mr-5 -ml-1 rounded-md md:hidden focus:outline-none focus:shadow-outline-purple"
+                            aria-label="Menu"
+                            onClick={() => handleButtonClick("sideMenu")}
                         >
-                            <path
-                                fillRule="evenodd"
-                                d="M3 5a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zM3 10a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zM3 15a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z"
-                                clipRule="evenodd"
-                            ></path>
-                        </svg>
-                    </button>
+                            <svg
+                                className="w-6 h-6"
+                                aria-hidden="true"
+                                fill="currentColor"
+                                viewBox="0 0 20 20"
+                            >
+                                <path
+                                    fillRule="evenodd"
+                                    d="M3 5a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zM3 10a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zM3 15a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z"
+                                    clipRule="evenodd"
+                                ></path>
+                            </svg>
+                        </button>
+
+                        {isSideMenuOpenMobile && (
+                            <>
+                                {/* aside */}
+                                <Aside />
+                            </>
+                        )}
+                    </div>
                     {/* <!-- Search input --> */}
                     <div className="flex justify-center flex-1 lg:mr-32">
                         <div className="relative w-full max-w-xl mr-6 focus-within:text-purple-500">
@@ -92,7 +145,7 @@ const Header1 = () => {
                             <button
                                 className="rounded-md focus:outline-none focus:shadow-outline-purple"
                                 aria-label="Toggle color mode"
-                                onClick={() => setDark(!dark)}
+                                onClick={toggleDarkMode}
                             >
                                 {dark ? (
                                     <div>
@@ -129,7 +182,9 @@ const Header1 = () => {
                                 className="relative align-middle rounded-md focus:outline-none focus:shadow-outline-purple"
                                 aria-label="Notifications"
                                 aria-haspopup="true"
-                                onClick={() => handleButtonClick("notifications")}
+                                onClick={() =>
+                                    handleButtonClick("notifications")
+                                }
                             >
                                 <svg
                                     className="w-5 h-5"
@@ -254,9 +309,9 @@ const Header1 = () => {
                                             </a>
                                         </li>
                                         <li className="flex">
-                                            <a
+                                            <Link
+                                                href={route('logout')} method="post" as="button"
                                                 className="inline-flex items-center w-full px-2 py-1 text-sm font-semibold transition-colors duration-150 rounded-md hover:bg-gray-100 hover:text-gray-800 dark:hover:bg-gray-800 dark:hover:text-gray-200"
-                                                href="#"
                                             >
                                                 <svg
                                                     className="w-4 h-4 mr-3"
@@ -271,7 +326,7 @@ const Header1 = () => {
                                                     <path d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1"></path>
                                                 </svg>
                                                 <span>Log out</span>
-                                            </a>
+                                            </Link>
                                         </li>
                                     </ul>
                                 </div>
