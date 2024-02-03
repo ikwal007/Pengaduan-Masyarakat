@@ -53,4 +53,9 @@ class User extends Authenticatable
     {
         return $this->hasOne(ModelHasRole::class, 'model_id')->with('role');
     }
+
+    public function getDetailDataUser($id)
+    {
+        return $this->find($id);
+    }
 }

@@ -42,6 +42,9 @@ Route::middleware('auth')->group(function () {
         Route::prefix('super-admin')->group(function () {
             Route::controller(DashboardManagesWorkerAccountsController::class)->group(function () {
                 Route::get('/dashboard-manages-worker-accounts', 'index')->name('super-admin.dashboard-manages-worker-accounts-index');     
+                Route::get('/dashboard-manages-worker-accounts/{id}', 'show')->name('super-admin.dashboard-manages-worker-accounts-show');     
+                Route::get('/dashboard-manages-worker-accounts/{id}/edit-password', 'edit')->name('super-admin.dashboard-manages-worker-accounts-edit-password');
+                Route::patch('/dashboard-manages-worker-accounts/{id}', 'update')->name('super-admin.dashboard-manages-worker-accounts-update');     
             });
         });
     });

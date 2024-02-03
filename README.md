@@ -44,3 +44,5 @@ Menggantikan penggunaan promises dengan async/await jika sesuai.
 Refactor function Verbosely comment this code so that I can understand what's going on.
 Komentar Verbose:
 Menambahkan komentar secara rinci di dalam kode untuk mempermudah pemahaman alur dan tujuan setiap bagian.
+
+Refactor function Clean up this code by standardizing variable names, removing debugging statements, improving readability, and more. Explain what you did to clean it up in a short and concise way. Refactor function Make this faster and more efficient. Refactor function Verbosely comment this code so that I can understand what's going on.

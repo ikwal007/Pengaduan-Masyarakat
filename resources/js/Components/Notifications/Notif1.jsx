@@ -1,6 +1,6 @@
 import React from "react";
 
-const Notif1 = () => {
+const Notif1 = ({}) => {
     return (
         <>
             {/* <!-- CTA --> */}

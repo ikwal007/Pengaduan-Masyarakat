@@ -1,4 +1,5 @@
-import React, { useEffect, useState } from "react";
+import { Link } from "@inertiajs/react";
+import { useEffect, useState } from "react";
 
 // Define a mapping of themes to their respective colors
 const themeColors = {
@@ -40,15 +41,7 @@ const themeColors = {
     },
 };
 
-// Button Component
-const Button = ({
-    children,
-    theme,
-    className,
-    type = "button",
-    disabled = false,
-    ...props
-}) => {
+const GlobalLink = ({ active = false, theme, className = "", children, ...props }) => {
     // Use state to manage color based on theme
     const [color, setColor] = useState(themeColors.primary);
 
@@ -58,32 +51,24 @@ const Button = ({
             setColor(themeColors[theme]);
         }
     }, [theme]);
-
-    // Render the button with dynamic styles
     return (
-        <button
+        <Link
             {...props}
-            type={type}
-            disabled={disabled}
-            className={`flex items-center justify-between px-4 py-2 max-w-max text-sm font-medium leading-5 ${color.text} transition-colors duration-150 ${color.background} border border-transparent rounded-lg disabled:bg-gray-300 disabled:cursor-not-allowed ${color.activeBackground} ${color.hoverBackground} ${className}`}
-        >
-            {children}
-        </button>
+            className={`flex items-center justify-between px-4 py-2 max-w-max text-sm font-medium leading-5 ${color.text} transition-colors duration-150 ${color.background} border border-transparent rounded-lg ${color.activeBackground} ${color.hoverBackground} ${className}`}
+        >{children}</Link>
     );
 };
 
-// ButtonTitle Component
-const ButtonTitle = ({ children }) => {
+const LinkTitle = ({ children }) => {
     return <span>{children}</span>;
 };
 
 // ButtonIcon Component
-const ButtonIcon = ({ children }) => {
+const LinkIcon = ({ children }) => {
     return <span className="w-4 h-4">{children}</span>;
 };
 
-// Attach sub-components to the main Button component
-Button.Title = ButtonTitle;
-Button.Icon = ButtonIcon;
+GlobalLink.Title = LinkTitle;
+GlobalLink.Icon = LinkIcon;
 
-export default Button;
+export default GlobalLink;

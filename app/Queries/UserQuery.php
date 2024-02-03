@@ -47,4 +47,18 @@ class UserQuery
             $query->where('name', 'Masyarakat')->orWhere('name', 'Super_Admin');
         })->with('roles')->paginate(5); // Get all matching records with roles eager loaded
     }
+
+    /**
+     * Get detailed account information by user ULID.
+     *
+     * @param string $userUlid The ULID of the user.
+     *
+     * @return \Illuminate\Database\Eloquent\Model|null
+     */
+    public static function getDetailAccount($userUlid)
+    {
+        // Use the Eloquent ORM to fetch the user with roles
+        // Note: Eager loading is employed to retrieve roles along with the user in a more efficient manner
+        return User::where('id', $userUlid)->with('roles')->first();
+    }
 }

@@ -5,7 +5,10 @@ namespace App\Http\Controllers\SuperAdmin;
 use Inertia\Inertia;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\PasswordRequest;
+use App\Models\User;
 use App\Queries\UserQuery;
+use Illuminate\Support\Facades\Hash;
 
 class DashboardManagesWorkerAccountsController extends Controller
 {
@@ -55,7 +58,10 @@ class DashboardManagesWorkerAccountsController extends Controller
      */
     public function show(string $id)
     {
-        //
+        $detailAccountData = UserQuery::getDetailAccount($id);
+        return Inertia::render('SuperAdmin/DashboardManagesWorkerAccounts/Show', [
+            'detailAccountData' => $detailAccountData
+        ]);
     }
 
     /**
@@ -63,19 +69,26 @@ class DashboardManagesWorkerAccountsController extends Controller
      */
     public function edit(string $id)
     {
-        // $status = $request->input('status');
 
-        // event(new UserStatusUpdated($userId, $status));
+        $detailAccountData = UserQuery::getDetailAccount($id);
 
-        // return response()->json(['message' => 'User status updated successfully']);
+        return Inertia::render('SuperAdmin/DashboardManagesWorkerAccounts/Edit', [
+            'detailAccountData' => $detailAccountData
+        ]);
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(PasswordRequest $request, string $id)
     {
-        //
+        $getUser = User::find($id);
+
+        $getUser->password = Hash::make($request->newPassword);
+
+        $getUser->save();
+
+        return redirect('/super-admin/dashboard-manages-worker-accounts')->with("message", "Ubah Password Berhasil");
     }
 
     /**

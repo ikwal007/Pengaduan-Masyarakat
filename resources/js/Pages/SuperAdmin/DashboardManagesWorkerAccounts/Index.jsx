@@ -1,20 +1,18 @@
 import Card from "@/Components/Cards/Card";
-import Notif1 from "@/Components/Notifications/Notif1";
-import Table1 from "@/Components/Tables/Table1";
 import AuthenticatedLayout2 from "@/Layouts/AuthenticatedLayout2";
 // import { useEcho } from "@/utils/EchoContext";
-import React, { useEffect, useState } from "react";
 import { HiMiniUserGroup } from "react-icons/hi2";
-import { FaUserTie, FaUserCheck, FaTrash } from "react-icons/fa6";
+import { FaUserTie, FaUserCheck } from "react-icons/fa6";
 import { MdModeEditOutline } from "react-icons/md";
 import { IoMdEye } from "react-icons/io";
 import { usePage } from "@inertiajs/react";
 import Table from "@/Components/Tables/Table";
-import Button from "@/Components/Button/Button";
+import GlobalLink from "@/Components/Atoms/GlobalLink";
+import Notif1 from "@/Components/Notifications/Notif1";
 
 const Index = () => {
     // Destructure props from usePage()
-    const { countWorkerAccounts, countMasyarakat, allAccountWorkerDatas } =
+    const { countWorkerAccounts, countMasyarakat, allAccountWorkerDatas, flash } =
         usePage().props;
     // const echo = useEcho();
 
@@ -30,11 +28,11 @@ const Index = () => {
     //     // };
     // }, [echo]);
 
-    console.log("all worker accounts: ", allAccountWorkerDatas);
+    console.log(flash.message);
 
     return (
         <>
-            {/* <Notif1 /> */}
+            <Notif1 />
 
             {/* <!-- Cards --> */}
             <div className="grid justify-content-between gap-6 mb-8 md:grid-cols-2 xl:grid-cols-3">
@@ -72,6 +70,32 @@ const Index = () => {
 
             {/* Main Table Component */}
             <Table>
+                {/* <!-- Search input --> */}
+                <div className="flex lg:justify-end flex-1 lg:mt-5 lg:mr-32 w-full">
+                    <div className="relative w-full max-w-xl mr-6 focus-within:text-purple-500">
+                        <div className="absolute inset-y-0 flex items-center pl-2">
+                            <svg
+                                className="w-4 h-4"
+                                aria-hidden="true"
+                                fill="currentColor"
+                                viewBox="0 0 20 20"
+                            >
+                                <path
+                                    fill-rule="evenodd"
+                                    d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z"
+                                    clip-rule="evenodd"
+                                ></path>
+                            </svg>
+                        </div>
+                        <input
+                            className="w-full pl-8 pr-2 text-sm text-gray-700 placeholder-gray-600 bg-gray-100 border-0 rounded-md dark:placeholder-gray-500 dark:focus:shadow-outline-gray dark:focus:placeholder-gray-600 dark:bg-gray-700 dark:text-gray-200 focus:placeholder-gray-500 focus:bg-white focus:border-purple-300 focus:outline-none focus:shadow-outline-purple form-input"
+                            type="text"
+                            placeholder="Search for projects"
+                            aria-label="Search"
+                        />
+                    </div>
+                </div>
+
                 <Table.Main>
                     <Table.TableHead>
                         <Table.Th>profile</Table.Th>
@@ -99,27 +123,34 @@ const Index = () => {
                                         }
                                     />
                                     <Table.TdBasic className={"flex"}>
-                                        <Button theme={"warning"}>
-                                            <Button.Icon
+                                        <GlobalLink
+                                            theme={"warning"}
+                                            href={`${
+                                                import.meta.env.VITE_APP_URL
+                                            }/super-admin/dashboard-manages-worker-accounts/${
+                                                data.id
+                                            }/edit-password`}
+                                        >
+                                            <GlobalLink.Icon
                                                 children={
                                                     <MdModeEditOutline className="w-4 h-4" />
                                                 }
                                             />
-                                        </Button>
-                                        <Button theme="danger">
-                                            <Button.Icon
-                                                children={
-                                                    <FaTrash className="w-4 h-4" />
-                                                }
-                                            />
-                                        </Button>
-                                        <Button theme={"info"}>
-                                            <Button.Icon
+                                        </GlobalLink>
+                                        <GlobalLink
+                                            href={
+                                                import.meta.env.VITE_APP_URL +
+                                                "/super-admin/dashboard-manages-worker-accounts/" +
+                                                data.id
+                                            }
+                                            theme={"info"}
+                                        >
+                                            <GlobalLink.Icon
                                                 children={
                                                     <IoMdEye className="w-4 h-4" />
                                                 }
                                             />
-                                        </Button>
+                                        </GlobalLink>
                                     </Table.TdBasic>
                                 </Table.Tr>
                             ))
@@ -132,7 +163,14 @@ const Index = () => {
                         )}
                     </Table.TableBody>
                 </Table.Main>
-                <Table.Footer showFrom={allAccountWorkerDatas.from} showTo={allAccountWorkerDatas.to} total={allAccountWorkerDatas.total} links={allAccountWorkerDatas.links} last_page_url={allAccountWorkerDatas.last_page_url} first_page_url={allAccountWorkerDatas.first_page_url} />
+                <Table.Footer
+                    showFrom={allAccountWorkerDatas.from}
+                    showTo={allAccountWorkerDatas.to}
+                    total={allAccountWorkerDatas.total}
+                    links={allAccountWorkerDatas.links}
+                    last_page_url={allAccountWorkerDatas.last_page_url}
+                    first_page_url={allAccountWorkerDatas.first_page_url}
+                />
             </Table>
         </>
     );
