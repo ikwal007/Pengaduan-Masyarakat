@@ -2,10 +2,17 @@ import Card from "@/Components/Cards/Card";
 import AuthenticatedLayout2 from "@/Layouts/AuthenticatedLayout2";
 // import { useEcho } from "@/utils/EchoContext";
 import { HiMiniUserGroup } from "react-icons/hi2";
-import { FaUserTie, FaUserCheck } from "react-icons/fa6";
+import { FaUserTie, FaUserCheck, FaClipboardUser } from "react-icons/fa6";
 import { MdModeEditOutline } from "react-icons/md";
 import { IoMdEye } from "react-icons/io";
 import { usePage } from "@inertiajs/react";
+import {
+    LuClipboardCheck,
+    LuClipboardCopy,
+    LuClipboardList,
+    LuClipboardSignature,
+    LuClipboardX,
+} from "react-icons/lu";
 import Table from "@/Components/Tables/Table";
 import GlobalLink from "@/Components/Atoms/GlobalLink";
 import Notif1 from "@/Components/Notifications/Notif1";
@@ -13,12 +20,7 @@ import { useState } from "react";
 
 const Index = () => {
     // Destructure props from usePage()
-    const {
-        countWorkerAccounts,
-        countMasyarakat,
-        allAccountWorkerDatas,
-        flash,
-    } = usePage().props;
+    const { allCountComplaint, flash } = usePage().props;
     // const echo = useEcho();
     const [show, setShow] = useState(true);
 
@@ -34,6 +36,8 @@ const Index = () => {
     //     // };
     // }, [echo]);
 
+    console.log(allCountComplaint);
+
     return (
         <>
             {flash.message && show && (
@@ -41,42 +45,62 @@ const Index = () => {
             )}
 
             {/* <!-- Cards --> */}
-            <div className="grid justify-content-between gap-6 mb-8 md:grid-cols-2 xl:grid-cols-3">
+            <div className="grid place-content-center gap-6 mb-8 md:grid-cols-2 xl:grid-cols-4">
                 <Card>
                     <Card.Icon
                         color={"orange"}
                         bgColor={"orange"}
-                        icon={<FaUserTie className="w-5 h-5" />}
+                        icon={<FaClipboardUser className="w-5 h-5" />}
                     />
                     <Card.Info
-                        title={"Total Worker Accounts"}
-                        value={countWorkerAccounts}
+                        title={"Total Pengaduan"}
+                        value={allCountComplaint}
                     />
                 </Card>
                 <Card>
                     <Card.Icon
                         color={"green"}
                         bgColor={"green"}
-                        icon={<HiMiniUserGroup className="w-5 h-5" />}
+                        icon={<LuClipboardCopy className="w-5 h-5" />}
                     />
-                    <Card.Info
-                        title={"Total User Accounts"}
-                        value={countMasyarakat}
-                    />
+                    <Card.Info title={"Total Pengaduan Baru"} value={0} />
                 </Card>
                 <Card>
                     <Card.Icon
                         color={"blue"}
                         bgColor={"blue"}
-                        icon={<FaUserCheck className="w-5 h-5" />}
+                        icon={<LuClipboardSignature className="w-5 h-5" />}
                     />
-                    <Card.Info title={"Total User Online"} value={999} />
+                    <Card.Info title={"Total Pengaduan Proses"} value={999} />
+                </Card>
+                <Card>
+                    <Card.Icon
+                        color={"blue"}
+                        bgColor={"blue"}
+                        icon={<LuClipboardCheck className="w-5 h-5" />}
+                    />
+                    <Card.Info title={"Total Pengaduan Selesai"} value={999} />
+                </Card>
+                <Card>
+                    <Card.Icon
+                        color={"blue"}
+                        bgColor={"blue"}
+                        icon={<LuClipboardX className="w-5 h-5" />}
+                    />
+                    <Card.Info title={"Total Pengaduan Ditolak"} value={999} />
+                </Card>
+                <Card>
+                    <Card.Icon
+                        color={"blue"}
+                        bgColor={"blue"}
+                        icon={<LuClipboardList className="w-5 h-5" />}
+                    />
+                    <Card.Info title={"Total Pengaduan Ditunda"} value={999} />
                 </Card>
             </div>
 
             {/* Main Table Component */}
-            <Table>
-                {/* <!-- Search input --> */}
+            {/* <Table>
                 <div className="flex lg:justify-end flex-1 lg:mt-5 lg:mr-32 w-full">
                     <div className="relative w-full max-w-xl mr-6 focus-within:text-purple-500">
                         <div className="absolute inset-y-0 flex items-center pl-2">
@@ -171,7 +195,7 @@ const Index = () => {
                     last_page_url={allAccountWorkerDatas.last_page_url}
                     first_page_url={allAccountWorkerDatas.first_page_url}
                 />
-            </Table>
+            </Table> */}
         </>
     );
 };

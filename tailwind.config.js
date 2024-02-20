@@ -18,7 +18,7 @@ export default {
         },
     },
 
-    plugins: [forms],
+    plugins: [forms, require("daisyui"), require('autoprefixer'),],
 
     darkMode: 'class',
 };

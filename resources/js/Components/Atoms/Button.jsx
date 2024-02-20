@@ -1,4 +1,4 @@
-import { Link } from "@inertiajs/react";
+import React, { useEffect, useState } from "react";
 
 // Define a mapping of themes to their respective colors
 const themeColors = {
@@ -52,31 +52,42 @@ const themeColors = {
     "daisyui-link": "btn-link",
 };
 
-const GlobalLink = ({
-    active = false,
-    theme = "primary",
-    className = "",
-    maxWidth = "full",
+const maxWidthClass = {
+    sm: 'sm:max-w-sm',
+    md: 'sm:max-w-md',
+    lg: 'sm:max-w-lg',
+    xl: 'sm:max-w-xl',
+    '2xl': 'sm:max-w-2xl',
+    full: 'sm:w-full',
+    max: 'sm:max-w',
+    min: 'sm:min-w',
+}
+
+// Button Component
+const Button = ({
     children,
+    theme = "primary",
+    className,
+    maxWidth = "full",
+    type = "button",
+    disabled = false,
     ...props
 }) => {
-    const themeConfig = themeColors[theme];
-    const maxWidthClass = {
-        sm: "sm:max-w-sm",
-        md: "sm:max-w-md",
-        lg: "sm:max-w-lg",
-        xl: "sm:max-w-xl",
-        "2xl": "sm:max-w-2xl",
-        full: "sm:w-full",
-        max: "sm:w-max",
-        min: "sm:w-min",
-    }[maxWidth];
 
+    const maxWidthConfig = maxWidthClass[maxWidth];
+    const color = themeColors[theme];
+
+    // Render the button with dynamic styles
     return (
-        <Link {...props} className={`btn ${maxWidthClass} ${themeConfig.text} ${themeConfig.background} ${themeConfig.hoverBackground} ${themeConfig.activeBackground} ${className}`}>
+        <button
+        type={type}
+        disabled={disabled}
+        className={`flex items-center justify-between px-4 py-2 text-sm font-semibold leading-5 ${color.text} transition-colors duration-150 ${color.background} border border-transparent rounded-lg disabled:bg-gray-300 disabled:cursor-not-allowed ${color.activeBackground} ${color.hoverBackground} ${className} ${maxWidthConfig}`}
+        {...props}
+        >
             {children}
-        </Link>
+        </button>
     );
 };
 
-export default GlobalLink;
+export default Button;

@@ -10,6 +10,10 @@ class Complaint extends Model
 {
     use HasFactory, HasUlids;
 
+    protected $keyType = 'string';
+    protected $primaryKey = 'id';
+    public $incrementing = false;
+
     /**
      * The attributes that aren't mass assignable.
      *

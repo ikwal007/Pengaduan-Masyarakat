@@ -1,5 +1,8 @@
 <?php
 
+use App\Http\Controllers\General\PasswordController;
+use App\Http\Controllers\General\ProfileController as GeneralProfileController;
+use App\Http\Controllers\Pelayanan\DashboardPengaduanController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\SuperAdmin\DashboardManagesWorkerAccountsController;
 use App\Http\Controllers\User\ComplaintController;
@@ -28,26 +31,46 @@ Route::get('/', function () {
 });
 
 Route::get('/dashboard', function () {
-    $auth = auth()->user();
-    return Inertia::render('Dashboard', [
-        'roleSearch' => $auth->roles->first(),
-    ]);
-})->middleware(['auth', 'verified'])->name('dashboard');
+    return Inertia::render('Dashboard');
+})->name('dashboard');
 
 Route::post('/complaint-user', [ComplaintController::class, 'store'])->name('complaint.store');
 
+
 Route::middleware('auth')->group(function () {
 
+    // Super Admin
     Route::middleware('role:Super_Admin')->group(function () {
         Route::prefix('super-admin')->group(function () {
             Route::controller(DashboardManagesWorkerAccountsController::class)->group(function () {
-                Route::get('/dashboard-manages-worker-accounts', 'index')->name('super-admin.dashboard-manages-worker-accounts-index');     
-                Route::get('/dashboard-manages-worker-accounts/{id}', 'show')->name('super-admin.dashboard-manages-worker-accounts-show');     
+                Route::get('/dashboard-manages-worker-accounts', 'index')->name('super-admin.dashboard-manages-worker-accounts-index');
+                Route::get('/dashboard-manages-worker-accounts/{id}', 'show')->name('super-admin.dashboard-manages-worker-accounts-show');
                 Route::get('/dashboard-manages-worker-accounts/{id}/edit-password', 'edit')->name('super-admin.dashboard-manages-worker-accounts-edit-password');
-                Route::patch('/dashboard-manages-worker-accounts/{id}', 'update')->name('super-admin.dashboard-manages-worker-accounts-update');     
+                Route::patch('/dashboard-manages-worker-accounts/{id}', 'update')->name('super-admin.dashboard-manages-worker-accounts-update');
             });
         });
     });
+
+    // Pelayanan
+    Route::middleware('role:Pelayanan_Publik')->group(function () {
+       Route::prefix('pelayanan-publik')->group(function () {
+           Route::controller(DashboardPengaduanController::class)->group(function () {
+               Route::get('/dashboard-pengaduan', 'index')->name('pelayanan.dashboard-manages-worker-accounts-index');
+           });
+       });
+    });
+
+    // General
+    Route::controller(GeneralProfileController::class)->group(function () {
+        Route::get('/profile/{id}', 'show')->name('profile.show');
+        Route::get('/profile/{id}/edit', 'edit')->name('profile.edit');
+        Route::post('/profile/{id}', 'update')->name('profile.update');
+    });
+    
+    Route::patch('/profile/change-password/{id}', [PasswordController::class, 'update'])->name('profile.update-password');
+
+
+
 
 
     Route::controller(ProfileController::class)->group(function () {

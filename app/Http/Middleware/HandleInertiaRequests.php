@@ -33,7 +33,7 @@ class HandleInertiaRequests extends Middleware
         return [
             ...parent::share($request),
             'auth' => [
-                'user' => $request->user(),
+                'user' => $this->transformUser($request->user()),
             ],
             'ziggy' => fn () => [
                 ...(new Ziggy)->toArray(),
@@ -42,6 +42,32 @@ class HandleInertiaRequests extends Middleware
             'flash' => [
                 'message' => fn () => $request->session()->get('message')
             ],
+        ];
+    }
+
+    /**
+     * Transformasi objek user dan tambahkan properti tambahan.
+     *
+     * @param \Illuminate\Contracts\Auth\Authenticatable|null $user
+     * @return array|null
+     */
+    protected function transformUser($user): ?array
+    {
+        if (!$user) {
+            return null;
+        }
+
+        return [
+            'id' => $user->id,
+            'full_name' => $user->full_name,
+            'email' => $user->email,
+            'role' => $user->roles->first(),
+            'phone_number' => $user->phone_number,
+            'avatar' => $user->avatar,
+            'status' => $user->status,
+            'created_at' => $user->created_at,
+            'email_verified_at' => $user->email_verified_at,
+            'updated_at' => $user->updated_at,
         ];
     }
 }

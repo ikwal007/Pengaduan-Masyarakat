@@ -1,8 +1,12 @@
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
+import AuthenticatedLayout2 from "@/Layouts/AuthenticatedLayout2";
 import { Head } from "@inertiajs/react";
 import { usePage } from "@inertiajs/react";
 
 const Dashboard = () => {
+    const { auth } = usePage().props;
+
+    console.log('ini dashboard: ', auth);
     return (
         <>
             <Head title="Dashboard" />
@@ -21,16 +25,11 @@ const Dashboard = () => {
 };
 
 Dashboard.layout = (page) => (
-    <AuthenticatedLayout
-        user={auth.user}
-        header={
-            <h2 className="font-semibold text-xl text-gray-800 leading-tight">
-                Dashboard
-            </h2>
-        }
+    <AuthenticatedLayout2
+        title={`Dashboard Mengelola Profile Akun | Edit Password`}
     >
         {page}
-    </AuthenticatedLayout>
+    </AuthenticatedLayout2>
 );
 
 export default Dashboard;

@@ -2,146 +2,220 @@ import React, { useEffect, useState } from "react";
 import { FaEye, FaEyeSlash } from "react-icons/fa6";
 
 const themeColors = {
-    primary: {
-        border: "border-gray-600",
-        shadowOutline: "shadow-outline-gray-400",
-        focusBorder: "focus:border-gray-400",
-        focusRing: "focus:ring-gray-100",
-        labelText: "text-gray-600",
-    },
-    danger: {
-        border: "border-red-600",
-        shadowOutline: "shadow-outline-red-400",
-        focusBorder: "focus:border-red-400",
-        focusRing: "focus:ring-red-100",
-        labelText: "text-red-600",
-    },
-    success: {
-        border: "border-green-600",
-        shadowOutline: "shadow-outline-green-400",
-        focusBorder: "focus:border-green-400",
-        focusRing: "focus:ring-green-100",
-        labelText: "text-green-600",
-    },
-    warning: {
-        border: "border-yellow-600",
-        shadowOutline: "shadow-outline-yellow-400",
-        focusBorder: "focus:border-yellow-400",
-        focusRing: "focus:ring-yellow-100",
-        labelText: "text-yellow-600",
-    },
+    primary: "input-primary",
+    secondary: "input-secondary",
+    accent: "input-accent",
+    info: "input-info",
+    success: "input-success",
+    warning: "input-warning",
+    error: "input-error",
 };
 
-const Input = ({ children, className }) => {
-    return <div className={`text-sm mt-4 ${className}`}>{children}</div>;
+const maxWidthClass = {
+    sm: "sm:max-w-sm",
+    md: "sm:max-w-md",
+    lg: "sm:max-w-lg",
+    xl: "sm:max-w-xl",
+    "2xl": "sm:max-w-2xl",
+    full: "sm:w-full",
+    max: "sm:w-max",
+    min: "sm:w-min",
 };
 
-const Label = ({ children, labelName }) => {
+const inputSizeClass = {
+    xs: "input-xs",
+    sm: "input-sm",
+    md: "input-md",
+    lg: "input-lg",
+    xl: "input-xl",
+    "2xl": "input-2xl",
+};
+
+const Input = ({ children, className, maxWidth = "full" }) => {
+    const maxWidthConfig = maxWidthClass[maxWidth];
     return (
-        <label htmlFor="" className="block font-medium text-gray-700">
-            <span className="text-gray-700 dark:text-gray-400">
-                {labelName}
-            </span>
+        <label className={`${maxWidthConfig} ${className} hover:cursor-pointer`}>{children}</label>
+    );
+};
+
+const Label = ({ children, labelName, message }) => {
+    return (
+        <>
+            <div className="label">
+                {labelName && (
+                    <span className="label-text text-gray-700 dark:text-gray-400">
+                        {labelName}
+                    </span>
+                )}
+            </div>
             {children}
-        </label>
+            {message && (
+                <div className="label">
+                    <span className="label-text-alt text-red-600">{message}</span>
+                </div>
+            )}
+        </>
     );
 };
 
 const InputText = ({
     placeholder,
+    theme = "primary",
+    maxWidth = "full",
+    inputSize = "sm",
+    leftIcon = null,
+    rightIcon = null,
+    id,
+    onChange,
+    value,
+    ...props
+}) => {
+    // Use vaiabel to manage color based on theme
+    const themeConfig = themeColors[theme];
+    const maxWidthConfig = maxWidthClass[maxWidth];
+    const inputSizeConfig = inputSizeClass[inputSize];
+    return (
+        <div
+            className={`input input-bordere flex items-center gap-2 ${themeConfig} ${inputSizeConfig} ${maxWidthConfig}`}
+        >
+            {leftIcon && leftIcon}
+            <input
+                id={id}
+                type="text"
+                placeholder={placeholder}
+                className={`grow border-0 focus:ring-0`}
+                onChange={onChange}
+                value={value}
+                {...props}
+            />
+            {rightIcon && rightIcon}
+        </div>
+    );
+};
+const InputEmail = ({
+    placeholder,
+    theme = "primary",
+    maxWidth = "full",
+    inputSize = "sm",
+    leftIcon = null,
+    rightIcon = null,
+    id,
+    onChange,
+    value,
+    ...props
+}) => {
+    // Use vaiabel to manage color based on theme
+    const themeConfig = themeColors[theme];
+    const maxWidthConfig = maxWidthClass[maxWidth];
+    const inputSizeConfig = inputSizeClass[inputSize];
+    return (
+        <div
+            className={`input input-bordere flex items-center gap-2 autofill:t ${themeConfig} ${inputSizeConfig} ${maxWidthConfig}`}
+        >
+            {leftIcon && leftIcon}
+            <input
+                id={id}
+                type="email"
+                placeholder={placeholder}
+                className={`grow border-0 focus:ring-0`}
+                onChange={onChange}
+                value={value}
+                {...props}
+            />
+            {rightIcon && rightIcon}
+        </div>
+    );
+};
+const InputNumber = ({
+    placeholder,
     message,
-    theme,
+    theme = "primary",
+    maxWidth = "full",
+    inputSize = "sm",
+    leftIcon = null,
+    rightIcon = null,
     id,
     onChange,
     value,
     ...props
 }) => {
     // Use state to manage color based on theme
-    const [color, setColor] = useState(themeColors.primary);
+    const themeConfig = themeColors[theme];
+    const maxWidthConfig = maxWidthClass[maxWidth];
+    const inputSizeConfig = inputSizeClass[inputSize];
 
-    // useEffect to update color based on theme changes
-    useEffect(() => {
-        if (theme && themeColors[theme]) {
-            setColor(themeColors[theme]);
-        }
-    }, [theme]);
     return (
-        <>
+        <div
+            className={`input input-bordere flex items-center gap-2 ${themeConfig} ${inputSizeConfig} ${maxWidthConfig}`}
+        >
+            {leftIcon && leftIcon}
             <input
-                className={`block rounded-md w-full mt-1 text-sm dark:border-gray-600 dark:bg-gray-700 focus:outline-none focus:ring-2 border-2 dark:text-gray-300 dark:focus:shadow-outline-gray form-input disabled:bg-gray-100 disabled:border-none disabled:cursor-not-allowed ${color.border} ${color.shadowOutline} ${color.focusBorder} ${color.focusRing}`}
-                placeholder={placeholder}
-                type="text"
                 id={id}
+                type="number"
+                placeholder={placeholder}
+                className={`grow border-0 focus:ring-0`}
                 onChange={onChange}
                 value={value}
                 {...props}
             />
-            {message && (
-                <span className={`text-xs ${color.labelText}`}>{message}</span>
-            )}
-        </>
+            {rightIcon && rightIcon}
+        </div>
     );
 };
 
-/**
- * InputPassword component
- * @param {InputPasswordProps} props - Component properties
- */
 const InputPassword = ({
     placeholder,
     message,
-    theme,
+    theme = "primary",
+    maxWidth = "full",
+    inputSize = "sm",
+    leftIcon = null,
     id,
     onChange,
     value,
+    ...props
 }) => {
     const [show, setShow] = useState(false);
 
-    // Use state to manage color based on theme
-    const [color, setColor] = useState(themeColors.primary);
-
-    // useEffect to update color based on theme changes
-    useEffect(() => {
-        if (theme && themeColors[theme]) {
-            setColor(themeColors[theme]);
-        }
-    }, [theme]);
+    // Use vaiabel to manage color based on theme
+    const themeConfig = themeColors[theme];
+    const maxWidthConfig = maxWidthClass[maxWidth];
+    const inputSizeConfig = inputSizeClass[inputSize];
 
     const toggleShow = () => {
         setShow(!show);
     };
 
     return (
-        <>
-            <div className="relative text-gray-500">
-                <input
-                    className={`block rounded-md w-full mt-1 text-sm dark:border-gray-600 dark:bg-gray-700 focus:outline-none focus:ring-2 border-2 dark:text-gray-300 dark:focus:shadow-outline-gray form-input disabled:bg-gray-100 disabled:border-none disabled:cursor-not-allowed ${color.border} ${color.shadowOutline} ${color.focusBorder} ${color.focusRing}`}
-                    placeholder={placeholder}
-                    id={id}
-                    onChange={onChange}
-                    value={value}
-                    type={show ? "text" : "password"}
-                />
-                <button
-                    className={`absolute inset-y-0 right-0 flex items-center mr-3 focus:outline-none`}
-                    type="button"
-                    onClick={toggleShow}
-                >
-                    {show ? (
-                        <FaEyeSlash
-                            className={` ${color.labelText} dark:text-gray-400`}
-                        />
-                    ) : (
-                        <FaEye
-                            className={` ${color.labelText} dark:text-gray-400`}
-                        />
-                    )}
-                </button>
-            </div>
-            {message && (
-                <span className={`text-xs ${color.labelText}`}>{message}</span>
-            )}
-        </>
+        <div
+            className={`input input-bordere flex relative items-center gap-2 ${themeConfig} ${inputSizeConfig} ${maxWidthConfig}`}
+        >
+            {leftIcon && leftIcon}
+            <input
+                id={id}
+                type={show ? "text" : "password"}
+                placeholder={placeholder}
+                className={`grow border-0 focus:ring-0`}
+                onChange={onChange}
+                value={value}
+                {...props}
+            />
+            <button
+                className={`absolute inset-y-0 right-0 flex items-center mr-3 focus:outline-none`}
+                type="button"
+                onClick={toggleShow}
+            >
+                {show ? (
+                    <FaEyeSlash
+                        className={`w-5 h-5 text-gray-400 dark:text-gray-400`}
+                    />
+                ) : (
+                    <FaEye
+                        className={`w-5 h-5 text-gray-400 dark:text-gray-400`}
+                    />
+                )}
+            </button>
+        </div>
     );
 };
 
@@ -171,10 +245,30 @@ const InputCheckbox = ({ children }) => {
     );
 };
 
+const InputFile = ({ id, name, onChange, value, accept, maxWidth = "max" }) => {
+    const maxWidthConfig = maxWidthClass[maxWidth];
+    return (
+        <div className="flex items-center">
+            <input
+                id={id}
+                name={name}
+                type="file"
+                className={`hidden`}
+                accept={accept}
+                onChange={onChange}
+                value={value}
+            />
+        </div>
+    );
+};
+
 Input.Label = Label;
 Input.InputText = InputText;
+Input.InputEmail = InputEmail;
+Input.InputNumber = InputNumber;
 Input.InputPassword = InputPassword;
 Input.InputRadio = InputRadio;
 Input.InputCheckbox = InputCheckbox;
+Input.InputFile = InputFile;
 
 export default Input;

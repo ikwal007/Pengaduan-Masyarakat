@@ -1,52 +1,55 @@
-import Button from "@/Components/Button/Button";
+import { useEffect, useState } from "react";
+import { IoMdArrowRoundBack } from "react-icons/io";
+import GlobalLink from "@/Components/Atoms/GlobalLink";
+import Button from "@/Components/Atoms/Button";
 import Input from "@/Components/Input/Input";
-import Modal from "@/Components/Molecules/Modal";
+import Modal from "@/Components/Atoms/Modal";
 import AuthenticatedLayout2 from "@/Layouts/AuthenticatedLayout2";
 import { useForm, usePage } from "@inertiajs/react";
-import { useEffect, useState } from "react";
 
 const Edit = () => {
-    const props = usePage().props;
+    // Destructure errors, and detailAccountData from usePage.props
+    const { errors, detailAccountData } = usePage().props;
     const [isModalOpen, setIsModalOpen] = useState(false);
-    const [message, setMessage] = useState({
-        newPassword: "",
-        confirmNewPassword: "",
-        imNotBot: "",
-    });
+
+    // Destructure properties from useForm
     const {
         data,
         setData,
         patch,
         processing,
-        errors,
+        errors: formErrors,
         isDirty,
         setError,
         clearErrors,
         reset,
         cancel,
-        transform ,
+        transform,
     } = useForm({
         newPassword: "",
         confirmNewPassword: "",
         imNotBot: "",
     });
 
+    // Handler for button click to toggle modal
     const HandlerButtonClick = () => {
         setIsModalOpen(!isModalOpen);
         reset("imNotBot");
         clearErrors("imNotBot");
     };
 
+    // Handler for input changes
     const handlerDataChange = async (e) => {
         const { id, value } = e.target;
 
+        // Logic for handling "imNotBot" input
         if (id === "imNotBot") {
             setData((data) => {
-                const newData = { ...data, ["imNotBot"]: value };
+                const newData = { ...data, [id]: value };
 
+                // Check if emails match
                 const { imNotBot } = newData;
-
-                imNotBot !== props.detailAccountData.email
+                imNotBot !== detailAccountData.email
                     ? setError({
                           imNotBot: "Emails do not match.",
                       })
@@ -56,12 +59,14 @@ const Edit = () => {
             });
         }
 
+        // Logic for handling other inputs
         setData((data) => {
             const newData = { ...data, [id]: value };
 
-            // Update state dengan nilai baru
+            // Update state with new values
             const { newPassword, confirmNewPassword } = newData;
 
+            // Check if passwords match
             newPassword !== confirmNewPassword
                 ? setError({
                       confirmNewPassword: "Passwords do not match.",
@@ -73,60 +78,67 @@ const Edit = () => {
         });
     };
 
+    // Handler for saving password
     const HandlerSavePassword = (e) => {
         e.preventDefault();
-        const { confirmNewPassword, imNotBot } = data;
 
+        // Transform data to include only newPassword
         transform((data) => {
             return { newPassword: data.newPassword };
-        })
+        });
 
-        if (imNotBot !== props.detailAccountData.email) {
-            setError({
-                imNotBot: "Emails do not match.",
-            });
-            return cancel();
-        }
-
+        // Perform patch request
         patch(
-            `http://localhost:8000/super-admin/dashboard-manages-worker-accounts/${props.detailAccountData.id}`,
-            { preserveScroll: true, onSuccess: () => reset("newPassword", "confirmNewPassword", "imNotBot") }
+            `http://localhost:8000/super-admin/dashboard-manages-worker-accounts/${detailAccountData.id}`,
+            {
+                preserveScroll: true,
+                onSuccess: () =>
+                    reset("newPassword", "confirmNewPassword", "imNotBot"),
+            }
         );
     };
 
+    // Close modal on errors.newPassword
     useEffect(() => {
-        setIsModalOpen(false)
-    },[props.errors.newPassword])
-
-    console.log(props.detailAccountData);
+        setIsModalOpen(false);
+    }, [errors.newPassword]);
 
     return (
         <>
-            <main className="h-full pb-16 overflow-y-auto">
+            <div className="w-max p-2">
+                <GlobalLink
+                    href="/super-admin/dashboard-manages-worker-accounts"
+                    className="flex items-center group"
+                >
+                    <GlobalLink.Icon children={<IoMdArrowRoundBack />} />
+                    <GlobalLink.Title children={"Kembali"} />
+                </GlobalLink>
+            </div>
+            <main className="h-full pb-16 overflow-y-auto mt-5">
                 <div className="container px-6 mx-auto grid">
                     <h4 className="mb-4 text-lg font-semibold text-gray-600 dark:text-gray-300">
-                        Elements
+                        Data Pengguna
                     </h4>
                     <form className="px-4 py-3 mb-8 bg-white rounded-lg shadow-md dark:bg-gray-800">
                         <Input>
                             <Input.Label labelName={"Name"} />
                             <Input.InputText
                                 disabled={true}
-                                value={props.detailAccountData.full_name}
+                                value={detailAccountData.full_name}
                             />
                         </Input>
                         <Input>
                             <Input.Label labelName={"Email"} />
                             <Input.InputText
                                 disabled={true}
-                                value={props.detailAccountData.email}
+                                value={detailAccountData.email}
                             />
                         </Input>
                         <Input>
                             <Input.Label labelName={"Role"} />
                             <Input.InputText
                                 disabled={true}
-                                value={props.detailAccountData.roles[0].name}
+                                value={detailAccountData.roles[0].name}
                             />
                         </Input>
                         <Input>
@@ -135,10 +147,10 @@ const Edit = () => {
                                 id="newPassword"
                                 placeholder={"Isi Password Baru"}
                                 message={
-                                    props.flash.message || errors.newPassword
+                                    formErrors.newPassword || errors.newPassword
                                 }
                                 theme={
-                                    props.flash.message || errors.newPassword
+                                    formErrors.newPassword || errors.newPassword
                                         ? "danger"
                                         : "primary"
                                 }
@@ -153,10 +165,12 @@ const Edit = () => {
                                 placeholder={"Re-Password"}
                                 requaired
                                 message={
-                                    props.flash.message || errors.newPassword
+                                    formErrors.confirmNewPassword ||
+                                    errors.newPassword
                                 }
                                 theme={
-                                    props.flash.message || errors.newPassword
+                                    formErrors.confirmNewPassword ||
+                                    errors.newPassword
                                         ? "danger"
                                         : "primary"
                                 }
@@ -186,18 +200,18 @@ const Edit = () => {
                                     Apa anda yakin mengubah password? jika iya
                                     maka ketik tulisan didalam input dari data{" "}
                                     <span className="font-black text-base text-red-600">
-                                        "{props.detailAccountData.email}"
+                                        "{detailAccountData.email}"
                                     </span>{" "}
                                     untuk konfirmasi.
                                 </p>
                                 <Input>
                                     <Input.InputText
                                         id={"imNotBot"}
-                                        placeholder={`Ketik ${props.detailAccountData.email} untuk konfirmasi`}
+                                        placeholder={`Ketik ${detailAccountData.email} untuk konfirmasi`}
                                         onChange={handlerDataChange}
-                                        message={errors.imNotBot}
+                                        message={formErrors.imNotBot}
                                         theme={
-                                            errors.imNotBot
+                                            formErrors.imNotBot
                                                 ? "danger"
                                                 : "primary"
                                         }
@@ -216,7 +230,11 @@ const Edit = () => {
                                 <Button
                                     theme={"primary"}
                                     type="submit"
-                                    disabled={errors.imNotBot || !data.imNotBot || processing}
+                                    disabled={
+                                        formErrors.imNotBot ||
+                                        !data.imNotBot ||
+                                        processing
+                                    }
                                 >
                                     Accept
                                 </Button>
@@ -231,7 +249,7 @@ const Edit = () => {
 
 Edit.layout = (page) => (
     <AuthenticatedLayout2
-        title={`Dashboard Manages Worker Accounts Edit Password`}
+        title={`Dashboard Mengelola Akun Pekerja | Edit Password`}
     >
         {page}
     </AuthenticatedLayout2>

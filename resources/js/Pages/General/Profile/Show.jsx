@@ -1,54 +1,61 @@
 import GlobalLink from "@/Components/Atoms/GlobalLink";
 import Profile from "@/Components/Detail/DetailProfile";
+import Notif1 from "@/Components/Notifications/Notif1";
 import AuthenticatedLayout2 from "@/Layouts/AuthenticatedLayout2";
 import { usePage } from "@inertiajs/react";
+import { useState } from "react";
 import { IoMdArrowRoundBack } from "react-icons/io";
 
 const Show = () => {
-    // Extract detailAccountData from usePage().props
-    const { detailAccountData } = usePage().props;
+    const { auth, flash } = usePage().props;
 
-    // Function to create a comma-separated string of role names
-    const formatRoles = (roles) => roles.map((role) => role.name).join(", ");
-
+    const [show, setShow] = useState(true);
     return (
         <>
-            {/* Back button */}
+            {flash.message && show && (
+                <Notif1 message={flash.message} show={show} setShow={setShow} />
+            )}
             <div className="w-max p-2">
                 <GlobalLink
                     href="/super-admin/dashboard-manages-worker-accounts"
                     className="flex items-center group"
                 >
-                    <GlobalLink.Icon children={<IoMdArrowRoundBack />} />
-                    <GlobalLink.Title children={"Kembali"} />
+                    <IoMdArrowRoundBack />
+                    <span>Kembali</span>
                 </GlobalLink>
             </div>
-
-            {/* Main content */}
             <main className="h-full pb-16 overflow-y-auto mt-5">
                 <div className="container px-6 mx-auto grid">
-                    <h4 className="mb-4 text-lg font-semibold text-gray-600 dark:text-gray-300 mt-3">
-                        Data Pengguna
+                    <h4 className="mb-4 text-lg font-semibold text-gray-600 dark:text-gray-300">
+                        Form Data Pengguna
                     </h4>
                     <Profile>
-                        <Profile.Foto src="https://cdn.rareblocks.xyz/collection/celebration/images/testimonials/4/avatar.jpg" />
+                        <Profile.Foto src={import.meta.env.VITE_APP_URL+auth.user.avatar} />
                         <Profile.Detail>
                             <Profile.Item
                                 title="name"
-                                data={detailAccountData.full_name}
+                                data={auth.user.full_name}
                             />
                             <Profile.Item
                                 title="Email"
-                                data={detailAccountData.email}
+                                data={auth.user.email}
                             />
                             <Profile.Item
                                 title="Role"
-                                data={formatRoles(detailAccountData.roles)}
+                                data={auth.user.role.name}
                             />
                             <Profile.Item
                                 title="No Telp"
-                                data={detailAccountData.phone_number}
+                                data={auth.user.phone_number}
                             />
+                            <GlobalLink
+                                href={`/profile/${auth.user.id}/edit`}
+                                theme={"primary"}
+                                className="mt-4"
+                                maxWidth="max"
+                            >
+                                <span>Edit Profile</span>
+                            </GlobalLink>
                         </Profile.Detail>
                     </Profile>
                 </div>
@@ -58,9 +65,7 @@ const Show = () => {
 };
 
 Show.layout = (page) => (
-    <AuthenticatedLayout2 title={`Tampilan Detail Akun Pekerja`}>
-        {page}
-    </AuthenticatedLayout2>
+    <AuthenticatedLayout2 title={`Profile User`}>{page}</AuthenticatedLayout2>
 );
 
 export default Show;

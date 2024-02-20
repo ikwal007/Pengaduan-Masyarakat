@@ -36,14 +36,14 @@ const themeColors = {
 };
 
 const Table = ({ children }) => (
-    <div className="w-full overflow-hidden rounded-lg shadow-xs">
+    <div className={`w-full overflow-hidden rounded-lg shadow-xs mb-5`}>
         {children}
     </div>
 );
 
-const TableMain = ({ children }) => {
+const TableMain = ({ children, className }) => {
     return (
-        <div className="w-full overflow-x-auto">
+        <div className={`w-full overflow-x-auto ${className}`}>
             <table className="w-full whitespace-no-wrap">{children}</table>
         </div>
     );

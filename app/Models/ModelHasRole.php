@@ -4,19 +4,20 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class ModelHasRole extends Model
 {
     use HasFactory;
 
-    public function role(): BelongsTo
+    protected $guarded = [];
+
+    public function role()
     {
         return $this->belongsTo(Role::class);
     }
 
-    public function user(): BelongsTo
+    public function user()
     {
-        return $this->belongsTo(User::class);
+        return $this->belongsTo(User::class)->with('role');
     }
 }

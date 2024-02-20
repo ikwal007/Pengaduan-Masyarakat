@@ -2,7 +2,7 @@ import React from "react";
 
 const CardComponent = ({ children }) => {
   return (
-    <div className="flex items-center p-4 bg-white rounded-lg shadow-xs dark:bg-gray-800 ">
+    <div className="flex items-center p-4 bg-white rounded-lg shadow-xs dark:bg-gray-800">
       {children}
     </div>
   );

@@ -1,17 +1,32 @@
 import React from "react";
+import { FaUserCircle } from "react-icons/fa";
 
 const Profile = ({ children }) => {
-    return <div className="flex flex-col md:flex-row w-full">{children}</div>;
+    return (
+        <div className="flex flex-col md:flex-row w-full bg-white rounded-lg">
+            {children}
+        </div>
+    );
 };
 
 const Foto = ({ src }) => {
     return (
         <section className="flex basis-1/3 mb-5 py-10 sm:py-16 lg:py-24">
-            <img
-                className="object-cover w-32 h-32 mx-auto rounded-full"
-                src={src}
-                alt=""
-            />
+            <div className="flex justify-center items-center w-full">
+                {src ? (
+                    <div className="avatar">
+                        <div className="w-40 rounded-full ring ring-purple-500 ring-offset-base-100 ring-offset-2">
+                            <img src={src} />
+                        </div>
+                    </div>
+                ) : (
+                    <div className="avatar">
+                        <div className="w-24 rounded-full ring ring-primary ring-offset-base-100 ring-offset-2">
+                            <FaUserCircle className="text-white w-40 h-40" />
+                        </div>
+                    </div>
+                )}
+            </div>
         </section>
     );
 };

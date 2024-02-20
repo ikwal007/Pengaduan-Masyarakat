@@ -25,9 +25,9 @@ createInertiaApp({
         const root = createRoot(el);
         root.render(
             <React.StrictMode>
-                <EchoProvider>
+                {/* <EchoProvider> */}
                     <App {...props} />
-                </EchoProvider>
+                {/* </EchoProvider> */}
             </React.StrictMode>
         );
     },
