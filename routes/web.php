@@ -2,7 +2,9 @@
 
 use App\Http\Controllers\General\PasswordController;
 use App\Http\Controllers\General\ProfileController as GeneralProfileController;
+use App\Http\Controllers\Pelayanan\CreateComplaintController;
 use App\Http\Controllers\Pelayanan\DashboardPengaduanController;
+use App\Http\Controllers\Pelayanan\RegisterdUserController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\SuperAdmin\DashboardManagesWorkerAccountsController;
 use App\Http\Controllers\User\ComplaintController;
@@ -53,11 +55,19 @@ Route::middleware('auth')->group(function () {
 
     // Pelayanan
     Route::middleware('role:Pelayanan_Publik')->group(function () {
-       Route::prefix('pelayanan-publik')->group(function () {
-           Route::controller(DashboardPengaduanController::class)->group(function () {
-               Route::get('/dashboard-pengaduan', 'index')->name('pelayanan.dashboard-manages-worker-accounts-index');
-           });
-       });
+        Route::prefix('pelayanan-publik')->group(function () {
+            Route::controller(DashboardPengaduanController::class)->group(function () {
+                Route::get('/dashboard-pengaduan', 'index')->name('pelayanan.dashboard-complaints-index');
+            });
+            Route::controller(CreateComplaintController::class)->group(function () {
+                Route::get('/create-complaint', 'create')->name('pelayanan.create-complaint');
+                Route::post('/create-complaint', 'store')->name('pelayanan.store-complaint');
+            });
+            Route::controller(RegisterdUserController::class)->group(function () {
+                Route::get('/create-user', 'create')->name('pelayanan.create_user');
+                Route::post('/create-user', 'store')->name('pelayanan.store_user');
+            });
+        });
     });
 
     // General
@@ -66,7 +76,7 @@ Route::middleware('auth')->group(function () {
         Route::get('/profile/{id}/edit', 'edit')->name('profile.edit');
         Route::post('/profile/{id}', 'update')->name('profile.update');
     });
-    
+
     Route::patch('/profile/change-password/{id}', [PasswordController::class, 'update'])->name('profile.update-password');
 
 

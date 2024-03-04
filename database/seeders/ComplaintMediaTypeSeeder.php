@@ -2,9 +2,9 @@
 
 namespace Database\Seeders;
 
-use App\Models\ComplaintMediaType;
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
+use Illuminate\Support\Str;
 use Illuminate\Database\Seeder;
+use App\Models\ComplaintMediaType;
 
 class ComplaintMediaTypeSeeder extends Seeder
 {
@@ -13,21 +13,32 @@ class ComplaintMediaTypeSeeder extends Seeder
      */
     public function run(): void
     {
-        ComplaintMediaType::create([
-            'name' => 'Langsung',
-            'description' => 'Langsung adalah pengaduan yang dibuat secara sendiri melalui web site atau datang ke kantor terdekat.',
-        ]);
-        ComplaintMediaType::create([
-            'name' => 'WhatsApp',
-            'description' => 'WhatsApp adalah pengaduan yang dibuat melalui aplikasi WhatsApp.',
-        ]);
-        ComplaintMediaType::create([
-            'name' => 'Sentuh Tanahku',
-            'description' => 'Sentuh Tanahku adalah pengaduan yang dibuat melalui aplikasi Sentuh Tanahku.',
-        ]);
-        ComplaintMediaType::create([
-            'name' => 'Google Form',
-            'description' => 'Google Form adalah pengaduan yang dibuat melalui aplikasi Google Form.',
-        ]);
+
+        $datas = [
+            (object) [
+                'name' => 'Google Form',
+                'description' => 'Google Form adalah pengaduan yang dibuat melalui aplikasi Google Form.',
+            ],
+            (object) [
+                'name' => 'Sentuh Tanahku',
+                'description' => 'Sentuh Tanahku adalah pengaduan yang dibuat melalui aplikasi Sentuh Tanahku.',
+            ],
+            (object) [
+                'name' => 'WhatsApp',
+                'description' => 'WhatsApp adalah pengaduan yang dibuat melalui aplikasi WhatsApp.',
+            ],
+            (object) [
+                'name' => 'Langsung',
+                'description' => 'Langsung adalah pengaduan yang dibuat secara sendiri melalui web site atau datang ke kantor terdekat.',
+            ],
+        ];
+
+        foreach ($datas as $data) {
+            $complaintStatus = new ComplaintMediaType();
+            $complaintStatus->name = $data->name;
+            $complaintStatus->description = $data->description;
+            $complaintStatus->slug = Str::slug($data->name);
+            $complaintStatus->save();
+        }
     }
 }

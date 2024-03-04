@@ -1,5 +1,4 @@
 import { Link } from "@inertiajs/react";
-import React, { useEffect, useState } from "react";
 import { MdArrowBackIos, MdArrowForwardIos } from "react-icons/md";
 
 const themeColors = {
@@ -9,7 +8,7 @@ const themeColors = {
         background: "bg-purple-100",
         darkBackground: "dark:bg-purple-700",
     },
-    danger: {
+    error: {
         text: "text-red-700",
         darkText: "dark:text-red-100",
         background: "bg-red-100",
@@ -130,7 +129,7 @@ const TableBody = ({ children }) => (
 );
 
 const Tr = ({ children, className }) => (
-    <tr className="text-gray-700 dark:text-gray-400 ${className}">
+    <tr className={`text-gray-700 dark:text-gray-400 ${className}`}>
         {children}
     </tr>
 );
@@ -160,25 +159,18 @@ const TdProfile = ({ name, role }) => (
     </td>
 );
 
-const TdBasic = ({ children, className }) => (
-    <td className={`gap-2 px-4 py-3 text-sm ${className}`}>{children}</td>
+const TdBasic = ({ children, className, ...props }) => (
+    <td {...props} className={`gap-2 px-4 py-3 text-sm ${className}`}>{children}</td>
 );
 
-const TdStatus = ({ theme, status }) => {
-    // Use state to manage color based on theme
-    const [color, setColor] = useState(themeColors.primary);
+const TdStatus = ({ theme = "primary", status }) => {
 
-    // useEffect to update color based on theme changes
-    useEffect(() => {
-        if (theme && themeColors[theme]) {
-            setColor(themeColors[theme]);
-        }
-    }, [theme]);
+    const { text, background, darkBackground, darkText } = themeColors[theme];
 
     return (
         <td className="px-4 py-3 text-xs">
             <span
-                className={`px-2 py-1 font-semibold leading-tight ${color.text} ${color.background} rounded-full ${color.darkBackground} ${color.darkText}`}
+                className={`px-2 py-1 font-semibold leading-tight ${text} ${background} rounded-full ${darkBackground} ${darkText}`}
             >
                 {status}
             </span>

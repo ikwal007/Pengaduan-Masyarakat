@@ -37,6 +37,8 @@ const themeColors = {
         background: "bg-transparent",
         hoverBackground: "hover:bg-gray-100",
         activeBackground: "active:bg-transparent",
+        border: "border-none",
+        shadow: "shadow-none",
     },
     white: {
         text: "text-purple-500",
@@ -73,7 +75,7 @@ const GlobalLink = ({
     }[maxWidth];
 
     return (
-        <Link {...props} className={`btn ${maxWidthClass} ${themeConfig.text} ${themeConfig.background} ${themeConfig.hoverBackground} ${themeConfig.activeBackground} ${className}`}>
+        <Link {...props} className={`btn ${maxWidthClass} ${themeConfig.text} ${themeConfig.background} ${themeConfig.hoverBackground} ${themeConfig.activeBackground} ${className} ${theme === "transparent" && themeConfig.border} ${theme === "transparent" && themeConfig.shadow}`}>
             {children}
         </Link>
     );

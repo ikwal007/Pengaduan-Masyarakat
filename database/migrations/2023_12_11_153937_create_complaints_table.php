@@ -15,7 +15,7 @@ return new class extends Migration
             $table->ulid('id')->primary()->unique();
             $table->foreignUlid('complaint_type_id')->constrained(table: 'complaint_types', column: 'id', indexName: 'complaint_type_id');
             $table->foreignUlid('complaint_media_types_id')->constrained(table: 'complaint_media_types', column: 'id', indexName: 'complaint_media_types_id');
-            $table->foreignUlid('user_email')->constrained(table: 'users', column: 'email', indexName: 'user_email');
+            $table->foreignUlid('user_email')->nullable()->constrained(table: 'users', column: 'email', indexName: 'user_email');
             $table->foreignUlid('complaint_village_id')->constrained(table: 'villages', column: 'id', indexName: 'village_id');
             $table->foreignUlid('complaint_subdistrict_id')->constrained(table: 'subdistricts', column: 'id', indexName: 'complaint_subdistrict_id');
             $table->string('certificate_no');

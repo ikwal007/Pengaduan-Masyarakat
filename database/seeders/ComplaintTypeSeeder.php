@@ -14,15 +14,27 @@ class ComplaintTypeSeeder extends Seeder
      */
     public function run(): void
     {
-        ComplaintType::create([
-            'id' => (string) Str::ulid(),
-            'name' => 'pelayanan pertanahan',
-            'description' => 'Pengaduan pelayanan pertanahan yang berkaitan dengan hak atas tanah dan keterkaitannya'
-        ]);
-        ComplaintType::create([
-            'id' => (string) Str::ulid(),
-            'name' => 'pelanggaran disiplin Pegawai Negeri Sipil',
-            'description' => 'Pengaduan pelanggaran disiplin pegawai negeri sipil yang berkaitan dengan pelayanan di kantor atas ketidak puasan pelanggan'
-        ]);
+        $datas = [
+            (object) [
+                'name' => 'pengajuan buat sertifikat',
+                'description' => 'Pengaduan pelayanan pertanahan yang berkaitan dengan hak atas tanah dan keterkaitannya pada sertifikat tanah yang hilang, terbakar, atau kerusakan pada sertifikat tanah'
+            ],
+            (object) [
+                'name' => 'pengajuan sengketa tanah',
+                'description' => 'Pengaduan pelayanan pertanahan yang berkaitan dengan hak atas tanah dan keterkaitannya pada pengambilan tanah oleh orang atau prihal lain yang tidak bertanggung jawab dan melanggar hak atas tanah'
+            ],
+            (object) [
+                'name' => 'pelanggaran disiplin Pegawai Negeri Sipil',
+                'description' => 'Pengaduan pelanggaran disiplin pegawai negeri sipil yang berkaitan dengan pelayanan di kantor atas ketidak puasan pelanggan'
+            ],
+        ];
+
+        foreach ($datas as $data) {
+            $complaintStatus = new ComplaintType();
+            $complaintStatus->name = $data->name;
+            $complaintStatus->description = $data->description;
+            $complaintStatus->slug = Str::slug($data->name);
+            $complaintStatus->save();
+        }
     }
 }

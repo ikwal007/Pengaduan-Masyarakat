@@ -5,6 +5,7 @@ import { FaPhoneSquareAlt, FaUserCircle } from "react-icons/fa";
 import { MdEmail } from "react-icons/md";
 import Button from "../../Atoms/Button";
 import { FaUserPen } from "react-icons/fa6";
+import Typography from "@/Components/Atoms/Typography";
 
 const FormBio = () => {
     // Destructure errors, and auth from usePage.props
@@ -76,9 +77,9 @@ const FormBio = () => {
             encType="multipart/form-data"
             onSubmit={HandlerSaveProfile}
         >
-            <h4 className="mb-4 text-lg font-semibold text-gray-600 dark:text-gray-300">
+            <Typography tag="h4" className="mb-4 text-lg font-semibold">
                 Profile Edit
-            </h4>
+            </Typography>
             <div className="w-max mx-auto">
                 <Input maxWidth="max">
                     <Input.Label htmlFor={"avatar"} message={formErrors.avatar}>

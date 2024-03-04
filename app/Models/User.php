@@ -6,6 +6,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Concerns\HasUlids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
@@ -55,6 +56,11 @@ class User extends Authenticatable
     public function modelHasRole()
     {
         return $this->hasOne(ModelHasRole::class, 'model_id')->with('role');
+    }
+
+    public function complaints(): HasMany
+    {
+        return $this->hasMany(Complaint::class, 'user_email', 'email');
     }
 
     public function getDetailDataUser($id)

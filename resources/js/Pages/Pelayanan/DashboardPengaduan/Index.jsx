@@ -17,12 +17,40 @@ import Table from "@/Components/Tables/Table";
 import GlobalLink from "@/Components/Atoms/GlobalLink";
 import Notif1 from "@/Components/Notifications/Notif1";
 import { useState } from "react";
+import CardCount from "@/Components/Molecules/Cards/CardCount";
+import { IoSearchOutline } from "react-icons/io5";
 
 const Index = () => {
     // Destructure props from usePage()
-    const { allCountComplaint, flash } = usePage().props;
+    const {
+        countComplaint,
+        countComplaintByStatusProsessing,
+        countComplaintByStatusPending,
+        countComplaintByStatusDone,
+        countComplaintByStatusReject,
+        paginationComplaint,
+        flash,
+        ...props
+    } = usePage().props;
     // const echo = useEcho();
     const [show, setShow] = useState(true);
+
+    const complaintStatus = (status) => {
+        switch (status) {
+            case "diproses":
+                return "info";
+                break;
+            case "ditunda":
+                return "error";
+                break;
+            case "diselesaikan":
+                return "success";
+                break;
+            case "ditolak":
+                return "warning";
+                break;
+        }
+    };
 
     // useEffect(() => {
     //     const channel = echo.channel("user-status");
@@ -36,7 +64,7 @@ const Index = () => {
     //     // };
     // }, [echo]);
 
-    console.log(allCountComplaint);
+    console.log(paginationComplaint);
 
     return (
         <>
@@ -45,77 +73,45 @@ const Index = () => {
             )}
 
             {/* <!-- Cards --> */}
-            <div className="grid place-content-center gap-6 mb-8 md:grid-cols-2 xl:grid-cols-4">
-                <Card>
-                    <Card.Icon
-                        color={"orange"}
-                        bgColor={"orange"}
-                        icon={<FaClipboardUser className="w-5 h-5" />}
-                    />
-                    <Card.Info
-                        title={"Total Pengaduan"}
-                        value={allCountComplaint}
-                    />
-                </Card>
-                <Card>
-                    <Card.Icon
-                        color={"green"}
-                        bgColor={"green"}
-                        icon={<LuClipboardCopy className="w-5 h-5" />}
-                    />
-                    <Card.Info title={"Total Pengaduan Baru"} value={0} />
-                </Card>
-                <Card>
-                    <Card.Icon
-                        color={"blue"}
-                        bgColor={"blue"}
-                        icon={<LuClipboardSignature className="w-5 h-5" />}
-                    />
-                    <Card.Info title={"Total Pengaduan Proses"} value={999} />
-                </Card>
-                <Card>
-                    <Card.Icon
-                        color={"blue"}
-                        bgColor={"blue"}
-                        icon={<LuClipboardCheck className="w-5 h-5" />}
-                    />
-                    <Card.Info title={"Total Pengaduan Selesai"} value={999} />
-                </Card>
-                <Card>
-                    <Card.Icon
-                        color={"blue"}
-                        bgColor={"blue"}
-                        icon={<LuClipboardX className="w-5 h-5" />}
-                    />
-                    <Card.Info title={"Total Pengaduan Ditolak"} value={999} />
-                </Card>
-                <Card>
-                    <Card.Icon
-                        color={"blue"}
-                        bgColor={"blue"}
-                        icon={<LuClipboardList className="w-5 h-5" />}
-                    />
-                    <Card.Info title={"Total Pengaduan Ditunda"} value={999} />
-                </Card>
+            <div className="grid place-content-center gap-6 mb-8 md:grid-cols-2 xl:grid-cols-3">
+                <CardCount
+                    title={"Total Pengaduan"}
+                    value={countComplaint}
+                    theme="primary"
+                    icon={<FaClipboardUser className="w-5 h-5" />}
+                />
+                <CardCount
+                    title={"Total Pengaduan Proses"}
+                    value={countComplaintByStatusProsessing}
+                    theme="info"
+                    icon={<LuClipboardSignature className="w-5 h-5" />}
+                />
+                <CardCount
+                    title={"Total Pengaduan Selesai"}
+                    value={countComplaintByStatusDone}
+                    theme="success"
+                    icon={<LuClipboardCheck className="w-5 h-5" />}
+                />
+                <CardCount
+                    title={"Total Pengaduan Ditolak"}
+                    value={countComplaintByStatusReject}
+                    theme="danger"
+                    icon={<LuClipboardX className="w-5 h-5" />}
+                />
+                <CardCount
+                    title={"Total Pengaduan Ditunda"}
+                    value={countComplaint}
+                    theme="warning"
+                    icon={<LuClipboardList className="w-5 h-5" />}
+                />
             </div>
 
             {/* Main Table Component */}
-            {/* <Table>
+            <Table>
                 <div className="flex lg:justify-end flex-1 lg:mt-5 lg:mr-32 w-full">
                     <div className="relative w-full max-w-xl mr-6 focus-within:text-purple-500">
                         <div className="absolute inset-y-0 flex items-center pl-2">
-                            <svg
-                                className="w-4 h-4"
-                                aria-hidden="true"
-                                fill="currentColor"
-                                viewBox="0 0 20 20"
-                            >
-                                <path
-                                    fill-rule="evenodd"
-                                    d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z"
-                                    clip-rule="evenodd"
-                                ></path>
-                            </svg>
+                            <IoSearchOutline className="w-4 h-4" />
                         </div>
                         <input
                             className="w-full pl-8 pr-2 text-sm text-gray-700 placeholder-gray-600 bg-gray-100 border-0 rounded-md dark:placeholder-gray-500 dark:focus:shadow-outline-gray dark:focus:placeholder-gray-600 dark:bg-gray-700 dark:text-gray-200 focus:placeholder-gray-500 focus:bg-white focus:border-purple-300 focus:outline-none focus:shadow-outline-purple form-input"
@@ -128,30 +124,28 @@ const Index = () => {
 
                 <Table.Main className="mt-5">
                     <Table.TableHead>
-                        <Table.Th>profile</Table.Th>
-                        <Table.Th>role</Table.Th>
+                        <Table.Th>Nama Pemohon</Table.Th>
                         <Table.Th>status</Table.Th>
+                        <Table.Th>media</Table.Th>
                         <Table.Th>action</Table.Th>
                     </Table.TableHead>
                     <Table.TableBody>
-                        {allAccountWorkerDatas.data.length > 0 ? (
-                            allAccountWorkerDatas.data.map((data, index) => (
+                        {paginationComplaint.data.length > 0 ? (
+                            paginationComplaint.data.map((data, index) => (
                                 <Table.Tr key={index}>
                                     <Table.TdProfile
-                                        name={data.full_name}
-                                        role={data.email}
+                                        name={data.user.full_name}
+                                        role={data.user.email}
+                                    />
+                                    <Table.TdStatus
+                                        status={data.complaint_status.name}
+                                        theme={complaintStatus(
+                                            data.complaint_status.slug
+                                        )}
                                     />
                                     <Table.TdBasic>
-                                        {data.roles.map((role) => role.name)}
+                                        {data.complaint_media_type.name}
                                     </Table.TdBasic>
-                                    <Table.TdStatus
-                                        status={data.status}
-                                        theme={
-                                            data.status === "online"
-                                                ? "success"
-                                                : "danger"
-                                        }
-                                    />
                                     <Table.TdBasic className={"flex"}>
                                         <GlobalLink
                                             maxWidth="w-min"
@@ -180,28 +174,30 @@ const Index = () => {
                             ))
                         ) : (
                             <Table.Tr>
-                                <Table.TdBasic />
-                                <Table.TdBasic children={"no data record"} />
-                                <Table.TdBasic />
+                                <Table.TdBasic
+                                    children={"no data record"}
+                                    colSpan="4"
+                                    className="text-center"
+                                />
                             </Table.Tr>
                         )}
                     </Table.TableBody>
                 </Table.Main>
                 <Table.Footer
-                    showFrom={allAccountWorkerDatas.from}
-                    showTo={allAccountWorkerDatas.to}
-                    total={allAccountWorkerDatas.total}
-                    links={allAccountWorkerDatas.links}
-                    last_page_url={allAccountWorkerDatas.last_page_url}
-                    first_page_url={allAccountWorkerDatas.first_page_url}
+                    showFrom={paginationComplaint.from}
+                    showTo={paginationComplaint.to}
+                    total={paginationComplaint.total}
+                    links={paginationComplaint.links}
+                    last_page_url={paginationComplaint.last_page_url}
+                    first_page_url={paginationComplaint.first_page_url}
                 />
-            </Table> */}
+            </Table>
         </>
     );
 };
 
 Index.layout = (page) => (
-    <AuthenticatedLayout2 title={`Dashboard Manages Worker Accounts`}>
+    <AuthenticatedLayout2 title={`Dashboard Pengaduan`}>
         {page}
     </AuthenticatedLayout2>
 );

@@ -11,6 +11,16 @@ const themeColors = {
     error: "input-error",
 };
 
+const themeColorsForTextArea = {
+    primary: "textarea-primary",
+    secondary: "textarea-secondary",
+    accent: "textarea-accent",
+    info: "textarea-info",
+    success: "textarea-success",
+    warning: "textarea-warning",
+    error: "textarea-error",
+};
+
 const maxWidthClass = {
     sm: "sm:max-w-sm",
     md: "sm:max-w-md",
@@ -31,10 +41,23 @@ const inputSizeClass = {
     "2xl": "input-2xl",
 };
 
+const inputSizeClassForTextArea = {
+    xs: "textarea-xs",
+    sm: "textarea-sm",
+    md: "textarea-md",
+    lg: "textarea-lg",
+    xl: "textarea-xl",
+    "2xl": "textarea-2xl",
+};
+
 const Input = ({ children, className, maxWidth = "full" }) => {
     const maxWidthConfig = maxWidthClass[maxWidth];
     return (
-        <label className={`${maxWidthConfig} ${className} hover:cursor-pointer`}>{children}</label>
+        <label
+            className={`${maxWidthConfig} ${className} hover:cursor-pointer`}
+        >
+            {children}
+        </label>
     );
 };
 
@@ -51,7 +74,9 @@ const Label = ({ children, labelName, message }) => {
             {children}
             {message && (
                 <div className="label">
-                    <span className="label-text-alt text-red-600">{message}</span>
+                    <span className="label-text-alt text-red-600">
+                        {message}
+                    </span>
                 </div>
             )}
         </>
@@ -110,7 +135,7 @@ const InputEmail = ({
     const inputSizeConfig = inputSizeClass[inputSize];
     return (
         <div
-            className={`input input-bordere flex items-center gap-2 autofill:t ${themeConfig} ${inputSizeConfig} ${maxWidthConfig}`}
+            className={`input input-bordere flex items-center gap-2 ${themeConfig} ${inputSizeConfig} ${maxWidthConfig}`}
         >
             {leftIcon && leftIcon}
             <input
@@ -160,6 +185,37 @@ const InputNumber = ({
             />
             {rightIcon && rightIcon}
         </div>
+    );
+};
+
+const InputTextarea = ({
+    placeholder,
+    message,
+    theme = "primary",
+    maxWidth = "full",
+    inputSize = "sm",
+    leftIcon = null,
+    rightIcon = null,
+    id,
+    onChange,
+    value,
+    ...props
+}) => {
+    // Use state to manage color based on theme
+    const themeConfig = themeColorsForTextArea[theme];
+    const maxWidthConfig = maxWidthClass[maxWidth];
+    const inputSizeConfig = inputSizeClassForTextArea[inputSize];
+
+    return (
+        <textarea
+            id={id}
+            type="number"
+            placeholder={placeholder}
+            className={`focus:border-0 focus:ring-0 textarea textarea-bordered flex items-center gap-2 ${themeConfig} ${inputSizeConfig} ${maxWidthConfig}`}
+            onChange={onChange}
+            value={value}
+            {...props}
+        />
     );
 };
 
@@ -269,6 +325,7 @@ Input.InputNumber = InputNumber;
 Input.InputPassword = InputPassword;
 Input.InputRadio = InputRadio;
 Input.InputCheckbox = InputCheckbox;
+Input.InputTextarea = InputTextarea;
 Input.InputFile = InputFile;
 
 export default Input;

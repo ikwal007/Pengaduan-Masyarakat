@@ -1,12 +1,17 @@
-import { usePage } from "@inertiajs/react";
+import { Link, usePage } from "@inertiajs/react";
 import { useEffect, useState } from "react";
+import GlobalLink from "../Atoms/GlobalLink";
+import { MdAdd, MdCreate } from "react-icons/md";
+import { IoHomeOutline } from "react-icons/io5";
+import Typography from "../Atoms/Typography";
+import Button from "../Atoms/Button";
 
 /**
  * Desktop component representing the sidebar for desktop view.
  * @returns {JSX.Element} JSX representation of the component.
  */
 const Desktop = () => {
-    const {auth} = usePage().props;
+    const { auth } = usePage().props;
     // State to manage the open/closed state of the side menu
     const [isSideMenuOpen, setIsSideMenuOpen] = useState(false);
 
@@ -58,22 +63,51 @@ const Desktop = () => {
                                 ) : null}
                                 <a
                                     className="inline-flex items-center w-full text-sm font-semibold text-gray-800 transition-colors duration-150 hover:text-gray-800 dark:hover:text-gray-200 dark:text-gray-100"
-                                    href="index.html"
+                                    href={route("super-admin.dashboard-manages-worker-accounts-index")}
                                 >
-                                    <svg
-                                        className="w-5 h-5"
-                                        aria-hidden="true"
-                                        fill="none"
-                                        strokeLinecap="round"
-                                        strokeLinejoin="round"
-                                        strokeWidth="2"
-                                        viewBox="0 0 24 24"
-                                        stroke="currentColor"
-                                    >
-                                        <path d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path>
-                                    </svg>
+                                    <IoHomeOutline className="w-5 h-5" />
                                     <span className="ml-4">Dashboard</span>
                                 </a>
+                            </li>
+                        </ul>
+                    )}
+                    {auth.user.role.name === "Pelayanan_Publik" && (
+                        <ul className="mt-6">
+                            <li className="relative px-6 py-3">
+                                {route().current(
+                                    "pelayanan.dashboard-complaints-index"
+                                ) ? (
+                                    <span
+                                        className="absolute inset-y-0 left-0 w-1 bg-purple-600 rounded-tr-lg rounded-br-lg"
+                                        aria-hidden="true"
+                                    />
+                                ) : null}
+                                <GlobalLink
+                                    theme="transparent"
+                                    className="justify-start"
+                                    href={route("pelayanan.dashboard-complaints-index")}
+                                >
+                                    <IoHomeOutline className="w-5 h-5" />
+                                    <span className="ml-4">Dashboard</span>
+                                </GlobalLink>
+                            </li>
+                            <li className="relative px-6 py-3">
+                                {route().current(
+                                    "pelayanan.create-complaint"
+                                ) ? (
+                                    <span
+                                        className="absolute inset-y-0 left-0 w-1 bg-purple-600 rounded-tr-lg rounded-br-lg"
+                                        aria-hidden="true"
+                                    />
+                                ) : null}
+                                <GlobalLink
+                                    theme="transparent"
+                                    className="justify-start"
+                                    href={route("pelayanan.create-complaint")}
+                                >
+                                    <MdCreate className="w-5 h-5" />
+                                    <span className="ml-4">Buat Pengaduan</span>
+                                </GlobalLink>
                             </li>
                         </ul>
                     )}
@@ -284,13 +318,11 @@ const Desktop = () => {
                             )}
                         </li>
                     </ul> */}
-                    <div className="px-6 my-6">
-                        <button className="flex items-center justify-between w-full px-4 py-2 text-sm font-medium leading-5 text-white transition-colors duration-150 bg-purple-600 border border-transparent rounded-lg active:bg-purple-600 hover:bg-purple-700 focus:outline-none focus:shadow-outline-purple">
-                            Create account
-                            <span className="ml-2" aria-hidden="true">
-                                +
-                            </span>
-                        </button>
+                    <div className="px-6 my-6 flex items-center">
+                        <GlobalLink href={route('pelayanan.create_user')} height="sm" className='h-max'>
+                            Create User Account
+                            <MdAdd className="w-5 h-5" />
+                        </GlobalLink>
                     </div>
                 </div>
             </aside>
