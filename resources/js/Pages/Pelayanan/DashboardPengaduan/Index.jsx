@@ -100,7 +100,7 @@ const Index = () => {
                 />
                 <CardCount
                     title={"Total Pengaduan Ditunda"}
-                    value={countComplaint}
+                    value={countComplaintByStatusPending}
                     theme="warning"
                     icon={<LuClipboardList className="w-5 h-5" />}
                 />
@@ -127,7 +127,8 @@ const Index = () => {
                         <Table.Th>Nama Pemohon</Table.Th>
                         <Table.Th>status</Table.Th>
                         <Table.Th>media</Table.Th>
-                        <Table.Th>action</Table.Th>
+                        <Table.Th>kecamatan</Table.Th>
+                        <Table.Th>desa</Table.Th>
                     </Table.TableHead>
                     <Table.TableBody>
                         {paginationComplaint.data.length > 0 ? (
@@ -139,36 +140,27 @@ const Index = () => {
                                     />
                                     <Table.TdStatus
                                         status={data.complaint_status.name}
+                                        description={data.complaint_status.description}
                                         theme={complaintStatus(
                                             data.complaint_status.slug
                                         )}
                                     />
                                     <Table.TdBasic>
-                                        {data.complaint_media_type.name}
-                                    </Table.TdBasic>
-                                    <Table.TdBasic className={"flex"}>
-                                        <GlobalLink
-                                            maxWidth="w-min"
-                                            theme={"warning"}
-                                            href={`${
-                                                import.meta.env.VITE_APP_URL
-                                            }/super-admin/dashboard-manages-worker-accounts/${
-                                                data.id
-                                            }/edit-password`}
-                                        >
-                                            <MdModeEditOutline className="w-4 h-4" />
-                                        </GlobalLink>
-                                        <GlobalLink
-                                            href={
-                                                import.meta.env.VITE_APP_URL +
-                                                "/super-admin/dashboard-manages-worker-accounts/" +
-                                                data.id
+                                        <div
+                                            className="tooltip tooltip-left"
+                                            data-tip={
+                                                data.complaint_media_type
+                                                    .description
                                             }
-                                            theme={"info"}
-                                            maxWidth="w-min"
                                         >
-                                            <IoMdEye className="w-4 h-4" />
-                                        </GlobalLink>
+                                            {data.complaint_media_type.name}
+                                        </div>
+                                    </Table.TdBasic>
+                                    <Table.TdBasic>
+                                        {data.subdistrict.name}
+                                    </Table.TdBasic>
+                                    <Table.TdBasic>
+                                        {data.village.name}
                                     </Table.TdBasic>
                                 </Table.Tr>
                             ))

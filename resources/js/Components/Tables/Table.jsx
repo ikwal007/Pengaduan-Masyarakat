@@ -48,7 +48,14 @@ const TableMain = ({ children, className }) => {
     );
 };
 
-const TableFooter = ({ links, showFrom, showTo, total, first_page_url, last_page_url }) => {
+const TableFooter = ({
+    links,
+    showFrom,
+    showTo,
+    total,
+    first_page_url,
+    last_page_url,
+}) => {
     return (
         <div className="grid px-4 py-3 text-xs font-semibold tracking-wide text-gray-500 uppercase border-t dark:border-gray-700 bg-gray-50 sm:grid-cols-9 dark:text-gray-400 dark:bg-gray-800">
             <span className="flex items-center col-span-3">
@@ -160,20 +167,26 @@ const TdProfile = ({ name, role }) => (
 );
 
 const TdBasic = ({ children, className, ...props }) => (
-    <td {...props} className={`gap-2 px-4 py-3 text-sm ${className}`}>{children}</td>
+    <td {...props} className={`gap-2 px-4 py-3 text-sm ${className}`}>
+        {children}
+    </td>
 );
 
-const TdStatus = ({ theme = "primary", status }) => {
-
+const TdStatus = ({ theme = "primary", status, description }) => {
     const { text, background, darkBackground, darkText } = themeColors[theme];
 
     return (
         <td className="px-4 py-3 text-xs">
-            <span
-                className={`px-2 py-1 font-semibold leading-tight ${text} ${background} rounded-full ${darkBackground} ${darkText}`}
+            <div
+                className="tooltip tooltip-left"
+                data-tip={description}
             >
-                {status}
-            </span>
+                <span
+                    className={`px-2 py-1 font-semibold leading-tight ${text} ${background} rounded-full ${darkBackground} ${darkText}`}
+                >
+                    {status}
+                </span>
+            </div>
         </td>
     );
 };
