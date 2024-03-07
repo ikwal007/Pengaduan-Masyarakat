@@ -27,4 +27,9 @@ class ComplaintStatus extends Model
     {
         return $this->hasMany(Complaint::class, 'complaint_statuses_id', 'id');
     }
+    
+    public function complaintsHandling(): HasMany
+    {
+        return $this->hasMany(ComplaintHandling::class, 'complaint_statuses_id', 'id');
+    }
 }

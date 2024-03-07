@@ -1,14 +1,11 @@
 <?php
 
-namespace App\Http\Controllers\Pelayanan;
+namespace App\Http\Controllers\Seksi;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\General\RegisteredUserRequest;
-use App\Models\User;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Hash;
 
-class RegisterdUserController extends Controller
+class ComplaintHandlingController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -21,30 +18,17 @@ class RegisterdUserController extends Controller
     /**
      * Show the form for creating a new resource.
      */
-    public function create(Request $request)
+    public function create()
     {
-        $dataOnSession = $request->session()->get('complain', null);
-        return inertia('Pelayanan/RegisterUser/Create', [
-            'emailNewUser' => $dataOnSession['user_email'],
-        ]);
+        //
     }
 
     /**
      * Store a newly created resource in storage.
      */
-    public function store(RegisteredUserRequest $request)
+    public function store(Request $request)
     {
-        $validated = $request->validated();
-
-        $user = User::create([
-            'full_name' => $validated['fullName'],
-            'email' => $validated['email'],
-            'password' => Hash::make($validated['password']),
-        ]);
-
-        $user->assignRole('Masyarakat');
-
-        return redirect()->route('pelayanan.create-complaint');
+        //
     }
 
     /**

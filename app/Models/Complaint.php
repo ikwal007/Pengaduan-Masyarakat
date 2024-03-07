@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Concerns\HasUlids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Complaint extends Model
 {
@@ -51,5 +52,10 @@ class Complaint extends Model
     public function subdistrict(): BelongsTo
     {
         return $this->belongsTo(Subdistrict::class, 'complaint_subdistrict_id');
+    }
+
+    public function complaintHandling(): HasMany
+    {
+        return $this->hasMany(ComplaintHandling::class, 'complaint_id', 'id');
     }
 }

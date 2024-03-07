@@ -13,14 +13,13 @@ import Button from "@/Components/Atoms/Button";
 const Create = () => {
     // Destructure props from usePage()
     const {
+        auth,
         flash,
         errors,
         allComplainType,
-        allComplaintMediaType,
+        defaultComplaintMediaTypeForMasyarakat,
         subdistricts,
         defaultComplaintStatus,
-        oldDataFormOnSession,
-        ...props
     } = usePage().props;
 
     const [subdistrictSelected, setSubdistrictSelected] = useState([]);
@@ -38,14 +37,14 @@ const Create = () => {
         setError,
         clearErrors,
     } = useForm({
-        complainType: oldDataFormOnSession?.complaint_type_id || "",
-        complainMediaType: oldDataFormOnSession?.complaint_media_types_id || "",
-        userEmail: oldDataFormOnSession?.user_email || "",
-        subdistricts: oldDataFormOnSession?.complaint_subdistrict_id || "",
-        village: oldDataFormOnSession?.complaint_village_id || "",
-        certificateNumber: oldDataFormOnSession?.certificate_no || "",
-        description: oldDataFormOnSession?.description || "",
-        complainStatus: oldDataFormOnSession?.complaint_statuses_id || defaultComplaintStatus.id,
+        complainType: "",
+        complainMediaType: defaultComplaintMediaTypeForMasyarakat,
+        userEmail: auth.user.email,
+        subdistricts: "",
+        village: "",
+        certificateNumber: "",
+        description: "",
+        complainStatus: defaultComplaintStatus.id,
     });
 
     const handlerDataChange = (e) => {
@@ -86,25 +85,17 @@ const Create = () => {
 
     const submit = (e) => {
         e.preventDefault();
-        post(route("pelayanan.store-complaint"), {
+        post(route("complaint.store"), {
             onSuccess: () => reset(),
             onError: () => setError(errors),
         });
     };
 
     useEffect(() => {
-        // Set nilai awal subdistrictSelected berdasarkan oldDataFormOnSession
-        if (oldDataFormOnSession?.complaint_subdistrict_id) {
-            const subdistrictData = subdistricts.find(
-                (subdistrict) =>
-                    subdistrict.id === oldDataFormOnSession.complaint_subdistrict_id
-            );
-
-            setSubdistrictSelected(subdistrictData);
-        }
-
         setShow(true);
-    }, [oldDataFormOnSession, subdistricts, flash]);
+    }, [flash]);
+
+    console.log("ini props:", data);
 
     return (
         <>
@@ -162,74 +153,6 @@ const Create = () => {
                                 />
                             }
                         />
-                        <Select
-                            className={"basis-2/5"}
-                            children={
-                                <Select.Label
-                                    id={"complainMediaType"}
-                                    title={"Jenis Media Pengaduan"}
-                                    value={data.complainMediaType}
-                                    onChange={handlerDataChange}
-                                    theme={
-                                        formErrors.complainMediaType
-                                            ? "error"
-                                            : "primary"
-                                    }
-                                    message={formErrors.complainMediaType}
-                                    children={
-                                        <>
-                                            <Select.Option
-                                                title={
-                                                    "Pilih Jenis Media Pengaduan"
-                                                }
-                                                value={""}
-                                                disabled
-                                                hidden
-                                            />
-                                            {allComplaintMediaType &&
-                                                allComplaintMediaType.map(
-                                                    ({ id, name }, i) => (
-                                                        <Select.Option
-                                                            title={name}
-                                                            value={id}
-                                                            key={i}
-                                                        />
-                                                    )
-                                                )}
-                                        </>
-                                    }
-                                />
-                            }
-                        />
-                        <Input className={"basis-2/5"}>
-                            <Input.Label
-                                htmlFor={"userEmail"}
-                                labelName={"Email Pelapor Pengaduan"}
-                                message={formErrors.userEmail}
-                                children={
-                                    <Input.InputEmail
-                                        id={"userEmail"}
-                                        inputSize="md"
-                                        theme={
-                                            formErrors.userEmail
-                                                ? "error"
-                                                : "primary"
-                                        }
-                                        leftIcon={
-                                            <MdAlternateEmail
-                                                className={`w-7 h-7 ${
-                                                    formErrors.userEmail
-                                                        ? "text-error"
-                                                        : "text-primary"
-                                                } opacity-70`}
-                                            />
-                                        }
-                                        value={data.userEmail}
-                                        onChange={handlerDataChange}
-                                    />
-                                }
-                            />
-                        </Input>
                         <Select
                             className={"basis-2/5"}
                             children={

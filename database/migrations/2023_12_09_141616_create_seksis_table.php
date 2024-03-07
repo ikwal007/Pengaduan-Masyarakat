@@ -14,6 +14,7 @@ return new class extends Migration
         Schema::create('seksis', function (Blueprint $table) {
             $table->ulid('id')->primary()->unique();
             $table->string('name');
+            $table->string('slug');
             $table->timestamps();
         });
     }

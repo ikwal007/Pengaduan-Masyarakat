@@ -12,4 +12,9 @@ class ComplaintMediaTypeQuery extends ComplaintMediaType
     {
         return $this->all();
     }
+
+    public function getDefaultComplaintMediaTypeForMasyarakat()
+    {
+        return $this->where('slug', 'langsung')->first();
+    }
 }

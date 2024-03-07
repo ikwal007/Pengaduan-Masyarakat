@@ -46,10 +46,10 @@ class RedirectIfAuthenticated
                 return redirect()->intended('/super-admin/dashboard-manages-worker-accounts');
             case $role->getRoleIdOnParamName('Pelayanan_Publik'):
                 return redirect()->intended('/pelayanan-publik/dashboard-pengaduan');
+            case $role->getRoleIdOnParamName('Masyarakat'):
+                return redirect()->intended('/masyarakat/complaint');
             case $role->getRoleIdOnParamName('Seksi'):
                 return redirect()->intended('/seksi/dashboard');
-            case $role->getRoleIdOnParamName('Masyarakat'):
-                return redirect()->intended('/masyarakat/dashboard');
             default:
                 return redirect('/');
         }

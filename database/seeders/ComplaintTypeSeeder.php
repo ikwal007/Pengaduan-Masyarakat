@@ -3,6 +3,8 @@
 namespace Database\Seeders;
 
 use App\Models\ComplaintType;
+use App\Models\Seksi;
+use App\Queries\SeksiQuery;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Str;
@@ -23,18 +25,27 @@ class ComplaintTypeSeeder extends Seeder
                 'name' => 'pengajuan sengketa tanah',
                 'description' => 'Pengaduan pelayanan pertanahan yang berkaitan dengan hak atas tanah dan keterkaitannya pada pengambilan tanah oleh orang atau prihal lain yang tidak bertanggung jawab dan melanggar hak atas tanah'
             ],
-            (object) [
-                'name' => 'pelanggaran disiplin Pegawai Negeri Sipil',
-                'description' => 'Pengaduan pelanggaran disiplin pegawai negeri sipil yang berkaitan dengan pelayanan di kantor atas ketidak puasan pelanggan'
-            ],
         ];
 
         foreach ($datas as $data) {
-            $complaintStatus = new ComplaintType();
-            $complaintStatus->name = $data->name;
-            $complaintStatus->description = $data->description;
-            $complaintStatus->slug = Str::slug($data->name);
-            $complaintStatus->save();
+            $complaintType = new ComplaintType();
+            $complaintType->name = $data->name;
+            $complaintType->description = $data->description;
+            $complaintType->slug = Str::slug($data->name);
+            $complaintType->save();
+
+
+            if ($complaintType->slug === "pengajuan-sengketa-tanah") {
+                $seksi = new SeksiQuery();
+                $idSeksi = $seksi->getSpesificIdSeksi('seksi-pengendalian-dan-penanganan-sengketa');
+                $complaintType->seksis()->attach($idSeksi);
+            }
+
+            if ($complaintType->slug === "pengajuan-buat-sertifikat") {
+                $seksi = new SeksiQuery();
+                $idSeksi = $seksi->getSpesificIdSeksi('seksi-penetapan-hak-dan-pendaftaran');
+                $complaintType->seksis()->attach($idSeksi);
+            }
         }
     }
 }

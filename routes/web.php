@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\General\PasswordController;
 use App\Http\Controllers\General\ProfileController as GeneralProfileController;
+use App\Http\Controllers\Masyarakat\DashboardComplaintController;
 use App\Http\Controllers\Pelayanan\CreateComplaintController;
 use App\Http\Controllers\Pelayanan\DashboardPengaduanController;
 use App\Http\Controllers\Pelayanan\RegisterdUserController;
@@ -70,6 +71,13 @@ Route::middleware('auth')->group(function () {
         });
     });
 
+    // Masyarakat
+    Route::middleware('role:Masyarakat')->group(function () {
+        Route::prefix('masyarakat')->group(function () {
+            Route::resource('complaint', DashboardComplaintController::class);
+        });
+    });
+
     // General
     Route::controller(GeneralProfileController::class)->group(function () {
         Route::get('/profile/{id}', 'show')->name('profile.show');
@@ -80,7 +88,7 @@ Route::middleware('auth')->group(function () {
     Route::patch('/profile/change-password/{id}', [PasswordController::class, 'update'])->name('profile.update-password');
 
 
-
+    Route::redirect('/', '/login');
 
 
     Route::controller(ProfileController::class)->group(function () {

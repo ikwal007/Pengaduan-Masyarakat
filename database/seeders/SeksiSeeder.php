@@ -3,7 +3,7 @@
 namespace Database\Seeders;
 
 use App\Models\Seksi;
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
+use Illuminate\Support\Str;
 use Illuminate\Database\Seeder;
 
 class SeksiSeeder extends Seeder
@@ -13,20 +13,29 @@ class SeksiSeeder extends Seeder
      */
     public function run(): void
     {
-        Seksi::create([
-            'name' => 'seksi survei dan pemetaan'
-        ]);
-        Seksi::create([
-            'name' => 'seksi penetapan hak dan pendaftaran'
-        ]);
-        Seksi::create([
-            'name' => 'seksi penataan dan pemberdayaan'
-        ]);
-        Seksi::create([
-            'name' => 'seksi pengadaan tanah dan pengembangan'
-        ]);
-        Seksi::create([
-            'name' => 'seksi pengendalian dan penanganan sengketa'
-        ]);
+        $datas = [
+            (object) [
+                'name' => 'seksi survei dan pemetaan',
+            ],
+            (object) [
+                'name' => 'seksi penetapan hak dan pendaftaran',
+            ],
+            (object) [
+                'name' => 'seksi penataan dan pemberdayaan',
+            ],
+            (object) [
+                'name' => 'seksi pengadaan tanah dan pengembangan',
+            ],
+            (object) [
+                'name' => 'seksi pengendalian dan penanganan sengketa',
+            ],
+        ];
+
+        foreach ($datas as $data) {
+            $seksi = new Seksi();
+            $seksi->name = $data->name;
+            $seksi->slug = Str::slug($data->name);
+            $seksi->save();
+        }
     }
 }

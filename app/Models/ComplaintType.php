@@ -15,6 +15,7 @@ class ComplaintType extends Model
     protected $primaryKey = 'id';
     protected $table = 'complaint_types';
     public $incrementing = false;
+    public $timestamps = true;
 
     /**
      * The attributes that aren't mass assignable.
@@ -26,5 +27,15 @@ class ComplaintType extends Model
     public function complaints(): HasMany
     {
         return $this->hasMany(Complaint::class, 'complaint_type_id');
+    }
+
+    public function seksis()
+    {
+        return $this->belongsToMany(Seksi::class, 'complaint_types_has_seksis', 'complaint_type_id', 'seksi_id');
+    }
+
+    public function getSeksiWithComplaint(String $id)
+    {
+        return $this->with(['seksis'])->find($id);
     }
 }

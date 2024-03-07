@@ -20,6 +20,7 @@ const Create = () => {
         allComplaintMediaType,
         subdistricts,
         defaultComplaintStatus,
+        emailNewUser,
         ...props
     } = usePage().props;
 
@@ -36,7 +37,7 @@ const Create = () => {
         setError,
         clearErrors,
     } = useForm({
-        email: "",
+        email: emailNewUser || '',
         fullName: "",
         password: "Password01*",
     });
@@ -58,6 +59,7 @@ const Create = () => {
         });
     };
 
+
     const submit = (e) => {
         e.preventDefault();
         post(route("pelayanan.store_user"), {
@@ -69,8 +71,6 @@ const Create = () => {
     useEffect(() => {
         setShow(true);
     }, [flash]);
-
-    console.log("ini errors: ", formErrors);
 
     return (
         <>
@@ -100,6 +100,7 @@ const Create = () => {
                                     <Input.InputEmail
                                         id={"email"}
                                         inputSize="md"
+                                        disabled
                                         theme={
                                             formErrors.email
                                                 ? "error"

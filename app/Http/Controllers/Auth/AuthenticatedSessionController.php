@@ -38,7 +38,7 @@ class AuthenticatedSessionController extends Controller
 
         $userOnRoleId = auth()->user()->roles->first()->id;
 
-        event(new UserStatusUpdated(auth()->user()->email, 'online'));
+        // event(new UserStatusUpdated(auth()->user()->email, 'online'));
 
         return $this->redirectBasedOnRole($userOnRoleId);
     }
@@ -75,10 +75,10 @@ class AuthenticatedSessionController extends Controller
                 return redirect()->intended('/super-admin/dashboard-manages-worker-accounts');
             case $role->getRoleIdOnParamName('Pelayanan_Publik'):
                 return redirect()->intended('/pelayanan-publik/dashboard-pengaduan');
+            case $role->getRoleIdOnParamName('Masyarakat'):
+                return redirect()->intended('/masyarakat/complaint');
             case $role->getRoleIdOnParamName('Seksi'):
                 return redirect()->intended('/seksi/dashboard');
-            case $role->getRoleIdOnParamName('Masyarakat'):
-                return redirect()->intended('/masyarakat/dashboard');
             default:
                 return redirect('/');
         }

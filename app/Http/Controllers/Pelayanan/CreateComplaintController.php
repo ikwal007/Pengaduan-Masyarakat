@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\General\ComplaintPostRequest;
 use App\Models\Complaint;
+use App\Models\ComplaintHandling;
 use App\Models\User;
 use App\Queries\ComplaintMediaTypeQuery;
 use App\Queries\ComplaintStatusQuery;
@@ -74,6 +75,18 @@ class CreateComplaintController extends Controller
         $request->session()->forget('complain');
 
         $complaint->save();
+
+        $queryComplaint = new ComplaintTypeQuery();
+        $listTeamHandlingComplaint = $queryComplaint->getSeksiWithComplaint($validated['complainType'])->seksis;
+
+        foreach ($listTeamHandlingComplaint as $seksi) {
+            $complaintHandling = new ComplaintHandling();
+            $status = new ComplaintStatusQuery();
+            $complaintHandling->complaint_id = $complaint->id;
+            $complaintHandling->seksi_id = $seksi->id;
+            $complaintHandling->status_id = $status->getComplaintStatusBySlug('diproses')->id;
+            $complaintHandling->save();
+        }
 
         return redirect()->route('pelayanan.dashboard-complaints-index')->with('message', 'Pengaduan Berhasil Disimpan');
     }
