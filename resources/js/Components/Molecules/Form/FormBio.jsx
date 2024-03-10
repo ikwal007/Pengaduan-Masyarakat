@@ -27,7 +27,7 @@ const FormBio = () => {
     } = useForm({
         fullName: auth.user.full_name,
         email: auth.user.email,
-        phoneNumber: auth.user.phone_number.replace(/-/g, ""),
+        phoneNumber: auth.user.phone_number?.replace(/-/g, "") || "",
         avatar: auth.user.avatar || "",
     });
 
@@ -65,7 +65,7 @@ const FormBio = () => {
         e.preventDefault();
 
         // Perform patch request
-        post(`http://localhost:8000/profile/${auth.user.id}`, {
+        post(route('profile-avatar.update', auth.user.id), {
             preserveScroll: true,
             onError: () => setError(errors)
         });

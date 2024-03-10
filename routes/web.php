@@ -90,7 +90,7 @@ Route::middleware('auth')->group(function () {
     Route::controller(GeneralProfileController::class)->group(function () {
         Route::get('/profile/{id}', 'show')->name('profile.show');
         Route::get('/profile/{id}/edit', 'edit')->name('profile.edit');
-        Route::post('/profile/{id}', 'update')->name('profile.update');
+        Route::post('/profile/{id}', 'update')->name('profile-avatar.update');
     });
 
     Route::patch('/profile/change-password/{id}', [PasswordController::class, 'update'])->name('profile.update-password');

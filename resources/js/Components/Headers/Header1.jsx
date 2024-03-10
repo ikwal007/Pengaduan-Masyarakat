@@ -6,6 +6,7 @@ import { TbLogout } from "react-icons/tb";
 import GlobalLink from "../Atoms/GlobalLink";
 import Button from "../Atoms/Button";
 import { IoMoonSharp, IoNotifications, IoSunny } from "react-icons/io5";
+import Avatar from "../Atoms/Avatar";
 
 const Header1 = () => {
     // state variables
@@ -16,6 +17,8 @@ const Header1 = () => {
     const [isSideMenuOpenMobile, setIsSideMenuOpenMobile] = useState(false);
 
     const { auth } = usePage().props;
+
+    console.log(auth.user.avatar);
 
     // refs for profile and notifications menus
     const profileMenuRef = useRef(null);
@@ -205,15 +208,10 @@ const Header1 = () => {
                         <li className="relative" ref={profileMenuRef}>
                             <Button
                                 theme={"transparent"}
-                                maxWidth="2xl"
+                                maxWidth="max"
                                 onClick={() => handleButtonClick("profile")}
                             >
-                                <img
-                                    className="object-cover w-8 h-8 rounded-full"
-                                    src="https://images.unsplash.com/photo-1502378735452-bc7d86632805?ixlib=rb-0.3.5&q=80&fm=jpg&crop=entropy&cs=tinysrgb&w=200&fit=max&s=aa3a807e1bbdfd4364d1f449eaa96d82"
-                                    alt=""
-                                    aria-hidden="true"
-                                />
+                                <Avatar maxWidth="sm" src={auth.user.avatar} />
                             </Button>
                             {isProfileMenuOpen && (
                                 <div>
