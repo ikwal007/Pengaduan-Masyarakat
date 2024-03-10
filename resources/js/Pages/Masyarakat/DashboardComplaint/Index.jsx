@@ -64,8 +64,6 @@ const Index = () => {
     //     // };
     // }, [echo]);
 
-    console.log(paginationComplaint);
-
     return (
         <>
             {flash.message && show && (
@@ -136,7 +134,8 @@ const Index = () => {
                                 <Table.Tr key={index}>
                                     <Table.TdProfile
                                         name={data.user.full_name}
-                                        role={data.user.email}
+                                        email={data.user.email}
+                                        src={data.user.avatar}
                                     />
                                     <Table.TdStatus
                                         status={data.complaint_status.name}

@@ -19,6 +19,10 @@ const Avatar = ({ src = null, maxWidth = "md" }) => {
             width: "w-24",
             height: "h-24",
         },
+        full: {
+            width: "w-full",
+            height: "h-full",
+        }
     }[maxWidth];
     return (
         <div className="avatar">

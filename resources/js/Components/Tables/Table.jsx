@@ -1,5 +1,6 @@
 import { Link } from "@inertiajs/react";
 import { MdArrowBackIos, MdArrowForwardIos } from "react-icons/md";
+import Avatar from "../Atoms/Avatar";
 
 const themeColors = {
     primary: {
@@ -141,25 +142,16 @@ const Tr = ({ children, className }) => (
     </tr>
 );
 
-const TdProfile = ({ name, role }) => (
+const TdProfile = ({ name, email, src }) => (
     <td className="px-4 py-3">
         <div className="flex items-center text-sm">
-            <div className="relative hidden w-8 h-8 mr-3 rounded-full md:block">
-                <img
-                    className="object-cover w-full h-full rounded-full"
-                    src="https://images.unsplash.com/flagged/photo-1570612861542-284f4c12e75f?ixlib=rb-1.2.1&q=80&fm=jpg&crop=entropy&cs=tinysrgb&w=200&fit=max&ixid=eyJhcHBfaWQiOjE3Nzg0fQ"
-                    alt=""
-                    loading="lazy"
-                />
-                <div
-                    className="absolute inset-0 rounded-full shadow-inner"
-                    aria-hidden="true"
-                ></div>
+            <div className="relative w-8 h-8 mr-3 rounded-full block">
+                <Avatar maxWidth="full" src={src} />
             </div>
             <div>
                 <p className="font-semibold">{name}</p>
                 <p className="text-xs text-gray-600 dark:text-gray-400">
-                    {role}
+                    {email}
                 </p>
             </div>
         </div>
