@@ -18,8 +18,6 @@ const Header1 = () => {
 
     const { auth } = usePage().props;
 
-    console.log(auth.user.avatar);
-
     // refs for profile and notifications menus
     const profileMenuRef = useRef(null);
     const notificationsMenuRef = useRef(null);

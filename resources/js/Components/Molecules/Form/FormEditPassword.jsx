@@ -49,24 +49,16 @@ const FormEditPassword = () => {
             id === "oldPassword" && value !== ""
                 ? clearErrors("oldPassword")
                 : null;
-            // id === "password" && value !== ""
-            //     ? clearErrors("password")
-            //     : null;
-            // id === "confirmNewPassword" && value !== ""
-            //     ? clearErrors("confirmNewPassword")
-            //     : null;
 
             return newData;
         });
     };
 
-    console.log(formErrors);
-
     // Handler for saving password
     const HandlerSavePassword = async (e) => {
         e.preventDefault();
         // // Perform patch request
-        patch(`${ziggy.url}/profile/change-password/${auth.user.id}`, {
+        patch(route('profile.update-password', auth.user.id), {
             onSuccess: () => reset(),
             onError: () => setError(errors),
         });
