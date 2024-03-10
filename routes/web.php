@@ -7,6 +7,7 @@ use App\Http\Controllers\Pelayanan\CreateComplaintController;
 use App\Http\Controllers\Pelayanan\DashboardPengaduanController;
 use App\Http\Controllers\Pelayanan\RegisterdUserController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\Seksi\ComplaintHandlingController;
 use App\Http\Controllers\SuperAdmin\DashboardManagesWorkerAccountsController;
 use App\Http\Controllers\User\ComplaintController;
 use Illuminate\Foundation\Application;
@@ -68,6 +69,13 @@ Route::middleware('auth')->group(function () {
                 Route::get('/create-user', 'create')->name('pelayanan.create_user');
                 Route::post('/create-user', 'store')->name('pelayanan.store_user');
             });
+        });
+    });
+
+    // Seksi
+    Route::middleware('role:Seksi')->group(function () {
+        Route::prefix('seksi')->group(function () {
+            Route::resource('complaint-handling', ComplaintHandlingController::class);
         });
     });
 

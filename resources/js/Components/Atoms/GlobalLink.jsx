@@ -52,6 +52,10 @@ const themeColors = {
     "daisyui-accent": "btn-accent",
     "daisyui-ghost": "btn-ghost",
     "daisyui-link": "btn-link",
+    "daisyui-waring": "btn-warning",
+    "daisyui-info": "btn-info",
+    "daisyui-success": "btn-success",
+    "daisyui-error": "btn-error",
 };
 
 const GlobalLink = ({
@@ -75,7 +79,7 @@ const GlobalLink = ({
     }[maxWidth];
 
     return (
-        <Link {...props} className={`btn ${maxWidthClass} ${themeConfig.text} ${themeConfig.background} ${themeConfig.hoverBackground} ${themeConfig.activeBackground} ${className} ${theme === "transparent" && themeConfig.border} ${theme === "transparent" && themeConfig.shadow}`}>
+        <Link {...props} className={`btn transition duration-700 ease-in-out ${maxWidthClass} ${themeConfig} ${themeConfig?.text} ${themeConfig?.background} ${themeConfig?.hoverBackground} ${themeConfig?.activeBackground} ${className} ${theme === "transparent" && themeConfig.border} ${theme === "transparent" && themeConfig.shadow}`}>
             {children}
         </Link>
     );

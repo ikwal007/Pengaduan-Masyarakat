@@ -19,11 +19,12 @@ const maxWidthClass = {
     min: "sm:w-min",
 };
 
-
 const Select = ({ children, className }) => {
     return (
         <>
-            <label className={`form-control w-full ${className}`}>{children}</label>
+            <label className={`form-control w-full ${className}`}>
+                {children}
+            </label>
         </>
     );
 };
@@ -43,15 +44,29 @@ const Label = ({
     const maxWidthConfig = maxWidthClass[maxWidth];
     return (
         <>
-            <div className="label">
-                <span className="label-text">{title}</span>
-            </div>
-            <select {...props} id={id} className={`select ${themeConfig} ${maxWidthConfig}`} value={value} onChange={onChange}>
+            {title && (
+                <div className="label">
+                    <span className="label-text">{title}</span>
+                </div>
+            )}
+            <select
+                {...props}
+                id={id}
+                className={`select focus:border-0 focus:ring-0 ${themeConfig} ${maxWidthConfig}`}
+                value={value}
+                onChange={onChange}
+            >
                 {children}
             </select>
             {message && (
                 <div className="label">
-                    <span className={`label-text-alt ${message && "text-red-600"}`}>{message}</span>
+                    <span
+                        className={`label-text-alt ${
+                            message && "text-red-600"
+                        }`}
+                    >
+                        {message}
+                    </span>
                 </div>
             )}
         </>

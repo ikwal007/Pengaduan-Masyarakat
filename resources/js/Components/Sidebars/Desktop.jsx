@@ -118,9 +118,7 @@ const Desktop = () => {
                     {auth.user.role.name === "Masyarakat" && (
                         <ul className="mt-6">
                             <li className="relative px-6 py-3">
-                                {route().current(
-                                    "complaint.index"
-                                ) ? (
+                                {route().current("complaint.index") ? (
                                     <span
                                         className="absolute inset-y-0 left-0 w-1 bg-purple-600 rounded-tr-lg rounded-br-lg"
                                         aria-hidden="true"
@@ -129,18 +127,14 @@ const Desktop = () => {
                                 <GlobalLink
                                     theme="transparent"
                                     className="justify-start"
-                                    href={route(
-                                        "complaint.index"
-                                    )}
+                                    href={route("complaint.index")}
                                 >
                                     <IoHomeOutline className="w-5 h-5" />
                                     <span className="ml-4">Dashboard</span>
                                 </GlobalLink>
                             </li>
                             <li className="relative px-6 py-3">
-                                {route().current(
-                                    "complaint.create"
-                                ) ? (
+                                {route().current("complaint.create") ? (
                                     <span
                                         className="absolute inset-y-0 left-0 w-1 bg-purple-600 rounded-tr-lg rounded-br-lg"
                                         aria-hidden="true"
@@ -153,6 +147,26 @@ const Desktop = () => {
                                 >
                                     <MdCreate className="w-5 h-5" />
                                     <span className="ml-4">Buat Pengaduan</span>
+                                </GlobalLink>
+                            </li>
+                        </ul>
+                    )}
+                    {auth.user.role.name === "Seksi" && (
+                        <ul className="mt-6">
+                            <li className="relative px-6 py-3">
+                                {route().current("complaint-handling.index") ? (
+                                    <span
+                                        className="absolute inset-y-0 left-0 w-1 bg-purple-600 rounded-tr-lg rounded-br-lg"
+                                        aria-hidden="true"
+                                    />
+                                ) : null}
+                                <GlobalLink
+                                    theme="transparent"
+                                    className="justify-start"
+                                    href={route("complaint-handling.index")}
+                                >
+                                    <IoHomeOutline className="w-5 h-5" />
+                                    <span className="ml-4">Dashboard</span>
                                 </GlobalLink>
                             </li>
                         </ul>

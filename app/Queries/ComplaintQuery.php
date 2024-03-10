@@ -37,6 +37,28 @@ class ComplaintQuery extends Complaint
         })->count();
     }
 
+    public function getAllCountComplaintByStatusOnSpecificSeksi(String $statusSlug, String $seksisName)
+    {
+        return $this->whereHas('complaintType', function ($complaintType) use ($seksisName) {
+            $complaintType->whereHas('seksis', function ($seksis) use ($seksisName) {
+                $seksis->where('name', 'like', '%' . $seksisName . '%');
+            });
+        })->whereHas('complaintHandling', function ($complaintHandling) use ($statusSlug) {
+            $complaintHandling->whereHas('complaintStatus', function ($complaintStatus) use ($statusSlug) {
+                $complaintStatus->where('slug', $statusSlug);
+            });
+        })->count();
+    }
+
+    public function getAllCountComplaintOnSpecificSeksi(String $seksisName)
+    {
+        return $this->whereHas('complaintType', function ($complaintType) use ($seksisName) {
+            $complaintType->whereHas('seksis', function ($seksis) use ($seksisName) {
+                $seksis->where('name', 'like', '%' . $seksisName . '%');
+            });
+        })->count();
+    }
+
     public function complaintWithPagination(String $filterByStatus =  null)
     {
         $res = null;
@@ -71,5 +93,37 @@ class ComplaintQuery extends Complaint
         })->with(['complaintStatus', 'complaintType', 'complaintMediaType', 'user', 'village', 'subdistrict'])->paginate(10);
 
         return $res;
+    }
+
+    public function complaintWithPaginationOnSpecificSeksi(String $seksisName, String $statusSlug =  null)
+    {
+        $res = null;
+
+        if ($statusSlug) {
+            $res = $this->whereHas('complaintType', function ($complaintType) use ($seksisName) {
+                $complaintType->whereHas('seksis', function ($seksis) use ($seksisName) {
+                    $seksis->where('name', 'like', '%' . $seksisName . '%');
+                });
+            })->whereHas('complaintHandling', function ($complaintHandling) use ($statusSlug) {
+                $complaintHandling->whereHas('complaintStatus', function ($complaintStatus) use ($statusSlug) {
+                    $complaintStatus->where('slug', $statusSlug);
+                });
+            })->with(['complaintStatus', 'complaintType', 'complaintMediaType', 'user', 'village', 'subdistrict', 'complaintHandling'])->paginate(10);
+        }
+
+        $res = $this->whereHas('complaintType', function ($complaintType) use ($seksisName) {
+            $complaintType->whereHas('seksis', function ($seksis) use ($seksisName) {
+                $seksis->where('name', 'like', '%' . $seksisName . '%');
+            });
+        })->with(['complaintStatus', 'complaintType', 'complaintMediaType', 'user', 'village', 'subdistrict', 'complaintHandling'])->paginate(10);
+
+        return $res;
+    }
+
+    public function getDetailComplaintOnSeksiWithComplaintHandling(String $complaintHandlingId)
+    {
+        return $this->whereHas('complaintHandling', function ($complaintHandling) use ($complaintHandlingId) {
+            $complaintHandling->where('id', $complaintHandlingId);
+        })->with(['complaintStatus', 'complaintType', 'complaintMediaType', 'user', 'village', 'subdistrict', 'complaintHandling'])->first();
     }
 }

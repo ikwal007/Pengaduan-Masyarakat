@@ -3,7 +3,7 @@ import AuthenticatedLayout2 from "@/Layouts/AuthenticatedLayout2";
 // import { useEcho } from "@/utils/EchoContext";
 import { HiMiniUserGroup } from "react-icons/hi2";
 import { FaUserTie, FaUserCheck, FaClipboardUser } from "react-icons/fa6";
-import { MdModeEditOutline } from "react-icons/md";
+import { MdEdit, MdModeEditOutline } from "react-icons/md";
 import { IoMdEye } from "react-icons/io";
 import { usePage } from "@inertiajs/react";
 import {
@@ -23,6 +23,7 @@ import { IoSearchOutline } from "react-icons/io5";
 const Index = () => {
     // Destructure props from usePage()
     const {
+        auth,
         countComplaint,
         countComplaintByStatusProsessing,
         countComplaintByStatusPending,
@@ -129,6 +130,7 @@ const Index = () => {
                         <Table.Th>media</Table.Th>
                         <Table.Th>kecamatan</Table.Th>
                         <Table.Th>desa</Table.Th>
+                        <Table.Th>Tindakan</Table.Th>
                     </Table.TableHead>
                     <Table.TableBody>
                         {paginationComplaint.data.length > 0 ? (
@@ -139,10 +141,17 @@ const Index = () => {
                                         role={data.user.email}
                                     />
                                     <Table.TdStatus
-                                        status={data.complaint_status.name}
-                                        description={data.complaint_status.description}
+                                        status={
+                                            data.complaint_handling[0]
+                                                .complaint_status.slug
+                                        }
+                                        description={
+                                            data.complaint_handling[0]
+                                                .complaint_status.description
+                                        }
                                         theme={complaintStatus(
-                                            data.complaint_status.slug
+                                            data.complaint_handling[0]
+                                                .complaint_status.slug
                                         )}
                                     />
                                     <Table.TdBasic>
@@ -161,6 +170,9 @@ const Index = () => {
                                     </Table.TdBasic>
                                     <Table.TdBasic>
                                         {data.village.name}
+                                    </Table.TdBasic>
+                                    <Table.TdBasic>
+                                        <GlobalLink href={route("complaint-handling.edit", data.complaint_handling[0].id)} children={<MdEdit className="w-5 h-5 group-hover:text-white transition duration-300 ease-in-out" />} theme="daisyui-waring" className="btn-outline group" />
                                     </Table.TdBasic>
                                 </Table.Tr>
                             ))

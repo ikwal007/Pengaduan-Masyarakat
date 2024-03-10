@@ -78,7 +78,7 @@ class AuthenticatedSessionController extends Controller
             case $role->getRoleIdOnParamName('Masyarakat'):
                 return redirect()->intended('/masyarakat/complaint');
             case $role->getRoleIdOnParamName('Seksi'):
-                return redirect()->intended('/seksi/dashboard');
+                return redirect()->intended('/seksi/complaint-handling');
             default:
                 return redirect('/');
         }
