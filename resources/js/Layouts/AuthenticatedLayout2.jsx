@@ -1,4 +1,5 @@
 import Header1 from "@/Components/Headers/Header1";
+import Footer from "@/Components/Molecules/Footer";
 import Aside from "@/Components/Sidebars/Aside";
 import Desktop from "@/Components/Sidebars/Desktop";
 import { Head } from "@inertiajs/react";
@@ -24,6 +25,7 @@ const AuthenticatedLayout2 = ({ children, title }) => {
                             </h2>
                             {/* <!-- Children --> */}
                             {children}
+                            <Footer />
                         </div>
                     </main>
                 </div>
