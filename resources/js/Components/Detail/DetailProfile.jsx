@@ -3,7 +3,7 @@ import { FaUserCircle } from "react-icons/fa";
 
 const Profile = ({ children }) => {
     return (
-        <div className="flex flex-col md:flex-row w-full bg-white rounded-lg">
+        <div className="flex flex-col md:flex-row w-full bg-white dark:bg-gray-800 rounded-lg">
             {children}
         </div>
     );
@@ -33,7 +33,7 @@ const Foto = ({ src }) => {
 
 const Detail = ({ children }) => {
     return (
-        <section className="basis-1/2 mb-5 py-10 sm:py-16 lg:py-24">
+        <section className="basis-1/2 mb-5 py-10 px-5 sm:py-16 lg:py-24">
             {children}
         </section>
     );
@@ -41,7 +41,7 @@ const Detail = ({ children }) => {
 
 const Item = ({ title, data }) => {
     return (
-        <div className="flex text-lg font-semibold text-gray-700 dark:text-gray-200">
+        <div className="flex flex-wrap text-lg font-semibold text-gray-700 dark:text-gray-200">
             <h1>{title} : </h1>
             <h1>{data}</h1>
         </div>
