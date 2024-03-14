@@ -3,13 +3,15 @@ import GlobalLink from "@/Components/Atoms/GlobalLink";
 import AuthenticatedLayout2 from "@/Layouts/AuthenticatedLayout2";
 import FormBio from "@/Components/Molecules/Form/FormBio";
 import FormEditPassword from "@/Components/Molecules/Form/FormEditPassword";
+import { usePage } from "@inertiajs/react";
 
 const Edit = () => {
+    const { auth } = usePage().props;
     return (
         <>
             <div className="w-max p-2">
                 <GlobalLink
-                    href="/super-admin/dashboard-manages-worker-accounts"
+                    href={route("profile.show", auth.user.id)}
                     className="flex items-center group"
                 >
                     <IoMdArrowRoundBack />
