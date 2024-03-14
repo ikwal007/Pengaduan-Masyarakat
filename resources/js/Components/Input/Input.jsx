@@ -64,13 +64,13 @@ const Input = ({ children, className, maxWidth = "full" }) => {
 const Label = ({ children, labelName, message }) => {
     return (
         <>
-            <div className="label">
-                {labelName && (
+            {labelName && (
+                <div className="label">
                     <span className="label-text text-gray-700 dark:text-gray-400">
                         {labelName}
                     </span>
-                )}
-            </div>
+                </div>
+            )}
             {children}
             {message && (
                 <div className="label">
@@ -101,7 +101,7 @@ const InputText = ({
     const inputSizeConfig = inputSizeClass[inputSize];
     return (
         <div
-            className={`input input-bordere flex items-center gap-2 ${themeConfig} ${inputSizeConfig} ${maxWidthConfig}`}
+            className={`input flex items-center focus-within:outline-none gap-2 ${themeConfig} ${inputSizeConfig} ${maxWidthConfig}`}
         >
             {leftIcon && leftIcon}
             <input

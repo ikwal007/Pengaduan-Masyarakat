@@ -76,23 +76,20 @@ class ComplaintQuery extends Complaint
         return $res;
     }
 
-    public function complaintWithPaginationOnSpecificUser(String $email, String $filterByStatus =  null)
+    public function complaintWithPaginationOnSpecificUser(String $email, String $filterByStatus = null)
     {
-        $res = null;
 
         if ($filterByStatus) {
-            $res = $this->whereHas('complaintStatus', function ($query) use ($filterByStatus) {
-                $query->where('slug', $filterByStatus);
-            })->whereHas('user', function ($query) use ($email) {
-                $query->where('email', $email);
+            return $this->whereHas('user', function ($user) use ($email) {
+                $user->where('email', $email);
+            })->whereHas('complaintStatus', function ($complaintStatus) use ($filterByStatus) {
+                $complaintStatus->where('slug', 'like', '%' . $filterByStatus . '%');
             })->with(['complaintStatus', 'complaintType', 'complaintMediaType', 'user', 'village', 'subdistrict'])->paginate(10);
         }
 
-        $res = $this->whereHas('user', function ($query) use ($email) {
+        return $this->whereHas('user', function ($query) use ($email) {
             $query->where('email', $email);
         })->with(['complaintStatus', 'complaintType', 'complaintMediaType', 'user', 'village', 'subdistrict'])->paginate(10);
-
-        return $res;
     }
 
     public function complaintWithPaginationOnSpecificSeksi(String $seksisName, String $statusSlug =  null)
