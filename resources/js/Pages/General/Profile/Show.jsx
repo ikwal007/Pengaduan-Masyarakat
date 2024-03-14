@@ -10,6 +10,19 @@ const Show = () => {
     const { auth, flash } = usePage().props;
 
     const [show, setShow] = useState(true);
+
+    const redirectRouteOnSpecificRole = (role) => {
+        switch (role) {
+            case "Super_Admin":
+                return route("super-admin.dashboard-manages-worker-accounts-index");
+            case "Pelayanan_Publik":
+                return route("pelayanan.dashboard-complaints-index");
+            case "Seksi":
+                return route("complaint-handling.index");
+            case "Masyarakat":
+                return route("complaint.index");
+        }
+    }
     return (
         <>
             {flash.message && show && (
@@ -17,7 +30,7 @@ const Show = () => {
             )}
             <div className="w-max p-2">
                 <GlobalLink
-                    href="/super-admin/dashboard-manages-worker-accounts"
+                    href={redirectRouteOnSpecificRole(auth.user.role.name)}
                     className="flex items-center group"
                 >
                     <IoMdArrowRoundBack />
