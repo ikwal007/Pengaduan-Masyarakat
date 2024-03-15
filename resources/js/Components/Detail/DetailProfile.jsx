@@ -9,20 +9,21 @@ const Profile = ({ children }) => {
     );
 };
 
-const Foto = ({ src }) => {
+const Foto = ({ src = null }) => {
+    console.log(src);
     return (
         <section className="flex basis-1/3 mb-5 py-10 sm:py-16 lg:py-24">
             <div className="flex justify-center items-center w-full">
                 {src ? (
                     <div className="avatar">
                         <div className="w-40 rounded-full ring ring-purple-500 ring-offset-base-100 ring-offset-2">
-                            <img src={src} />
+                            <img src={import.meta.env.VITE_APP_URL + src} />
                         </div>
                     </div>
                 ) : (
                     <div className="avatar">
-                        <div className="w-24 rounded-full ring ring-primary ring-offset-base-100 ring-offset-2">
-                            <FaUserCircle className="text-white w-40 h-40" />
+                        <div className="w-40 rounded-full ring ring-primary ring-offset-base-100 ring-offset-2">
+                            <FaUserCircle className="w-40 h-40 dark:text-gray-200" />
                         </div>
                     </div>
                 )}

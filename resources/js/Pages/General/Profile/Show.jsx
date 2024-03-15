@@ -43,7 +43,7 @@ const Show = () => {
                         Form Data Pengguna
                     </h4>
                     <Profile>
-                        <Profile.Foto src={import.meta.env.VITE_APP_URL+auth.user.avatar} />
+                        <Profile.Foto src={auth.user.avatar} />
                         <Profile.Detail>
                             <Profile.Item
                                 title="name"
