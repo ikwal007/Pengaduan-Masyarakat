@@ -7,6 +7,7 @@ import GlobalLink from "../Atoms/GlobalLink";
 import Button from "../Atoms/Button";
 import { IoMoonSharp, IoNotifications, IoSunny } from "react-icons/io5";
 import Avatar from "../Atoms/Avatar";
+import Typography from "../Atoms/Typography";
 
 const Header1 = () => {
     // state variables
@@ -220,13 +221,21 @@ const Header1 = () => {
                                         <li className="flex">
                                             <GlobalLink
                                                 theme={"transparent"}
-                                                className="!justify-start"
+                                                className="!justify-start group"
                                                 href={`/profile/${auth.user.id}`}
                                             >
-                                                <FaRegUser className="w-4 h-4 mr-3" />
-                                                <span className="font-semibold">
+                                                <Typography
+                                                    tag="span"
+                                                    className="font-semibold"
+                                                >
+                                                    <FaRegUser className="w-4 h-4 mr-3" />
+                                                </Typography>
+                                                <Typography
+                                                    tag="span"
+                                                    className="font-semibold"
+                                                >
                                                     Profile
-                                                </span>
+                                                </Typography>
                                             </GlobalLink>
                                         </li>
                                         <li className="flex">
@@ -238,8 +247,18 @@ const Header1 = () => {
                                                 theme={"transparent"}
                                                 className="!justify-start"
                                             >
-                                                <TbLogout className="w-4 h-4 mr-3" />
-                                                <span>Logout</span>
+                                                <Typography
+                                                    tag="span"
+                                                    className="font-semibold"
+                                                >
+                                                    <TbLogout className="w-4 h-4 mr-3" />
+                                                </Typography>
+                                                <Typography
+                                                    tag="span"
+                                                    className="font-semibold"
+                                                >
+                                                    Logout
+                                                </Typography>
                                             </GlobalLink>
                                         </li>
                                     </ul>
