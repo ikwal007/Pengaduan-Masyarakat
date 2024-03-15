@@ -82,7 +82,7 @@ const Button = ({
         <button
         type={type}
         disabled={disabled}
-        className={`flex items-center justify-between px-4 py-2 text-sm font-semibold leading-5 ${color.text} transition-colors duration-150 ${color.background} border border-transparent rounded-lg disabled:bg-gray-300 disabled:cursor-not-allowed ${color.activeBackground} ${color.hoverBackground} ${className} ${maxWidthConfig}`}
+        className={`flex items-center justify-between px-4 py-2 text-sm font-semibold leading-5 ${color.text} transition-colors duration-150 group ${color.background} border border-transparent rounded-lg disabled:bg-gray-300 disabled:cursor-not-allowed ${color.activeBackground} ${color.hoverBackground} ${className} ${maxWidthConfig}`}
         {...props}
         >
             {children}

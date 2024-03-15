@@ -7,7 +7,7 @@ const Footer = () => {
     const author = import.meta.env.VITE_AUTHOR;
     const currentYear = new Date().getFullYear();
     return (
-        <footer className="footer items-center p-4 bg-base-100 rounded-t-xl">
+        <footer className="footer items-center p-4 bg-white dark:bg-gray-800 rounded-t-xl">
             <div className="items-center grid-flow-col">
                 <Typography tag="p">
                     &copy; {currentYear} {author}. All Rights Reserved.

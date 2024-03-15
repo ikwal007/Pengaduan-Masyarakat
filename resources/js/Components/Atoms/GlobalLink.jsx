@@ -79,7 +79,7 @@ const GlobalLink = ({
     }[maxWidth];
 
     return (
-        <Link {...props} className={`btn transition duration-700 ease-in-out ${maxWidthClass} ${themeConfig} ${themeConfig?.text} ${themeConfig?.background} ${themeConfig?.hoverBackground} ${themeConfig?.activeBackground} ${className} ${theme === "transparent" && themeConfig.border} ${theme === "transparent" && themeConfig.shadow}`}>
+        <Link {...props} className={`btn transition duration-700 ease-in-out group ${maxWidthClass} ${themeConfig} ${themeConfig?.text} ${themeConfig?.background} ${themeConfig?.hoverBackground} ${themeConfig?.activeBackground} ${className} ${theme === "transparent" && themeConfig.border} ${theme === "transparent" && themeConfig.shadow}`}>
             {children}
         </Link>
     );
