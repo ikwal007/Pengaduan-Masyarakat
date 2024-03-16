@@ -2,7 +2,7 @@ import { usePage } from "@inertiajs/react";
 import { useEffect, useRef } from "react";
 import GlobalLink from "../Atoms/GlobalLink";
 import { IoHomeOutline } from "react-icons/io5";
-import { MdCreate } from "react-icons/md";
+import { MdAdd, MdCreate } from "react-icons/md";
 import Typography from "../Atoms/Typography";
 
 const Aside = () => {
