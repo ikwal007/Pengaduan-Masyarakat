@@ -206,10 +206,10 @@ const Desktop = () => {
                                 height="sm"
                                 className="h-max"
                             >
-                                <Typography tag="span" className="ml-4">
+                                <Typography tag="span" className="ml-2" theme="primary">
                                     Create User Account
                                 </Typography>
-                                <Typography tag="span">
+                                <Typography tag="span" theme="primary">
                                     <MdAdd className="w-5 h-5" />
                                 </Typography>
                             </GlobalLink>
