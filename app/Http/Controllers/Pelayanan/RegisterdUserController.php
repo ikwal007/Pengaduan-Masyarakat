@@ -24,6 +24,9 @@ class RegisterdUserController extends Controller
     public function create(Request $request)
     {
         $dataOnSession = $request->session()->get('complain', null);
+        if ($dataOnSession === null) {
+            $dataOnSession['user_email'] = null;
+        }
         return inertia('Pelayanan/RegisterUser/Create', [
             'emailNewUser' => $dataOnSession['user_email'],
         ]);

@@ -78,10 +78,10 @@ const Create = () => {
                 <Notif1 message={flash.message} show={show} setShow={setShow} />
             )}
 
-            <main className="h-full pb-16 overflow-y-auto mt-5">
-                <div className="container px-6 mx-auto grid">
+            <main className="min-h-screen pb-16 overflow-y-auto mt-5">
+                <div className="container px-3 lg:px-6 mx-auto grid">
                     <form
-                        className="flex flex-wrap gap-5 px-4 py-3 mb-8 bg-white rounded-lg shadow-md dark:bg-gray-800"
+                        className="flex flex-wrap gap-5 px-2 lg:px-4 py-3 mb-8 bg-white rounded-lg shadow-md dark:bg-gray-800"
                         onSubmit={submit}
                     >
                         <Typography
