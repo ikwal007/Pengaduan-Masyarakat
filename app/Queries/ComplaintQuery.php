@@ -82,6 +82,8 @@ class ComplaintQuery extends Complaint
             $complaint->where('user_email', 'like', '%' . $search . '%')
                 ->orWhere('certificate_no', 'like', '%' . $search . '%')
                 ->orWhere('description', 'like', '%' . $search . '%');
+        })->orWhereHas('user', function ($user) use ($search) {
+            $user->where('full_name', 'like', '%' . $search . '%');
         })->orWhereHas('complaintType', function ($complaintType) use ($search) {
             $complaintType->where('name', 'like', '%' . $search . '%');
         })->orWhereHas('complaintMediaType', function ($complaintMediaType) use ($search) {
