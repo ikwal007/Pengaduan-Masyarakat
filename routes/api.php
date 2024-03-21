@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Masyarakat\GetComplaintController;
+use App\Http\Controllers\Pelayanan\GetComplaintController as PelayananGetComplaintController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -20,3 +21,4 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 });
 
 Route::get('/complaints', [GetComplaintController::class, 'index'])->name('masyarakat.complaints-index');
+Route::get('/pelayanan/search-complaints', [PelayananGetComplaintController::class, 'index'])->name('pelayanan.complaints-index');
