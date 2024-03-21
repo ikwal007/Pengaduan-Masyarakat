@@ -137,6 +137,7 @@ const Index = () => {
                                     <Table.TdProfile
                                         name={data.user.full_name}
                                         role={data.user.email}
+                                        src={data.user.avatar}
                                     />
                                     <Table.TdStatus
                                         status={data.complaint_status.name}

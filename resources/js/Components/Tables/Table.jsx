@@ -1,6 +1,7 @@
 import { Link } from "@inertiajs/react";
 import { MdArrowBackIos, MdArrowForwardIos } from "react-icons/md";
 import Avatar from "../Atoms/Avatar";
+import { FaUserCircle } from "react-icons/fa";
 
 const themeColors = {
     primary: {
@@ -145,9 +146,19 @@ const Tr = ({ children, className }) => (
 const TdProfile = ({ name, email, src }) => (
     <td className="px-4 py-3">
         <div className="flex items-center text-sm">
-            <div className="relative w-8 h-8 mr-3 rounded-full block">
-                <Avatar maxWidth="full" src={src} />
-            </div>
+            {src ? (
+                <div className="avatar mr-3">
+                    <div className="w-8 rounded-full">
+                        <img src={import.meta.env.VITE_APP_URL + src} />
+                    </div>
+                </div>
+            ) : (
+                <div className="avatar mr-3">
+                    <div className="w-8 rounded-full">
+                        <FaUserCircle className="w-8 h-8 dark:text-purple-200" />
+                    </div>
+                </div>
+            )}
             <div>
                 <p className="font-semibold">{name}</p>
                 <p className="text-xs text-gray-600 dark:text-gray-400">
@@ -169,10 +180,7 @@ const TdStatus = ({ theme = "primary", status, description }) => {
 
     return (
         <td className="px-4 py-3 text-xs">
-            <div
-                className="tooltip tooltip-left"
-                data-tip={description}
-            >
+            <div className="tooltip tooltip-left" data-tip={description}>
                 <span
                     className={`px-2 py-1 font-semibold leading-tight ${text} ${background} rounded-full ${darkBackground} ${darkText}`}
                 >
