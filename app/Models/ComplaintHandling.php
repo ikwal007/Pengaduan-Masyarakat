@@ -32,4 +32,9 @@ class ComplaintHandling extends Model
     {
         return $this->belongsTo(ComplaintStatus::class, 'status_id', 'id');
     }
+
+    public function seksis(): BelongsTo
+    {
+        return $this->belongsTo(Seksi::class, 'seksi_id', 'id');
+    }
 }

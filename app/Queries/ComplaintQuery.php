@@ -113,6 +113,33 @@ class ComplaintQuery extends Complaint
         })->with(['complaintStatus', 'complaintType', 'complaintMediaType', 'user', 'village', 'subdistrict'])->paginate(10);
     }
 
+    public function searchComplaintWithPaginationOnSpecificSeksi(String $seksisName, String $search = null)
+    {
+        return $this->whereHas('complaintHandling', function ($complaintHandling) use ($seksisName) {
+            $complaintHandling->whereHas('seksis', function ($seksis) use ($seksisName) {
+                $seksis->where('name', 'like', '%' . $seksisName . '%');
+            });
+        })->when($search, function ($query, $search) {
+            return $query->where(function ($complaint) use ($search) {
+                $complaint->where('user_email', 'like', '%' . $search . '%')
+                    ->orWhere('certificate_no', 'like', '%' . $search . '%')
+                    ->orWhere('description', 'like', '%' . $search . '%');
+            })->orWhereHas('user', function ($user) use ($search) {
+                $user->where('full_name', 'like', '%' . $search . '%');
+            })->orWhereHas('complaintType', function ($complaintType) use ($search) {
+                $complaintType->where('name', 'like', '%' . $search . '%');
+            })->orWhereHas('complaintMediaType', function ($complaintMediaType) use ($search) {
+                $complaintMediaType->where('name', 'like', '%' . $search . '%');
+            })->orWhereHas('complaintStatus', function ($complaintStatus) use ($search) {
+                $complaintStatus->where('name', 'like', '%' . $search . '%');
+            })->orWhereHas('village', function ($village) use ($search) {
+                $village->where('name', 'like', '%' . $search . '%');
+            })->orWhereHas('subdistrict', function ($subdistrict) use ($search) {
+                $subdistrict->where('name', 'like', '%' . $search . '%');
+            });
+        })->with(['complaintStatus', 'complaintType', 'complaintMediaType', 'user', 'village', 'subdistrict', 'complaintHandling'])->paginate(10);
+    }
+
     public function complaintWithPaginationOnSpecificSeksi(String $seksisName, String $statusSlug =  null)
     {
         $res = null;
