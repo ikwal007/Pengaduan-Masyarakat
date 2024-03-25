@@ -48,13 +48,13 @@ const Index = () => {
                 return "info";
                 break;
             case "ditunda":
-                return "error";
+                return "warning";
                 break;
             case "diselesaikan":
                 return "success";
                 break;
             case "ditolak":
-                return "warning";
+                return "error";
                 break;
         }
     };

@@ -1,9 +1,6 @@
-import { useEffect, useState } from "react";
 import { IoMdArrowRoundBack } from "react-icons/io";
 import GlobalLink from "@/Components/Atoms/GlobalLink";
 import Button from "@/Components/Atoms/Button";
-import Input from "@/Components/Input/Input";
-import Modal from "@/Components/Atoms/Modal";
 import AuthenticatedLayout2 from "@/Layouts/AuthenticatedLayout2";
 import { useForm, usePage } from "@inertiajs/react";
 import Typography from "@/Components/Atoms/Typography";
@@ -11,8 +8,7 @@ import Select from "@/Components/Molecules/Select";
 
 const Edit = () => {
     // Destructure errors, and detailAccountData from usePage.props
-    const { errors, detailComplaint, allComplaintStatus } = usePage().props;
-    const [isModalOpen, setIsModalOpen] = useState(false);
+    const { detailComplaint, allComplaintStatus } = usePage().props;
 
     const {
         user,
@@ -56,7 +52,12 @@ const Edit = () => {
 
     const submit = (e) => {
         e.preventDefault();
-        patch(route('complaint-handling.update', detailComplaint.complaint_handling[0].id));
+        patch(
+            route(
+                "complaint-handling.update",
+                detailComplaint.complaint_handling[0].id
+            )
+        );
     };
 
     return (
@@ -158,7 +159,7 @@ const Edit = () => {
                         </div>
 
                         <Button className={"mt-4"} type="submit" maxWidth="max">
-                            Ubah Password
+                            Simpan Perubahan
                         </Button>
                     </form>
                 </div>
