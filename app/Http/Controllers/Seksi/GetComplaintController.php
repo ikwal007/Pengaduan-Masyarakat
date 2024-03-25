@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\Seksi;
 
 use App\Http\Controllers\Controller;
-use App\Queries\ComplaintQuery;
+use App\Queries\ComplaintHandlingQuery;
 use Illuminate\Http\Request;
 
 class GetComplaintController extends Controller
@@ -14,8 +14,8 @@ class GetComplaintController extends Controller
     public function index(Request $request)
     {
         if ($request->only('keyword')) {
-            $compalaintQuery = new ComplaintQuery();
-            $result = $compalaintQuery->searchComplaintWithPaginationOnSpecificSeksi($request->input('seksisName'));
+            $compalaintQuery = new ComplaintHandlingQuery();
+            $result = $compalaintQuery->complaintWithPaginationOnSpecificSeksi($request->input('seksisName'), $request->input('keyword'));
             return response()->json($result);
         }
         return response()->json([]);

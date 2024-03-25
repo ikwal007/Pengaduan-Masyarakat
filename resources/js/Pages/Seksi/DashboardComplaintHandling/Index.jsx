@@ -82,8 +82,6 @@ const Index = () => {
         }
     }, [deferredSearch]);
 
-    console.log(searchResults);
-
     // useEffect(() => {
     //     const channel = echo.channel("user-status");
 
@@ -164,66 +162,68 @@ const Index = () => {
                         {loading === false ? (
                             searchResults !== null && deferredSearch !== "" ? (
                                 searchResults.data.length > 0 ? (
-                                    searchResults.data.map((data, index) => (
-                                        <Table.Tr key={index}>
-                                            <Table.TdProfile
-                                                name={data.user.full_name}
-                                                role={data.user.email}
-                                            />
-                                            <Table.TdStatus
-                                                status={
-                                                    data.complaint_handling[0]
-                                                        .complaint_status.slug
-                                                }
-                                                description={
-                                                    data.complaint_handling[0]
-                                                        .complaint_status
-                                                        .description
-                                                }
-                                                theme={complaintStatus(
-                                                    data.complaint_handling[0]
-                                                        .complaint_status.slug
-                                                )}
-                                            />
-                                            <Table.TdBasic>
-                                                <div
-                                                    className="tooltip tooltip-left"
-                                                    data-tip={
-                                                        data
-                                                            .complaint_media_type
-                                                            .description
+                                    searchResults.data.map(
+                                        (
+                                            { complaint, complaint_status, id },
+                                            index
+                                        ) => (
+                                            <Table.Tr key={index}>
+                                                <Table.TdProfile
+                                                    name={
+                                                        complaint.user.full_name
                                                     }
-                                                >
-                                                    {
-                                                        data
-                                                            .complaint_media_type
-                                                            .name
-                                                    }
-                                                </div>
-                                            </Table.TdBasic>
-                                            <Table.TdBasic>
-                                                {data.subdistrict.name}
-                                            </Table.TdBasic>
-                                            <Table.TdBasic>
-                                                {data.village.name}
-                                            </Table.TdBasic>
-                                            <Table.TdBasic>
-                                                <GlobalLink
-                                                    href={route(
-                                                        "complaint-handling.edit",
-                                                        data
-                                                            .complaint_handling[0]
-                                                            .id
-                                                    )}
-                                                    children={
-                                                        <MdEdit className="w-5 h-5 group-hover:text-white transition duration-300 ease-in-out" />
-                                                    }
-                                                    theme="daisyui-waring"
-                                                    className="btn-outline group"
+                                                    email={complaint.user.email}
+                                                    src={complaint.user.avatar}
                                                 />
-                                            </Table.TdBasic>
-                                        </Table.Tr>
-                                    ))
+                                                <Table.TdStatus
+                                                    status={
+                                                        complaint_status.name
+                                                    }
+                                                    description={
+                                                        complaint_status.description
+                                                    }
+                                                    theme={complaintStatus(
+                                                        complaint_status.slug
+                                                    )}
+                                                />
+                                                <Table.TdBasic>
+                                                    <div
+                                                        className="tooltip tooltip-left"
+                                                        data-tip={
+                                                            complaint
+                                                                .complaint_media_type
+                                                                .description
+                                                        }
+                                                    >
+                                                        {
+                                                            complaint
+                                                                .complaint_media_type
+                                                                .name
+                                                        }
+                                                    </div>
+                                                </Table.TdBasic>
+                                                <Table.TdBasic>
+                                                    {complaint.subdistrict.name}
+                                                </Table.TdBasic>
+                                                <Table.TdBasic>
+                                                    {complaint.village.name}
+                                                </Table.TdBasic>
+                                                <Table.TdBasic>
+                                                    <GlobalLink
+                                                        href={route(
+                                                            "complaint-handling.edit",
+                                                            id
+                                                        )}
+                                                        children={
+                                                            <MdEdit className="w-5 h-5 group-hover:text-white transition duration-300 ease-in-out" />
+                                                        }
+                                                        theme="daisyui-waring"
+                                                        className="btn-outline group"
+                                                    />
+                                                </Table.TdBasic>
+                                            </Table.Tr>
+                                        )
+                                    )
                                 ) : (
                                     <Table.Tr>
                                         <Table.TdBasic
@@ -234,60 +234,64 @@ const Index = () => {
                                     </Table.Tr>
                                 )
                             ) : paginationComplaint.data.length > 0 ? (
-                                paginationComplaint.data.map((data, index) => (
-                                    <Table.Tr key={index}>
-                                        <Table.TdProfile
-                                            name={data.user.full_name}
-                                            role={data.user.email}
-                                        />
-                                        <Table.TdStatus
-                                            status={
-                                                data.complaint_handling[0]
-                                                    .complaint_status.slug
-                                            }
-                                            description={
-                                                data.complaint_handling[0]
-                                                    .complaint_status
-                                                    .description
-                                            }
-                                            theme={complaintStatus(
-                                                data.complaint_handling[0]
-                                                    .complaint_status.slug
-                                            )}
-                                        />
-                                        <Table.TdBasic>
-                                            <div
-                                                className="tooltip tooltip-left"
-                                                data-tip={
-                                                    data.complaint_media_type
-                                                        .description
-                                                }
-                                            >
-                                                {data.complaint_media_type.name}
-                                            </div>
-                                        </Table.TdBasic>
-                                        <Table.TdBasic>
-                                            {data.subdistrict.name}
-                                        </Table.TdBasic>
-                                        <Table.TdBasic>
-                                            {data.village.name}
-                                        </Table.TdBasic>
-                                        <Table.TdBasic>
-                                            <GlobalLink
-                                                href={route(
-                                                    "complaint-handling.edit",
-                                                    data.complaint_handling[0]
-                                                        .id
-                                                )}
-                                                children={
-                                                    <MdEdit className="w-5 h-5 group-hover:text-white transition duration-300 ease-in-out" />
-                                                }
-                                                theme="daisyui-waring"
-                                                className="btn-outline group"
+                                paginationComplaint.data.map(
+                                    (
+                                        { complaint, complaint_status, id },
+                                        index
+                                    ) => (
+                                        <Table.Tr key={index}>
+                                            <Table.TdProfile
+                                                name={complaint.user.full_name}
+                                                email={complaint.user.email}
+                                                src={complaint.user.avatar}
                                             />
-                                        </Table.TdBasic>
-                                    </Table.Tr>
-                                ))
+                                            <Table.TdStatus
+                                                status={complaint_status.name}
+                                                description={
+                                                    complaint_status.description
+                                                }
+                                                theme={complaintStatus(
+                                                    complaint_status.slug
+                                                )}
+                                            />
+                                            <Table.TdBasic>
+                                                <div
+                                                    className="tooltip tooltip-left"
+                                                    data-tip={
+                                                        complaint
+                                                            .complaint_media_type
+                                                            .description
+                                                    }
+                                                >
+                                                    {
+                                                        complaint
+                                                            .complaint_media_type
+                                                            .name
+                                                    }
+                                                </div>
+                                            </Table.TdBasic>
+                                            <Table.TdBasic>
+                                                {complaint.subdistrict.name}
+                                            </Table.TdBasic>
+                                            <Table.TdBasic>
+                                                {complaint.village.name}
+                                            </Table.TdBasic>
+                                            <Table.TdBasic>
+                                                <GlobalLink
+                                                    href={route(
+                                                        "complaint-handling.edit",
+                                                        id
+                                                    )}
+                                                    children={
+                                                        <MdEdit className="w-5 h-5 group-hover:text-white transition duration-300 ease-in-out" />
+                                                    }
+                                                    theme="daisyui-waring"
+                                                    className="btn-outline group"
+                                                />
+                                            </Table.TdBasic>
+                                        </Table.Tr>
+                                    )
+                                )
                             ) : (
                                 <Table.Tr>
                                     <Table.TdBasic

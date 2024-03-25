@@ -3,7 +3,6 @@
 namespace App\Http\Controllers\Seksi;
 
 use App\Http\Controllers\Controller;
-use App\Models\ComplaintStatus;
 use App\Queries\ComplaintHandlingQuery;
 use App\Queries\ComplaintQuery;
 use App\Queries\ComplaintStatusQuery;
@@ -17,13 +16,13 @@ class ComplaintHandlingController extends Controller
      */
     public function index()
     {
-        $complaint = new ComplaintQuery();
-        $allCountComplaint = $complaint->getAllCountComplaintOnSpecificSeksi(auth()->user()->full_name);
-        $allCountComplaintByStatusProsessing = $complaint->getAllCountComplaintByStatusOnSpecificSeksi('diproses', auth()->user()->full_name);
-        $allCountComplaintByStatusDone = $complaint->getAllCountComplaintByStatusOnSpecificSeksi('diselesaikan', auth()->user()->full_name);
-        $allCountComplaintByStatusReject = $complaint->getAllCountComplaintByStatusOnSpecificSeksi('ditolak', auth()->user()->full_name);
-        $allCountComplaintByStatusPending = $complaint->getAllCountComplaintByStatusOnSpecificSeksi('ditunda', auth()->user()->full_name);
-        $paginationComplaint = $complaint->complaintWithPaginationOnSpecificSeksi(auth()->user()->full_name);
+        $complaintHandling = new ComplaintHandlingQuery();
+        $allCountComplaint = $complaintHandling->getAllCountComplaintOnSpecificSeksi(auth()->user()->full_name);
+        $allCountComplaintByStatusProsessing = $complaintHandling->getAllCountComplaintByStatusOnSpecificSeksi('diproses', auth()->user()->full_name);
+        $allCountComplaintByStatusDone = $complaintHandling->getAllCountComplaintByStatusOnSpecificSeksi('diselesaikan', auth()->user()->full_name);
+        $allCountComplaintByStatusReject = $complaintHandling->getAllCountComplaintByStatusOnSpecificSeksi('ditolak', auth()->user()->full_name);
+        $allCountComplaintByStatusPending = $complaintHandling->getAllCountComplaintByStatusOnSpecificSeksi('ditunda', auth()->user()->full_name);
+        $paginationComplaint = $complaintHandling->complaintWithPaginationOnSpecificSeksi(auth()->user()->full_name);
         return inertia('Seksi/DashboardComplaintHandling/Index', [
             'countComplaint' => $allCountComplaint,
             'countComplaintByStatusProsessing' => $allCountComplaintByStatusProsessing,
