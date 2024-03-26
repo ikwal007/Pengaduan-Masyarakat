@@ -9,7 +9,8 @@ import { usePage } from "@inertiajs/react";
 import Table from "@/Components/Tables/Table";
 import GlobalLink from "@/Components/Atoms/GlobalLink";
 import Notif1 from "@/Components/Notifications/Notif1";
-import { useState } from "react";
+import { useDeferredValue, useEffect, useRef, useState } from "react";
+import CardCount from "@/Components/Molecules/Cards/CardCount";
 
 const Index = () => {
     // Destructure props from usePage()
@@ -21,6 +22,34 @@ const Index = () => {
     } = usePage().props;
     // const echo = useEcho();
     const [show, setShow] = useState(true);
+    const [searchResults, setSearchResults] = useState(null);
+    const [keyword, setKeyword] = useState("");
+    const [loading, setLoading] = useState(false);
+    const deferredSearch = useDeferredValue(keyword);
+    const isFirstMount = useRef(true);
+
+    const handlerSearch = async () => {
+        setLoading(true);
+        const res = await axios.get(route("seksi.complaints-index"), {
+            params: {
+                seksisName: auth.user.full_name,
+                keyword: deferredSearch,
+            },
+        });
+        setLoading(false);
+        setSearchResults(res.data);
+    };
+
+    useEffect(() => {
+        if (isFirstMount.current) {
+            // Set isFirstMount ke false setelah komponen pertama kali dimuat
+            isFirstMount.current = false;
+            return;
+        }
+        if (deferredSearch) {
+            handlerSearch();
+        }
+    }, [deferredSearch]);
 
     // useEffect(() => {
     //     const channel = echo.channel("user-status");
@@ -41,37 +70,25 @@ const Index = () => {
             )}
 
             {/* <!-- Cards --> */}
-            <div className="grid justify-content-between gap-6 mb-8 md:grid-cols-2 xl:grid-cols-3">
-                <Card>
-                    <Card.Icon
-                        color={"orange"}
-                        bgColor={"orange"}
-                        icon={<FaUserTie className="w-5 h-5" />}
-                    />
-                    <Card.Info
-                        title={"Total Worker Accounts"}
-                        value={countWorkerAccounts}
-                    />
-                </Card>
-                <Card>
-                    <Card.Icon
-                        color={"green"}
-                        bgColor={"green"}
-                        icon={<HiMiniUserGroup className="w-5 h-5" />}
-                    />
-                    <Card.Info
-                        title={"Total User Accounts"}
-                        value={countMasyarakat}
-                    />
-                </Card>
-                <Card>
-                    <Card.Icon
-                        color={"blue"}
-                        bgColor={"blue"}
-                        icon={<FaUserCheck className="w-5 h-5" />}
-                    />
-                    <Card.Info title={"Total User Online"} value={999} />
-                </Card>
+            <div className="grid place-content-center gap-6 mb-8 md:grid-cols-2 xl:grid-cols-3">
+                <CardCount
+                    title={"Total Worker Accounts"}
+                    value={countWorkerAccounts}
+                    theme="primary"
+                    icon={<FaUserTie className="w-5 h-5" />}
+                />
+                <CardCount
+                    title={"Total User Accounts"}
+                    value={countMasyarakat}
+                    theme="info"
+                    icon={<HiMiniUserGroup className="w-5 h-5" />}
+                />
+                <CardCount
+                    title={"Total User Online"}
+                    value={999}
+                    theme="success"
+                    icon={<FaUserCheck className="w-5 h-5" />}
+                />
             </div>
 
             {/* Main Table Component */}
@@ -102,74 +119,179 @@ const Index = () => {
                     </div>
                 </div>
 
+                {/* Main Table Component */}
                 <Table.Main className="mt-5">
                     <Table.TableHead>
-                        <Table.Th>profile</Table.Th>
-                        <Table.Th>role</Table.Th>
+                        <Table.Th>Nama Pemohon</Table.Th>
                         <Table.Th>status</Table.Th>
-                        <Table.Th>action</Table.Th>
+                        <Table.Th>media</Table.Th>
+                        <Table.Th>kecamatan</Table.Th>
+                        <Table.Th>desa</Table.Th>
+                        <Table.Th>Tindakan</Table.Th>
                     </Table.TableHead>
                     <Table.TableBody>
-                        {allAccountWorkerDatas.data.length > 0 ? (
-                            allAccountWorkerDatas.data.map((data, index) => (
-                                <Table.Tr key={index}>
-                                    <Table.TdProfile
-                                        name={data.full_name}
-                                        role={data.email}
+                        {loading === false ? (
+                            searchResults !== null && deferredSearch !== "" ? (
+                                searchResults.data.length > 0 ? (
+                                    searchResults.data.map(
+                                        (
+                                            { complaint, complaint_status, id },
+                                            index
+                                        ) => (
+                                            <Table.Tr key={index}>
+                                                <Table.TdProfile
+                                                    name={
+                                                        complaint.user.full_name
+                                                    }
+                                                    email={complaint.user.email}
+                                                    src={complaint.user.avatar}
+                                                />
+                                                <Table.TdStatus
+                                                    status={
+                                                        complaint_status.name
+                                                    }
+                                                    description={
+                                                        complaint_status.description
+                                                    }
+                                                    theme={complaintStatus(
+                                                        complaint_status.slug
+                                                    )}
+                                                />
+                                                <Table.TdBasic>
+                                                    <div
+                                                        className="tooltip tooltip-left"
+                                                        data-tip={
+                                                            complaint
+                                                                .complaint_media_type
+                                                                .description
+                                                        }
+                                                    >
+                                                        {
+                                                            complaint
+                                                                .complaint_media_type
+                                                                .name
+                                                        }
+                                                    </div>
+                                                </Table.TdBasic>
+                                                <Table.TdBasic>
+                                                    {complaint.subdistrict.name}
+                                                </Table.TdBasic>
+                                                <Table.TdBasic>
+                                                    {complaint.village.name}
+                                                </Table.TdBasic>
+                                                <Table.TdBasic>
+                                                    <GlobalLink
+                                                        href={route(
+                                                            "complaint-handling.edit",
+                                                            id
+                                                        )}
+                                                        children={
+                                                            <MdEdit className="w-5 h-5 group-hover:text-white transition duration-300 ease-in-out" />
+                                                        }
+                                                        theme="daisyui-waring"
+                                                        className="btn-outline group"
+                                                    />
+                                                </Table.TdBasic>
+                                            </Table.Tr>
+                                        )
+                                    )
+                                ) : (
+                                    <Table.Tr>
+                                        <Table.TdBasic
+                                            children={"no data record"}
+                                            colSpan="6"
+                                            className="text-center"
+                                        />
+                                    </Table.Tr>
+                                )
+                            ) : allAccountWorkerDatas.data.length > 0 ? (
+                                allAccountWorkerDatas.data.map(
+                                    (
+                                        { complaint, complaint_status, id },
+                                        index
+                                    ) => (
+                                        <Table.Tr key={index}>
+                                            <Table.TdProfile
+                                                name={complaint.user.full_name}
+                                                email={complaint.user.email}
+                                                src={complaint.user.avatar}
+                                            />
+                                            <Table.TdStatus
+                                                status={complaint_status.name}
+                                                description={
+                                                    complaint_status.description
+                                                }
+                                                theme={complaintStatus(
+                                                    complaint_status.slug
+                                                )}
+                                            />
+                                            <Table.TdBasic>
+                                                <div
+                                                    className="tooltip tooltip-left"
+                                                    data-tip={
+                                                        complaint
+                                                            .complaint_media_type
+                                                            .description
+                                                    }
+                                                >
+                                                    {
+                                                        complaint
+                                                            .complaint_media_type
+                                                            .name
+                                                    }
+                                                </div>
+                                            </Table.TdBasic>
+                                            <Table.TdBasic>
+                                                {complaint.subdistrict.name}
+                                            </Table.TdBasic>
+                                            <Table.TdBasic>
+                                                {complaint.village.name}
+                                            </Table.TdBasic>
+                                            <Table.TdBasic>
+                                                <GlobalLink
+                                                    href={route(
+                                                        "complaint-handling.edit",
+                                                        id
+                                                    )}
+                                                    children={
+                                                        <MdEdit className="w-5 h-5 group-hover:text-white transition duration-300 ease-in-out" />
+                                                    }
+                                                    theme="daisyui-waring"
+                                                    className="btn-outline group"
+                                                />
+                                            </Table.TdBasic>
+                                        </Table.Tr>
+                                    )
+                                )
+                            ) : (
+                                <Table.Tr>
+                                    <Table.TdBasic
+                                        children={"no data record"}
+                                        colSpan="6"
+                                        className="text-center"
                                     />
-                                    <Table.TdBasic>
-                                        {data.roles.map((role) => role.name)}
-                                    </Table.TdBasic>
-                                    <Table.TdStatus
-                                        status={data.status}
-                                        theme={
-                                            data.status === "online"
-                                                ? "success"
-                                                : "danger"
-                                        }
-                                    />
-                                    <Table.TdBasic className={"flex"}>
-                                        <GlobalLink
-                                            maxWidth="w-min"
-                                            theme={"warning"}
-                                            href={`${
-                                                import.meta.env.VITE_APP_URL
-                                            }/super-admin/dashboard-manages-worker-accounts/${
-                                                data.id
-                                            }/edit-password`}
-                                        >
-                                            <MdModeEditOutline className="w-4 h-4" />
-                                        </GlobalLink>
-                                        <GlobalLink
-                                            href={
-                                                import.meta.env.VITE_APP_URL +
-                                                "/super-admin/dashboard-manages-worker-accounts/" +
-                                                data.id
-                                            }
-                                            theme={"info"}
-                                            maxWidth="w-min"
-                                        >
-                                            <IoMdEye className="w-4 h-4" />
-                                        </GlobalLink>
-                                    </Table.TdBasic>
                                 </Table.Tr>
-                            ))
+                            )
                         ) : (
                             <Table.Tr>
-                                <Table.TdBasic />
-                                <Table.TdBasic children={"no data record"} />
-                                <Table.TdBasic />
+                                <Table.TdBasic
+                                    children={
+                                        <span className="loading loading-dots loading-lg"></span>
+                                    }
+                                    colSpan="6"
+                                    className="text-center"
+                                />
                             </Table.Tr>
                         )}
                     </Table.TableBody>
                 </Table.Main>
                 <Table.Footer
-                    showFrom={allAccountWorkerDatas.from}
-                    showTo={allAccountWorkerDatas.to}
-                    total={allAccountWorkerDatas.total}
-                    links={allAccountWorkerDatas.links}
-                    last_page_url={allAccountWorkerDatas.last_page_url}
-                    first_page_url={allAccountWorkerDatas.first_page_url}
+                    showFrom={paginationComplaint.from}
+                    showTo={paginationComplaint.to}
+                    total={paginationComplaint.total}
+                    links={paginationComplaint.links}
+                    last_page_url={paginationComplaint.last_page_url}
+                    first_page_url={paginationComplaint.first_page_url}
                 />
             </Table>
         </>
