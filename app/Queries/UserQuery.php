@@ -4,20 +4,24 @@ namespace App\Queries;
 
 use App\Models\User;
 
-class UserQuery
+class UserQuery extends User
 {
+
     /**
      * Get the count of worker accounts (users with roles other than 'Masyarakat').
      *
      * @return int
      */
-    public static function getCountAccountWorker()
+    public function getCountAccountWorker()
     {
         // Use the User model to query the database
-        return User::whereDoesntHave('roles', function ($query) {
-            // Exclude roles with the name 'Masyarakat'
+        return $this->whereDoesntHave('roles', function ($query) {
             $query->where('name', 'Masyarakat');
-        })->count(); // Get the count of matching records
+        })->with('roles')->get(); // Get the count of matching records
+
+        // return User::whereHas('roles', function ($query) {
+        //     $query->where('name', 'Masyarakat');
+        // })->count();
     }
 
     /**
@@ -25,13 +29,10 @@ class UserQuery
      *
      * @return int
      */
-    public static function getCountAccountMasyarakat()
+    public function getCountAccountMasyarakat()
     {
         // Use the User model to query the database
-        return User::whereHas('roles', function ($query) {
-            // Include only roles with the name 'Masyarakat'
-            $query->where('name', 'Masyarakat');
-        })->count(); // Get the count of matching records
+        return $this->with('roles')->get(); // Get the count of matching records
     }
 
     /**
@@ -39,13 +40,29 @@ class UserQuery
      *
      * @return \Illuminate\Database\Eloquent\Collection
      */
-    public static function getAllAccountWorkerDatas()
+    public function getAllAccountWorkerDatas()
     {
         // Use the User model to query the database
-        return User::whereDoesntHave('roles', function ($query) {
+        return $this->whereDoesntHave('roles', function ($query) {
             // Exclude roles with the name 'Masyarakat' and "Super Admin"
-            $query->where('name', 'Masyarakat')->orWhere('name', 'Super_Admin');
+            $query->where('name', 'Masyarakat')->where('name', 'Super_Admin');
         })->with('roles')->paginate(5); // Get all matching records with roles eager loaded
+    }
+
+    /**
+     * Search all worker account data (users with roles other than 'Masyarakat') with roles eager loaded.
+     * 
+     * @param string $search The search query.
+     * @return \Illuminate\Database\Eloquent\Collection
+     */
+    public function searchAllAccountWorkerDatas($search)
+    {
+        return $this->whereHas('modelHasRole', function ($modelHasRole) use ($search) {
+            $modelHasRole->whereDoesntHave('roles', function ($rule) {
+                // Exclude roles with the name 'Masyarakat' and "Super Admin"
+                $rule->where('name', 'Masyarakat')->orWhere('name', 'Super_Admin');
+            });
+        })->with('modelHasRole')->paginate(5);
     }
 
     /**
@@ -55,10 +72,10 @@ class UserQuery
      *
      * @return \Illuminate\Database\Eloquent\Model|null
      */
-    public static function getDetailAccount($userUlid)
+    public function getDetailAccount($userUlid)
     {
         // Use the Eloquent ORM to fetch the user with roles
         // Note: Eager loading is employed to retrieve roles along with the user in a more efficient manner
-        return User::where('id', $userUlid)->with('roles')->first();
+        return $this->where('id', $userUlid)->with('roles')->first();
     }
 }

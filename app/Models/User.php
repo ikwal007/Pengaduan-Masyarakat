@@ -18,6 +18,7 @@ class User extends Authenticatable
 
     protected $keyType = 'string';
     protected $primaryKey = 'id';
+    protected $table = 'users';
     public $incrementing = false;
 
     /**
@@ -66,5 +67,22 @@ class User extends Authenticatable
     public function getDetailDataUser($id)
     {
         return $this->find($id);
+    }
+
+    /**
+     * Get the count of worker accounts (users with roles other than 'Masyarakat').
+     *
+     * @return int
+     */
+    public function getCountAccountWorker()
+    {
+        // Use the User model to query the database
+        return $this->whereDoesntHave('roles', function ($query) {
+            $query->where('name', 'Masyarakat');
+        })->with('roles')->get(); // Get the count of matching records
+
+        // return User::whereHas('roles', function ($query) {
+        //     $query->where('name', 'Masyarakat');
+        // })->count();
     }
 }

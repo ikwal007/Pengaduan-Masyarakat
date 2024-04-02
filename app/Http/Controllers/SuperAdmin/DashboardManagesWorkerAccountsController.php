@@ -19,14 +19,18 @@ class DashboardManagesWorkerAccountsController extends Controller
      */
     public function index()
     {
+
+        $userQuery = new User();
         // Get count of worker accounts
-        $countWorkerAccounts = UserQuery::getCountAccountWorker();
+        $countWorkerAccounts = $userQuery->getCountAccountWorker();
 
         // Get count of 'Masyarakat' accounts
-        $countMasyarakat = UserQuery::getCountAccountMasyarakat();
+        $countMasyarakat = $userQuery->getCountAccountMasyarakat();
 
         // Get all worker account data with roles eager loaded
-        $allAccountWorkerDatas = UserQuery::getAllAccountWorkerDatas();
+        $allAccountWorkerDatas = $userQuery->getAllAccountWorkerDatas();
+
+        dd($userQuery->getCountAccountWorker());
 
         // Render the inertia view with the data
         return Inertia::render('SuperAdmin/DashboardManagesWorkerAccounts/Index', [
@@ -58,7 +62,8 @@ class DashboardManagesWorkerAccountsController extends Controller
      */
     public function show(string $id)
     {
-        $detailAccountData = UserQuery::getDetailAccount($id);
+        $userQuery = new UserQuery();
+        $detailAccountData = $userQuery->getDetailAccount($id);
         return Inertia::render('SuperAdmin/DashboardManagesWorkerAccounts/Show', [
             'detailAccountData' => $detailAccountData
         ]);
@@ -69,8 +74,8 @@ class DashboardManagesWorkerAccountsController extends Controller
      */
     public function edit(string $id)
     {
-
-        $detailAccountData = UserQuery::getDetailAccount($id);
+        $userQuery = new UserQuery();
+        $detailAccountData = $userQuery->getDetailAccount($id);
 
         return Inertia::render('SuperAdmin/DashboardManagesWorkerAccounts/Edit', [
             'detailAccountData' => $detailAccountData

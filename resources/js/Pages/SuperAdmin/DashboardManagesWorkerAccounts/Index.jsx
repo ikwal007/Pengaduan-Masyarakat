@@ -32,7 +32,7 @@ const Index = () => {
 
     const handlerSearch = async () => {
         setLoading(true);
-        const res = await axios.get(route("seksi.complaints-index"), {
+        const res = await axios.get(route("super-admin.worker-accounts-index"), {
             params: {
                 keyword: deferredSearch,
             },
@@ -129,7 +129,7 @@ const Index = () => {
                                                 email,
                                                 avatar,
                                                 status,
-                                                roles,
+                                                model_has_role,
                                                 id,
                                             },
                                             index
@@ -153,7 +153,7 @@ const Index = () => {
                                                         className="tooltip tooltip-left"
                                                         data-tip={"ok"}
                                                     >
-                                                        {roles[0].name}
+                                                        {model_has_role.role.name}
                                                     </div>
                                                 </Table.TdBasic>
                                                 <Table.TdBasic
@@ -228,7 +228,7 @@ const Index = () => {
                                                     className="tooltip tooltip-left"
                                                     data-tip={"ok"}
                                                 >
-                                                    {roles[0].name}
+                                                    {roles}
                                                 </div>
                                             </Table.TdBasic>
                                             <Table.TdBasic

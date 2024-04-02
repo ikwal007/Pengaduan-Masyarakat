@@ -13,11 +13,11 @@ class ModelHasRole extends Model
 
     public function role()
     {
-        return $this->belongsTo(Role::class);
+        return $this->belongsTo(Role::class, 'role_id');
     }
 
     public function user()
     {
-        return $this->belongsTo(User::class)->with('role');
+        return $this->belongsTo(User::class, 'model_id')->with('role');
     }
 }
