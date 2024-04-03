@@ -129,7 +129,7 @@ const Index = () => {
                                                 email,
                                                 avatar,
                                                 status,
-                                                model_has_role,
+                                                roles,
                                                 id,
                                             },
                                             index
@@ -153,7 +153,7 @@ const Index = () => {
                                                         className="tooltip tooltip-left"
                                                         data-tip={"ok"}
                                                     >
-                                                        {model_has_role.role.name}
+                                                        {roles[0].name}
                                                     </div>
                                                 </Table.TdBasic>
                                                 <Table.TdBasic
@@ -228,7 +228,7 @@ const Index = () => {
                                                     className="tooltip tooltip-left"
                                                     data-tip={"ok"}
                                                 >
-                                                    {roles}
+                                                    {roles[0].name}
                                                 </div>
                                             </Table.TdBasic>
                                             <Table.TdBasic
@@ -285,12 +285,12 @@ const Index = () => {
                     </Table.TableBody>
                 </Table.Main>
                 <Table.Footer
-                    showFrom={allAccountWorkerDatas.from}
-                    showTo={allAccountWorkerDatas.to}
-                    total={allAccountWorkerDatas.total}
-                    links={allAccountWorkerDatas.links}
-                    last_page_url={allAccountWorkerDatas.last_page_url}
-                    first_page_url={allAccountWorkerDatas.first_page_url}
+                    showFrom={searchResults?.data.length > 0 ? searchResults.from : allAccountWorkerDatas.from}
+                    showTo={searchResults?.data.length > 0 ? searchResults.to : allAccountWorkerDatas.to}
+                    total={searchResults?.data.length > 0 ? searchResults.total : allAccountWorkerDatas.total}
+                    links={searchResults?.data.length > 0 ? searchResults.links : allAccountWorkerDatas.links}
+                    last_page_url={searchResults?.data.length > 0 ? searchResults.last_page_url : allAccountWorkerDatas.last_page_url}
+                    first_page_url={searchResults?.data.length > 0 ? searchResults.first_page_url : allAccountWorkerDatas.first_page_url}
                 />
             </Table>
         </>

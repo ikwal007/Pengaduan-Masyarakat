@@ -20,7 +20,7 @@ class DashboardManagesWorkerAccountsController extends Controller
     public function index()
     {
 
-        $userQuery = new User();
+        $userQuery = new UserQuery();
         // Get count of worker accounts
         $countWorkerAccounts = $userQuery->getCountAccountWorker();
 
@@ -29,8 +29,6 @@ class DashboardManagesWorkerAccountsController extends Controller
 
         // Get all worker account data with roles eager loaded
         $allAccountWorkerDatas = $userQuery->getAllAccountWorkerDatas();
-
-        dd($userQuery->getCountAccountWorker());
 
         // Render the inertia view with the data
         return Inertia::render('SuperAdmin/DashboardManagesWorkerAccounts/Index', [
