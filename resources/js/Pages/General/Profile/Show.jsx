@@ -1,4 +1,5 @@
 import GlobalLink from "@/Components/Atoms/GlobalLink";
+import Typography from "@/Components/Atoms/Typography";
 import Profile from "@/Components/Detail/DetailProfile";
 import Notif1 from "@/Components/Notifications/Notif1";
 import AuthenticatedLayout2 from "@/Layouts/AuthenticatedLayout2";
@@ -34,7 +35,7 @@ const Show = () => {
                     className="flex items-center group"
                 >
                     <IoMdArrowRoundBack />
-                    <span>Kembali</span>
+                    <Typography theme="primary" tag="span">Kembali</Typography>
                 </GlobalLink>
             </div>
             <main className="h-full pb-16 overflow-y-auto mt-5">

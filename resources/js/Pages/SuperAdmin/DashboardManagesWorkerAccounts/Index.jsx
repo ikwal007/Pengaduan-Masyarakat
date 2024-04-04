@@ -151,7 +151,6 @@ const Index = () => {
                                                 <Table.TdBasic>
                                                     <div
                                                         className="tooltip tooltip-left"
-                                                        data-tip={"ok"}
                                                     >
                                                         {roles[0].name}
                                                     </div>
@@ -226,7 +225,6 @@ const Index = () => {
                                             <Table.TdBasic>
                                                 <div
                                                     className="tooltip tooltip-left"
-                                                    data-tip={"ok"}
                                                 >
                                                     {roles[0].name}
                                                 </div>

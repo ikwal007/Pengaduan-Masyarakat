@@ -6,6 +6,7 @@ import Input from "@/Components/Input/Input";
 import Modal from "@/Components/Atoms/Modal";
 import AuthenticatedLayout2 from "@/Layouts/AuthenticatedLayout2";
 import { useForm, usePage } from "@inertiajs/react";
+import Typography from "@/Components/Atoms/Typography";
 
 const Edit = () => {
     // Destructure errors, and detailAccountData from usePage.props
@@ -107,11 +108,15 @@ const Edit = () => {
         <>
             <div className="w-max p-2">
                 <GlobalLink
-                    href="/super-admin/dashboard-manages-worker-accounts"
+                    href={route(
+                        "super-admin.dashboard-manages-worker-accounts-index"
+                    )}
                     className="flex items-center group"
                 >
-                    <GlobalLink.Icon children={<IoMdArrowRoundBack />} />
-                    <GlobalLink.Title children={"Kembali"} />
+                    <IoMdArrowRoundBack />
+                    <Typography theme="primary" tag="span">
+                        Kembali
+                    </Typography>
                 </GlobalLink>
             </div>
             <main className="h-full pb-16 overflow-y-auto mt-5">
@@ -183,7 +188,11 @@ const Edit = () => {
                             onClick={HandlerButtonClick}
                             disabled={!isDirty}
                         >
-                            <Button.Title children={"Ubah Password"} />
+                            <Typography
+                                theme="primary"
+                                tag="span"
+                                children={"Ubah Password"}
+                            />
                         </Button>
                     </form>
 

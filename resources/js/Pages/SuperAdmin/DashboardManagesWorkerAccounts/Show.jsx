@@ -1,4 +1,5 @@
 import GlobalLink from "@/Components/Atoms/GlobalLink";
+import Typography from "@/Components/Atoms/Typography";
 import Profile from "@/Components/Detail/DetailProfile";
 import AuthenticatedLayout2 from "@/Layouts/AuthenticatedLayout2";
 import { usePage } from "@inertiajs/react";
@@ -8,19 +9,17 @@ const Show = () => {
     // Extract detailAccountData from usePage().props
     const { detailAccountData } = usePage().props;
 
-    // Function to create a comma-separated string of role names
-    const formatRoles = (roles) => roles.map((role) => role.name).join(", ");
 
     return (
         <>
             {/* Back button */}
             <div className="w-max p-2">
                 <GlobalLink
-                    href="/super-admin/dashboard-manages-worker-accounts"
+                    href={route("super-admin.dashboard-manages-worker-accounts-index")}
                     className="flex items-center group"
                 >
-                    <GlobalLink.Icon children={<IoMdArrowRoundBack />} />
-                    <GlobalLink.Title children={"Kembali"} />
+                    <IoMdArrowRoundBack />
+                    <Typography theme="primary" tag="span">Kembali</Typography>
                 </GlobalLink>
             </div>
 
@@ -43,7 +42,7 @@ const Show = () => {
                             />
                             <Profile.Item
                                 title="Role"
-                                data={formatRoles(detailAccountData.roles)}
+                                data={detailAccountData.roles[0].name}
                             />
                             <Profile.Item
                                 title="No Telp"
