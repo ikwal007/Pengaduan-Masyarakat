@@ -2,11 +2,13 @@
 
 namespace App\Http\Controllers\Auth;
 
+use App\Events\SuperAdmin\CountUserOnline;
 use App\Events\SuperAdmin\UserStatusUpdated;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Auth\LoginRequest;
 use App\Models\Role;
 use App\Providers\RouteServiceProvider;
+use App\Queries\UserQuery;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -37,8 +39,14 @@ class AuthenticatedSessionController extends Controller
         $request->session()->regenerate();
 
         $userOnRoleId = auth()->user()->roles->first()->id;
-
+        
         event(new UserStatusUpdated(auth()->user()->email, 'online'));
+
+        $userQuery = new UserQuery();
+        
+        event(new CountUserOnline(
+            $userQuery->getAllUserOnlineCount()
+        ));
 
         return $this->redirectBasedOnRole($userOnRoleId);
     }
@@ -50,6 +58,12 @@ class AuthenticatedSessionController extends Controller
     {
 
         event(new UserStatusUpdated(auth()->user()->email, 'offline'));
+
+        $userQuery = new UserQuery();
+        
+        event(new CountUserOnline(
+            $userQuery->getAllUserOnlineCount()
+        ));
 
         Auth::guard('web')->logout();
 

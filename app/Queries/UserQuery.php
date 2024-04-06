@@ -20,6 +20,11 @@ class UserQuery extends User
         })->with('roles')->count(); // Get the count of matching records
     }
 
+    public function getAllUserOnlineCount()
+    {
+        return $this->where('status', 'Online')->count();
+    }
+
     public function getCountAccountMasyarakat()
     {
         $user = new User();

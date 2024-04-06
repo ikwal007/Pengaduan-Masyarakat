@@ -30,11 +30,14 @@ class DashboardManagesWorkerAccountsController extends Controller
         // Get all worker account data with roles eager loaded
         $allAccountWorkerDatas = $userQuery->getAllAccountWorkerDatas();
 
+        $allUserOnlineCount = $userQuery->getAllUserOnlineCount();
+
         // Render the inertia view with the data
         return Inertia::render('SuperAdmin/DashboardManagesWorkerAccounts/Index', [
             'countWorkerAccounts' => $countWorkerAccounts,
             'countMasyarakat' => $countMasyarakat,
             'allAccountWorkerDatas' => $allAccountWorkerDatas,
+            'allUserOnlineCount' => $allUserOnlineCount
         ]);
     }
 

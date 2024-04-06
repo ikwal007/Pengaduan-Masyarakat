@@ -20,11 +20,15 @@ const Index = () => {
         countWorkerAccounts,
         countMasyarakat,
         allAccountWorkerDatas,
+        allUserOnlineCount,
         flash,
     } = usePage().props;
     const [show, setShow] = useState(true);
     const [dataWorkerAccounts, setDataWorkerAccounts] = useState(
         allAccountWorkerDatas
+    );
+    const [dataUserOnlineCount, setDataUserOnlineCount] = useState(
+        allUserOnlineCount
     );
     const [data, setData] = useState(null);
     const [searchResults, setSearchResults] = useState(null);
@@ -85,15 +89,20 @@ const Index = () => {
                 setData(data);
                 handlerDataWorkerAccountsChange();
             });
+        pusher
+            .subscribe("count-user-online")
+            .bind("App\\Events\\SuperAdmin\\CountUserOnline", (data) => {
+                setDataUserOnlineCount(data.count);
+            });
 
         return () => {
             pusher.unbind("App\\Events\\SuperAdmin\\UserStatusUpdated");
             pusher.unsubscribe("user-status");
+            pusher.unbind("App\\Events\\SuperAdmin\\CountUserOnline");
+            pusher.unsubscribe("count-user-online");
             pusher.disconnect();
         };
     }, []);
-
-    console.log(data);
 
     return (
         <>
@@ -117,7 +126,7 @@ const Index = () => {
                 />
                 <CardCount
                     title={"Total User Online"}
-                    value={999}
+                    value={dataUserOnlineCount}
                     theme="success"
                     icon={<FaUserCheck className="w-5 h-5" />}
                 />
