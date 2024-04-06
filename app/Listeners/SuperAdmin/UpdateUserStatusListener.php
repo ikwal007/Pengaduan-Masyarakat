@@ -4,8 +4,7 @@ namespace App\Listeners\SuperAdmin;
 
 use App\Events\SuperAdmin\UserStatusUpdated;
 use App\Models\User;
-use Illuminate\Contracts\Queue\ShouldQueue;
-use Illuminate\Queue\InteractsWithQueue;
+use App\Queries\UserQuery;
 
 class UpdateUserStatusListener
 {

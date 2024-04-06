@@ -1,9 +1,7 @@
-import Card from "@/Components/Cards/Card";
 import AuthenticatedLayout2 from "@/Layouts/AuthenticatedLayout2";
-// import { useEcho } from "@/utils/EchoContext";
 import { HiMiniUserGroup } from "react-icons/hi2";
 import { FaUserTie, FaUserCheck } from "react-icons/fa6";
-import { MdEdit, MdModeEditOutline } from "react-icons/md";
+import { MdEdit } from "react-icons/md";
 import { IoMdEye } from "react-icons/io";
 import { usePage } from "@inertiajs/react";
 import Table from "@/Components/Tables/Table";
@@ -13,6 +11,8 @@ import { useDeferredValue, useEffect, useRef, useState } from "react";
 import CardCount from "@/Components/Molecules/Cards/CardCount";
 import { IoSearchOutline } from "react-icons/io5";
 import Input from "@/Components/Input/Input";
+import Pusher from "pusher-js";
+import axios from "axios";
 
 const Index = () => {
     // Destructure props from usePage()
@@ -22,8 +22,11 @@ const Index = () => {
         allAccountWorkerDatas,
         flash,
     } = usePage().props;
-    // const echo = useEcho();
     const [show, setShow] = useState(true);
+    const [dataWorkerAccounts, setDataWorkerAccounts] = useState(
+        allAccountWorkerDatas
+    );
+    const [data, setData] = useState(null);
     const [searchResults, setSearchResults] = useState(null);
     const [keyword, setKeyword] = useState("");
     const [loading, setLoading] = useState(false);
@@ -32,13 +35,28 @@ const Index = () => {
 
     const handlerSearch = async () => {
         setLoading(true);
-        const res = await axios.get(route("super-admin.worker-accounts-index"), {
-            params: {
-                keyword: deferredSearch,
-            },
-        });
+        const res = await axios.get(
+            route("super-admin.worker-accounts-index"),
+            {
+                params: {
+                    keyword: deferredSearch,
+                },
+            }
+        );
         setLoading(false);
         setSearchResults(res.data);
+    };
+
+    const handlerDataWorkerAccountsChange = async () => {
+        const res = await axios.get(
+            route("super-admin.get-all-worker-accounts-index"),
+            {
+                params: {
+                    keyword: deferredSearch,
+                },
+            }
+        );
+        setDataWorkerAccounts(res.data);
     };
 
     useEffect(() => {
@@ -52,19 +70,30 @@ const Index = () => {
         }
     }, [deferredSearch]);
 
-    // useEffect(() => {
-    //     const channel = echo.channel("user-status");
+    useEffect(() => {
+        Pusher.logToConsole = true;
 
-    //     channel.listen("UpdateUserStatusListener", (data) => {
-    //         console.log("ini adalah callback event: ", data);
-    //     });
+        const pusher = new Pusher("515f5459102b8e74d3ae", {
+            app_id: "1731889",
+            secret: "ed1c32d26e2374f6ef09",
+            cluster: "ap1",
+        });
 
-    //     // return () => {
-    //     //   listener.stopListening(); // Unbind the event listener when the component unmounts
-    //     // };
-    // }, [echo]);
+        pusher
+            .subscribe("user-status")
+            .bind("App\\Events\\SuperAdmin\\UserStatusUpdated", (data) => {
+                setData(data);
+                handlerDataWorkerAccountsChange();
+            });
 
-    console.log("ini allAccountWorkerDatas: ", allAccountWorkerDatas);
+        return () => {
+            pusher.unbind("App\\Events\\SuperAdmin\\UserStatusUpdated");
+            pusher.unsubscribe("user-status");
+            pusher.disconnect();
+        };
+    }, []);
+
+    console.log(data);
 
     return (
         <>
@@ -149,9 +178,7 @@ const Index = () => {
                                                     }
                                                 />
                                                 <Table.TdBasic>
-                                                    <div
-                                                        className="tooltip tooltip-left"
-                                                    >
+                                                    <div className="tooltip tooltip-left">
                                                         {roles[0].name}
                                                     </div>
                                                 </Table.TdBasic>
@@ -195,8 +222,8 @@ const Index = () => {
                                         />
                                     </Table.Tr>
                                 )
-                            ) : allAccountWorkerDatas.data.length > 0 ? (
-                                allAccountWorkerDatas.data.map(
+                            ) : dataWorkerAccounts.data.length > 0 ? (
+                                dataWorkerAccounts.data.map(
                                     (
                                         {
                                             full_name,
@@ -223,9 +250,7 @@ const Index = () => {
                                                 }
                                             />
                                             <Table.TdBasic>
-                                                <div
-                                                    className="tooltip tooltip-left"
-                                                >
+                                                <div className="tooltip tooltip-left">
                                                     {roles[0].name}
                                                 </div>
                                             </Table.TdBasic>
@@ -283,12 +308,36 @@ const Index = () => {
                     </Table.TableBody>
                 </Table.Main>
                 <Table.Footer
-                    showFrom={searchResults?.data.length > 0 ? searchResults.from : allAccountWorkerDatas.from}
-                    showTo={searchResults?.data.length > 0 ? searchResults.to : allAccountWorkerDatas.to}
-                    total={searchResults?.data.length > 0 ? searchResults.total : allAccountWorkerDatas.total}
-                    links={searchResults?.data.length > 0 ? searchResults.links : allAccountWorkerDatas.links}
-                    last_page_url={searchResults?.data.length > 0 ? searchResults.last_page_url : allAccountWorkerDatas.last_page_url}
-                    first_page_url={searchResults?.data.length > 0 ? searchResults.first_page_url : allAccountWorkerDatas.first_page_url}
+                    showFrom={
+                        searchResults?.data.length > 0
+                            ? searchResults.from
+                            : allAccountWorkerDatas.from
+                    }
+                    showTo={
+                        searchResults?.data.length > 0
+                            ? searchResults.to
+                            : allAccountWorkerDatas.to
+                    }
+                    total={
+                        searchResults?.data.length > 0
+                            ? searchResults.total
+                            : allAccountWorkerDatas.total
+                    }
+                    links={
+                        searchResults?.data.length > 0
+                            ? searchResults.links
+                            : allAccountWorkerDatas.links
+                    }
+                    last_page_url={
+                        searchResults?.data.length > 0
+                            ? searchResults.last_page_url
+                            : allAccountWorkerDatas.last_page_url
+                    }
+                    first_page_url={
+                        searchResults?.data.length > 0
+                            ? searchResults.first_page_url
+                            : allAccountWorkerDatas.first_page_url
+                    }
                 />
             </Table>
         </>

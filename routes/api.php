@@ -3,6 +3,7 @@
 use App\Http\Controllers\Masyarakat\GetComplaintController;
 use App\Http\Controllers\Pelayanan\GetComplaintController as PelayananGetComplaintController;
 use App\Http\Controllers\Seksi\GetComplaintController as SeksiGetComplaintController;
+use App\Http\Controllers\SuperAdmin\GetAllWorkerAccountsController;
 use App\Http\Controllers\SuperAdmin\GetWorkerAccountsController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -26,3 +27,4 @@ Route::get('/complaints', [GetComplaintController::class, 'index'])->name('masya
 Route::get('/pelayanan/search-complaints', [PelayananGetComplaintController::class, 'index'])->name('pelayanan.complaints-index');
 Route::get('/seksi/search-complaints', [SeksiGetComplaintController::class, 'index'])->name('seksi.complaints-index');
 Route::get('/super-admin/search-worker-accounts', [GetWorkerAccountsController::class, 'index'])->name('super-admin.worker-accounts-index');
+Route::get('/super-admin/get-all-worker-accounts', [GetAllWorkerAccountsController::class, 'index'])->name('super-admin.get-all-worker-accounts-index');

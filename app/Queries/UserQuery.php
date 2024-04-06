@@ -18,10 +18,6 @@ class UserQuery extends User
         return $user->whereDoesntHave('roles', function ($query) {
             $query->where('name', 'Masyarakat')->orWhere('name', 'Super_Admin');
         })->with('roles')->count(); // Get the count of matching records
-
-        // return User::whereHas('roles', function ($query) {
-        //     $query->where('name', 'Masyarakat');
-        // })->count();
     }
 
     public function getCountAccountMasyarakat()

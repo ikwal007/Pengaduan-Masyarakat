@@ -4,7 +4,6 @@ import "../css/app.css";
 import { createRoot } from "react-dom/client";
 import { createInertiaApp } from "@inertiajs/react";
 import AuthenticatedLayout from "./Layouts/AuthenticatedLayout2";
-import { EchoProvider } from "./utils/EchoContext";
 import React from "react";
 
 const appName = import.meta.env.VITE_APP_NAME || "Laravel";
@@ -17,7 +16,8 @@ createInertiaApp({
         });
         let page = pages[`./Pages/${name}.jsx`];
         page.default.layout =
-            page.default.layout || ((page) => <AuthenticatedLayout children={page} />);
+            page.default.layout ||
+            ((page) => <AuthenticatedLayout children={page} />);
         return page;
     },
 
@@ -25,9 +25,7 @@ createInertiaApp({
         const root = createRoot(el);
         root.render(
             <React.StrictMode>
-                {/* <EchoProvider> */}
-                    <App {...props} />
-                {/* </EchoProvider> */}
+                <App {...props} />
             </React.StrictMode>
         );
     },

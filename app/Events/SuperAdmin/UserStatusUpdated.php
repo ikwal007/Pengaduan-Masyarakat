@@ -35,6 +35,8 @@ class UserStatusUpdated implements ShouldBroadcast
     public function broadcastOn()
     {
         return
-            new Channel('user-status');
+            [
+                new Channel('user-status'),
+            ];
     }
 }

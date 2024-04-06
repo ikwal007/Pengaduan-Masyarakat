@@ -30,7 +30,7 @@ const Show = () => {
                         Data Pengguna
                     </h4>
                     <Profile>
-                        <Profile.Foto src="https://cdn.rareblocks.xyz/collection/celebration/images/testimonials/4/avatar.jpg" />
+                        <Profile.Foto src={detailAccountData.avatar} />
                         <Profile.Detail>
                             <Profile.Item
                                 title="name"

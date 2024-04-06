@@ -38,7 +38,7 @@ class AuthenticatedSessionController extends Controller
 
         $userOnRoleId = auth()->user()->roles->first()->id;
 
-        // event(new UserStatusUpdated(auth()->user()->email, 'online'));
+        event(new UserStatusUpdated(auth()->user()->email, 'online'));
 
         return $this->redirectBasedOnRole($userOnRoleId);
     }
