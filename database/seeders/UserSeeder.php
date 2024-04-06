@@ -46,6 +46,21 @@ class UserSeeder extends Seeder
             ],
         ];
 
+        $masyarakat = [
+            [
+                'full_name' => 'junaidi bahar',
+                'email' => 'junaidi@masyarakat.co.ac',
+                'phone_number' => $faker->phoneNumber,
+                'password' => Hash::make('password')
+            ],
+            [
+                'full_name' => 'sulisiati',
+                'email' => 'sulisiati@masyarakat.co.ac',
+                'phone_number' => $faker->phoneNumber,
+                'password' => Hash::make('password')
+            ],
+        ];
+
         $seksiUsers = [
             [
                 'full_name' => 'seksi survei dan pemetaan',
@@ -87,6 +102,11 @@ class UserSeeder extends Seeder
         foreach ($seksiUsers as $seksiData) {
             $seksiUser = User::create($seksiData);
             $seksiUser->assignRole('Seksi');
+        }
+        
+        foreach ($masyarakat as $masyarakatData) {
+            $seksiUser = User::create($masyarakatData);
+            $seksiUser->assignRole('Masyarakat');
         }
 
         $admin->assignRole('Super_Admin');

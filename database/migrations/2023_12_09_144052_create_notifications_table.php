@@ -13,11 +13,11 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('notifications', function (Blueprint $table) {
-            $table->ulid('id');
-            $table->foreignId('user_id');
+            $table->ulid('id')->primary()->unique();
+            $table->foreignUlid('user_id')->constrained(table: 'users', column: 'id', indexName: 'user_id');
             $table->string('title');
             $table->text('content');
-            $table->boolean('read');
+            $table->enum('read', ['true', 'false'])->default('false');
             $table->timestamps();
         });
     }
