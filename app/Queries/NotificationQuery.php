@@ -12,6 +12,7 @@ class NotificationQuery extends Notification
         $result = DB::table('notifications')
             ->join('users', 'notifications.user_email', '=', 'users.email')
             ->select('notifications.id', DB::raw('JSON_OBJECT("id", users.id, "full_name", users.full_name, "email", users.email) as user'), 'notifications.title', 'notifications.content', 'notifications.read')
+            ->orderBy('notifications.created_at', 'desc')
             ->get();
 
         // Konversi properti 'user' menjadi objek
