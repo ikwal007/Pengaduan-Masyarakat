@@ -95,8 +95,6 @@ const Create = () => {
         setShow(true);
     }, [flash]);
 
-    console.log("ini props:", data);
-
     return (
         <>
             {flash.message && show && (

@@ -2,15 +2,18 @@
 
 namespace App\Http\Controllers\Masyarakat;
 
+use App\Events\Masyarakat\ComplaintRegister;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\General\ComplaintPostRequest;
 use App\Models\Complaint;
 use App\Models\ComplaintHandling;
 use App\Models\ComplaintStatus;
+use App\Models\Notification;
 use App\Queries\ComplaintMediaTypeQuery;
 use App\Queries\ComplaintQuery;
 use App\Queries\ComplaintStatusQuery;
 use App\Queries\ComplaintTypeQuery;
+use App\Queries\NotificationQuery;
 use App\Queries\SubdistrictQuery;
 use Illuminate\Http\Request;
 
@@ -93,6 +96,19 @@ class DashboardComplaintController extends Controller
             $complaintHandling->status_id = $status->getComplaintStatusBySlug('diproses')->id;
             $complaintHandling->save();
         }
+
+        $notification = new Notification();
+        $notification->user_email = $validated['userEmail'];
+        $notification->title = "Pengaduan Baru ".$validated['certificateNumber'];
+        $notification->content = "Pengaduan sedang diproses oleh Kepala Seksi terkait." . "Dengan Data sertifikasi:" . $validated['certificateNumber'] . "Dengan Deskripsi:" . $validated['description'];
+        $notification->save();
+
+        $notificationQuery = new NotificationQuery();
+
+        event(new ComplaintRegister(
+            $validated['userEmail'],
+            $notificationQuery->getAllNotification($validated['userEmail'])
+        ));
 
         return redirect()->route('complaint.index')->with('message', 'Pengaduan Berhasil Diajukan');
     }

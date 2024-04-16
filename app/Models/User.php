@@ -64,6 +64,11 @@ class User extends Authenticatable
         return $this->hasMany(Complaint::class, 'user_email', 'email');
     }
 
+    public function notifications() : HasMany
+    {
+        return $this->hasMany(Notification::class, 'user_email', 'email');
+    }
+
     public function getDetailDataUser($id)
     {
         return $this->find($id);

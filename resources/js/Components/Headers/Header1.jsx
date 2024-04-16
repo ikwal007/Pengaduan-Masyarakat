@@ -8,6 +8,8 @@ import Button from "../Atoms/Button";
 import { IoMoonSharp, IoNotifications, IoSunny } from "react-icons/io5";
 import Avatar from "../Atoms/Avatar";
 import Typography from "../Atoms/Typography";
+import NotificationBar from "../Notifications/NotificationBar";
+import Pusher from "pusher-js";
 
 const Header1 = () => {
     // state variables
@@ -15,7 +17,12 @@ const Header1 = () => {
     const [isProfileMenuOpen, setIsProfileMenuOpen] = useState(false);
     const [isNotificationsMenuOpen, setIsNotificationsMenuOpen] =
         useState(false);
+    const [notificationsBarMenu, setNotificationsBarMenu] = useState(false);
     const [isSideMenuOpenMobile, setIsSideMenuOpenMobile] = useState(false);
+    const [showDetailNotification, setShowDetailNotification] = useState({});
+    const [dataNotification, setDataNotification] = useState([]);
+
+    console.log(dataNotification);
 
     const { auth } = usePage().props;
 
@@ -24,14 +31,30 @@ const Header1 = () => {
     const notificationsMenuRef = useRef(null);
     const mobileMenuRef = useRef(null);
 
+    const handlerFirstOpenNotification = async (id) => {
+       const res = await axios.get(route("general.get-notification-update", [id, auth.user.email]));
+       return res;
+    };
+
     // Function to handle profile and notifications button clicks
-    const handleButtonClick = (button) => {
+    const handleButtonClick = async (button, dataDetailNotification) => {
         switch (button) {
             case "profile":
                 setIsProfileMenuOpen(!isProfileMenuOpen);
                 break;
             case "notifications":
                 setIsNotificationsMenuOpen(!isNotificationsMenuOpen);
+                break;
+            case "notificationBar":
+                if (dataDetailNotification.read === 0) {
+                    await handlerFirstOpenNotification(dataDetailNotification.id);
+                    setShowDetailNotification(dataDetailNotification);
+
+                    setNotificationsBarMenu(!notificationsBarMenu);
+                } else {
+                    setShowDetailNotification(dataDetailNotification);
+                    setNotificationsBarMenu(!notificationsBarMenu);
+                }
                 break;
 
             default:
@@ -72,6 +95,15 @@ const Header1 = () => {
         }
     };
 
+    const handlerGetNotification = async () => {
+        const res = await axios.get(route("general.get-notification-index"), {
+            params: {
+                email: auth.user.email,
+            },
+        });
+        setDataNotification(res.data);
+    };
+
     // Effect to add or remove click outside listener based on menu visibility
     useEffect(() => {
         if (
@@ -89,6 +121,32 @@ const Header1 = () => {
             document.removeEventListener("click", handleClickOutside);
         };
     }, [isProfileMenuOpen, isNotificationsMenuOpen, isSideMenuOpenMobile]);
+
+    useEffect(() => {
+        handlerGetNotification();
+
+        Pusher.logToConsole = true;
+
+        const pusher = new Pusher("515f5459102b8e74d3ae", {
+            app_id: "1731889",
+            secret: "ed1c32d26e2374f6ef09",
+            cluster: "ap1",
+        });
+
+        pusher
+            .subscribe("notification-to-masyarakat")
+            .bind("ComplaintRegister", function ({ email, notification }) {
+                if (email === auth.user.email) {
+                    setDataNotification(notification)
+                }
+            });
+
+        return () => {
+            pusher.unbind("ComplaintRegister");
+            pusher.unsubscribe("notification-to-masyarakat");
+            pusher.disconnect();
+        };
+    }, []);
 
     // JSX structure for the header
     return (
@@ -163,46 +221,53 @@ const Header1 = () => {
                             </Button>
                             {isNotificationsMenuOpen && (
                                 <div>
-                                    <ul
-                                        x-transition:leave="transition ease-in duration-150"
-                                        x-transition:leave-start="opacity-100"
-                                        x-transition:leave-end="opacity-0"
-                                        className="absolute right-0 w-56 p-2 mt-2 space-y-2 text-gray-600 bg-white border border-gray-100 rounded-md shadow-md dark:text-gray-300 dark:border-gray-700 dark:bg-gray-700"
-                                    >
-                                        <li className="flex">
-                                            <a
-                                                className="inline-flex items-center justify-between w-full px-2 py-1 text-sm font-semibold transition-colors duration-150 rounded-md hover:bg-gray-100 hover:text-gray-800 dark:hover:bg-gray-800 dark:hover:text-gray-200"
-                                                href="#"
-                                            >
-                                                <span>Messages</span>
-                                                <span className="inline-flex items-center justify-center px-2 py-1 text-xs font-bold leading-none text-red-600 bg-red-100 rounded-full dark:text-red-100 dark:bg-red-600">
-                                                    13
-                                                </span>
-                                            </a>
-                                        </li>
-                                        <li className="flex">
-                                            <a
-                                                className="inline-flex items-center justify-between w-full px-2 py-1 text-sm font-semibold transition-colors duration-150 rounded-md hover:bg-gray-100 hover:text-gray-800 dark:hover:bg-gray-800 dark:hover:text-gray-200"
-                                                href="#"
-                                            >
-                                                <span>Sales</span>
-                                                <span className="inline-flex items-center justify-center px-2 py-1 text-xs font-bold leading-none text-red-600 bg-red-100 rounded-full dark:text-red-100 dark:bg-red-600">
-                                                    2
-                                                </span>
-                                            </a>
-                                        </li>
-                                        <li className="flex">
-                                            <a
-                                                className="inline-flex items-center justify-between w-full px-2 py-1 text-sm font-semibold transition-colors duration-150 rounded-md hover:bg-gray-100 hover:text-gray-800 dark:hover:bg-gray-800 dark:hover:text-gray-200"
-                                                href="#"
-                                            >
-                                                <span>Alerts</span>
-                                            </a>
-                                        </li>
+                                    <ul className="absolute right-0 w-56 p-2 mt-2 space-y-2 text-gray-600 bg-white border border-gray-100 rounded-md shadow-md dark:text-gray-300 dark:border-gray-700 dark:bg-gray-700">
+                                        {dataNotification.length > 0 ? (
+                                            dataNotification.map((data, i) => (
+                                                <li className="flex" key={i}>
+                                                    <button
+                                                        className="inline-flex items-center justify-between w-full px-2 py-1 text-sm font-semibold transition-colors duration-150 rounded-md hover:bg-gray-100 hover:text-gray-800 dark:hover:bg-gray-800 dark:hover:text-gray-200 gap-1"
+                                                        onClick={() =>
+                                                            handleButtonClick(
+                                                                "notificationBar",
+                                                                data
+                                                            )
+                                                        }
+                                                    >
+                                                        <span>
+                                                            {data.title}
+                                                        </span>
+                                                        {data.read === 0 ? (
+                                                            <span className="inline-flex items-center justify-center px-2 py-1 text-xs font-bold leading-none text-red-600 bg-red-100 rounded-full dark:text-red-100 dark:bg-red-600">
+                                                                New
+                                                            </span>
+                                                        ): null}
+                                                    </button>
+                                                </li>
+                                            ))
+                                        ) : (
+                                            <li className="flex">
+                                                <button className="inline-flex items-center justify-between w-full px-2 py-1 text-sm font-semibold transition-colors duration-150 rounded-md hover:bg-gray-100 hover:text-gray-800 dark:hover:bg-gray-800 dark:hover:text-gray-200">
+                                                    <span>
+                                                        Tidak Ada Notifikasi
+                                                        untuk saat ini
+                                                    </span>
+                                                </button>
+                                            </li>
+                                        )}
                                     </ul>
                                 </div>
                             )}
                         </li>
+                        {notificationsBarMenu && (
+                            <NotificationBar
+                                notificationsBarMenu={notificationsBarMenu}
+                                data={showDetailNotification}
+                                setNotificationsBarMenu={
+                                    setNotificationsBarMenu
+                                }
+                            />
+                        )}
                         {/* <!-- Profile menu --> */}
                         <li className="relative" ref={profileMenuRef}>
                             <Button

@@ -14,10 +14,10 @@ return new class extends Migration
     {
         Schema::create('notifications', function (Blueprint $table) {
             $table->ulid('id')->primary()->unique();
-            $table->foreignUlid('user_id')->constrained(table: 'users', column: 'id', indexName: 'user_id');
+            $table->foreignUlid('user_email')->constrained(table: 'users', column: 'email', indexName: 'user_notifiation_email');
             $table->string('title');
             $table->text('content');
-            $table->enum('read', ['true', 'false'])->default('false');
+            $table->boolean('read')->default(false);
             $table->timestamps();
         });
     }
