@@ -1,5 +1,5 @@
 import { useForm, usePage } from "@inertiajs/react";
-import React, { useState } from "react";
+import { useState } from "react";
 import Input from "../../Input/Input";
 import { FaPhoneSquareAlt, FaUserCircle } from "react-icons/fa";
 import { MdEmail } from "react-icons/md";

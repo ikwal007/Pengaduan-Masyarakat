@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useState } from "react";
 import { FaEye, FaEyeSlash } from "react-icons/fa6";
 
 const themeColors = {
@@ -61,7 +61,7 @@ const Input = ({ children, className, maxWidth = "full" }) => {
     );
 };
 
-const Label = ({ children, labelName, message }) => {
+const Label = ({ children, labelName, message, ...props }) => {
     return (
         <>
             {labelName && (

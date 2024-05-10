@@ -1,7 +1,5 @@
 import AuthenticatedLayout2 from "@/Layouts/AuthenticatedLayout2";
 import { PiKeyThin } from "react-icons/pi";
-// import { useEcho } from "@/utils/EchoContext";
-import { MdAlternateEmail } from "react-icons/md";
 import { useForm, usePage } from "@inertiajs/react";
 import Notif1 from "@/Components/Notifications/Notif1";
 import { useEffect, useState } from "react";
@@ -9,6 +7,9 @@ import Typography from "@/Components/Atoms/Typography";
 import Input from "@/Components/Input/Input";
 import Select from "@/Components/Molecules/Select";
 import Button from "@/Components/Atoms/Button";
+import { IoIosAddCircleOutline } from "react-icons/io";
+import { FaFileImage } from "react-icons/fa";
+import { TiDeleteOutline } from "react-icons/ti";
 
 const Create = () => {
     // Destructure props from usePage()
@@ -25,6 +26,9 @@ const Create = () => {
     const [subdistrictSelected, setSubdistrictSelected] = useState([]);
 
     const [show, setShow] = useState(true);
+    const [inputFiles, setInputFiles] = useState([]);
+    // State for preview image
+    const [previewImage, setPreviewImage] = useState([]);
 
     const {
         data,
@@ -45,6 +49,7 @@ const Create = () => {
         certificateNumber: "",
         description: "",
         complainStatus: defaultComplaintStatus.id,
+        inputFiles: [],
     });
 
     const handlerDataChange = (e) => {
@@ -72,6 +77,65 @@ const Create = () => {
         });
     };
 
+    const handleInputFileChange = (e) => {
+        const { id, files } = e.target;
+        let updateFileList = null;
+        let updatePreviewValuesImg = [];
+
+        if (data.inputFiles?.filter((file) => file.id === parseInt(id))) {
+            const updateInputFileValues = data.inputFiles.filter(
+                (file) => file.id !== parseInt(id)
+            );
+            updateFileList = updateInputFileValues.concat([
+                { id: parseInt(id), file: files[0] },
+            ]);
+        } else {
+            updateFileList = data.inputFiles.concat([
+                { id: parseInt(id), file: files[0] },
+            ]);
+        }
+
+        setData((data) => {
+            const newData = {
+                ...data,
+                ["inputFiles"]: updateFileList,
+            };
+
+            return newData;
+        });
+
+        const reader = new FileReader();
+        reader.onload = (event) => {
+            const imageUrl = event.target.result;
+            if (previewImage.filter((file) => file.id === parseInt(id))) {
+                const updatePreviewValues = previewImage.filter(
+                    (file) => file.id !== parseInt(id)
+                );
+                updatePreviewValuesImg = updatePreviewValues.concat([
+                    { id: parseInt(id), imageUrl },
+                ]);
+            } else {
+                updatePreviewValuesImg = previewImage.concat([
+                    { id: parseInt(id), imageUrl },
+                ]);
+                
+            }
+            setPreviewImage(updatePreviewValuesImg);
+        };
+        reader.readAsDataURL(files[0]);
+    };
+
+    const renderImagePreviewSrc = (id) => {
+        let src = null
+        previewImage.forEach(data => {
+            if (data.id === id) {
+                src = data.imageUrl
+                
+            }
+        });
+        return src
+    }
+
     const getVillageOptions = () => {
         if (subdistrictSelected && subdistrictSelected.village) {
             return subdistrictSelected.village.map(({ id, name }) => (
@@ -89,6 +153,30 @@ const Create = () => {
             onSuccess: () => reset(),
             onError: () => setError(errors),
         });
+    };
+
+    const handleAdd = () => {
+        setInputFiles([...inputFiles, { id: inputFiles.length + 1 }]);
+    };
+
+    const handleDeleteTodo = (id) => {
+        const updateInputFiles = inputFiles.filter((file) => file.id !== id);
+        const updateInputFileValues = data.inputFiles.filter(
+            (file) => file.id !== id
+        );
+        const updatePreviewValue = previewImage.filter(
+            (file) => file.id !== id
+        );
+        setData((data) => {
+            const newData = {
+                ...data,
+                ["inputFiles"]: updateInputFileValues,
+            };
+
+            return newData;
+        });
+        setInputFiles(updateInputFiles);
+        setPreviewImage(updatePreviewValue);
     };
 
     useEffect(() => {
@@ -269,6 +357,89 @@ const Create = () => {
                             />
                         </Input>
 
+                        <div className="flex flex-wrap w-full gap-3 p-3">
+                            {inputFiles.length > 0 &&
+                                inputFiles.map((data, i) => {
+                                    return (
+                                        <div key={i} className="relative">
+                                            <Input maxWidth="max">
+                                                <Input.Label
+                                                    htmlFor={"avatar"}
+                                                    message={formErrors.avatar}
+                                                >
+                                                    <div className="flex flex-col items-center">
+                                                        {renderImagePreviewSrc(data.id) || data.avatar ? (
+                                                            <div className="flex relative w-max bg-purple-500 rounded-lg hover:cursor-pointer overflow-hidden border-4 group">
+                                                                <img
+                                                                    src={
+                                                                        renderImagePreviewSrc(data.id)
+                                                                    }
+                                                                    alt="Preview"
+                                                                    className="w-40 h-40"
+                                                                />
+                                                                <div className="flex justify-center items-center absolute bg-gray-600 w-40 h-20 translate-y-60 group-hover:translate-y-24 transition ease-in-out duration-300 rounded-b-lg opacity-80 text-white">
+                                                                    Ubah Foto
+                                                                </div>
+                                                            </div>
+                                                        ) : (
+                                                            <div className="flex py-3 relative w-max bg-purple-50 rounded-lg hover:cursor-pointer overflow-hidden group">
+                                                                <FaFileImage className="text-purple-500 w-40 h-40" />
+                                                                <div className="flex justify-center items-center absolute bg-gray-600 w-40 h-20 translate-y-60 group-hover:translate-y-24 transition ease-in-out duration-300 rounded-b-lg opacity-80 text-white">
+                                                                    Tambahkan
+                                                                    Foto
+                                                                </div>
+                                                            </div>
+                                                        )}
+                                                    </div>
+                                                </Input.Label>
+                                                <Input.InputFile
+                                                    id={data.id}
+                                                    name={"avatar"}
+                                                    accept=".jpg, .jpeg, .png, .gif"
+                                                    onChange={
+                                                        handleInputFileChange
+                                                    }
+                                                />
+                                            </Input>
+                                            <Button
+                                                theme="primary"
+                                                maxWidth="max"
+                                                type="button"
+                                                onClick={() =>
+                                                    handleDeleteTodo(data.id)
+                                                }
+                                                className="absolute !p-0 !rounded-full -right-3 -top-3"
+                                            >
+                                                <TiDeleteOutline className="w-8 h-8 text-white" />
+                                            </Button>
+                                        </div>
+                                    );
+                                })}
+                        </div>
+
+                        <div className="w-full">
+                            <Button
+                                theme={"primary"}
+                                maxWidth="md"
+                                height="lg"
+                                className={"mt-5"}
+                                type="button"
+                                onClick={handleAdd}
+                            >
+                                <IoIosAddCircleOutline className="w-10 h-10" />
+                                <Typography
+                                    tag="h3"
+                                    className="ml-5"
+                                    children={
+                                        inputFiles.length > 0
+                                            ? "Tambahkan Gambar Lain"
+                                            : "Upload Gambar"
+                                    }
+                                    theme="primary"
+                                />
+                            </Button>
+                        </div>
+
                         <div className="w-full">
                             <Button
                                 theme={"primary"}
@@ -276,6 +447,7 @@ const Create = () => {
                                 height="lg"
                                 className={"mt-5"}
                                 type="submit"
+                                disabled={processing}
                             >
                                 Upload Pengaduan
                             </Button>

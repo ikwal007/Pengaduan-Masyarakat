@@ -22,8 +22,6 @@ const Header1 = () => {
     const [showDetailNotification, setShowDetailNotification] = useState({});
     const [dataNotification, setDataNotification] = useState([]);
 
-    console.log(dataNotification);
-
     const { auth } = usePage().props;
 
     // refs for profile and notifications menus

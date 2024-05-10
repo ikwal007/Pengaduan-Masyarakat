@@ -21,6 +21,7 @@ return new class extends Migration
             $table->string('certificate_no');
             $table->text('description');
             $table->foreignUlid('complaint_statuses_id')->constrained(table: 'complaint_statuses', column: 'id', indexName: 'complaint_statuses_id');
+            $table->boolean('confirmed');
             $table->timestamps();
         });
     }
