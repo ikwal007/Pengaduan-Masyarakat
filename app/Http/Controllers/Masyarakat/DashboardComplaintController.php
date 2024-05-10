@@ -83,7 +83,7 @@ class DashboardComplaintController extends Controller
         $complaint->certificate_no = $validated['certificateNumber'];
         $complaint->description = $validated['description'];
         $complaint->complaint_statuses_id = $validated['complainStatus'];
-        $complaint->save();
+        // $complaint->save();
 
         $queryComplaint = new ComplaintTypeQuery();
         $listTeamHandlingComplaint = $queryComplaint->getSeksiWithComplaint($validated['complainType'])->seksis;
@@ -93,22 +93,22 @@ class DashboardComplaintController extends Controller
             $status = new ComplaintStatusQuery();
             $complaintHandling->complaint_id = $complaint->id;
             $complaintHandling->seksi_id = $seksi->id;
-            $complaintHandling->status_id = $status->getComplaintStatusBySlug('diproses')->id;
-            $complaintHandling->save();
+            $complaintHandling->status_id = $status->getComplaintStatusBySlug('ditunda')->id;
+            // $complaintHandling->save();
         }
 
         $notification = new Notification();
         $notification->user_email = $validated['userEmail'];
         $notification->title = "Pengaduan Baru ".$validated['certificateNumber'];
         $notification->content = "Pengaduan sedang diproses oleh Kepala Seksi terkait." . "Dengan Data sertifikasi:" . $validated['certificateNumber'] . "Dengan Deskripsi:" . $validated['description'];
-        $notification->save();
+        // $notification->save();
 
         $notificationQuery = new NotificationQuery();
 
-        event(new ComplaintRegister(
-            $validated['userEmail'],
-            $notificationQuery->getAllNotification($validated['userEmail'])
-        ));
+        // event(new ComplaintRegister(
+        //     $validated['userEmail'],
+        //     $notificationQuery->getAllNotification($validated['userEmail'])
+        // ));
 
         return redirect()->route('complaint.index')->with('message', 'Pengaduan Berhasil Diajukan');
     }
