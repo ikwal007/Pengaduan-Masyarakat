@@ -63,7 +63,7 @@ class DashboardComplaintController extends Controller
             'allComplaintStatus' => $allComplaintStatus,
             'allComplainType' => $allComplainType,
             'subdistricts' => $subdistricts,
-            'defaultComplaintStatus' => $complaintStatus->getComplaintStatusBySlug('diproses'),
+            'defaultComplaintStatus' => $complaintStatus->getComplaintStatusBySlug('ditunda'),
         ]);
     }
 
