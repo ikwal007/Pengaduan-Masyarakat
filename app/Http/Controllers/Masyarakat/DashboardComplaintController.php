@@ -2,20 +2,22 @@
 
 namespace App\Http\Controllers\Masyarakat;
 
-use App\Events\Masyarakat\ComplaintRegister;
-use App\Http\Controllers\Controller;
-use App\Http\Requests\General\ComplaintPostRequest;
 use App\Models\Complaint;
-use App\Models\ComplaintHandling;
-use App\Models\ComplaintStatus;
+use Illuminate\Support\Str;
 use App\Models\Notification;
-use App\Queries\ComplaintMediaTypeQuery;
-use App\Queries\ComplaintQuery;
-use App\Queries\ComplaintStatusQuery;
-use App\Queries\ComplaintTypeQuery;
-use App\Queries\NotificationQuery;
-use App\Queries\SubdistrictQuery;
 use Illuminate\Http\Request;
+use App\Models\ComplaintStatus;
+use App\Queries\ComplaintQuery;
+use App\Models\ComplaintHandling;
+use App\Queries\SubdistrictQuery;
+use App\Queries\NotificationQuery;
+use App\Queries\ComplaintTypeQuery;
+use App\Http\Controllers\Controller;
+use App\Queries\ComplaintStatusQuery;
+use App\Queries\ComplaintMediaTypeQuery;
+use App\Events\Masyarakat\ComplaintRegister;
+use App\Http\Requests\General\ComplaintPostRequest;
+use App\Models\Archives;
 
 class DashboardComplaintController extends Controller
 {
@@ -83,7 +85,22 @@ class DashboardComplaintController extends Controller
         $complaint->certificate_no = $validated['certificateNumber'];
         $complaint->description = $validated['description'];
         $complaint->complaint_statuses_id = $validated['complainStatus'];
-        // $complaint->save();
+        $complaint->confirmed = 0;
+        $complaint->save();
+
+        if (!empty($request['inputFiles'])) {
+            foreach ($request['inputFiles'] as $data) {
+                $archives = new Archives();
+                $patch = '/upload/archives/'.$validated['userEmail'].'/';
+                $avatar = $data['file'];
+                $slug = Str::slug($avatar->getClientOriginalName());
+                $filename = time() . '-' . $slug . '.' . $avatar->getClientOriginalExtension();
+                $avatar->move(public_path($patch), $filename);
+                $archives->complaint_id = $complaint->id;
+                $archives->resource = $patch . $filename;
+                $archives->save();
+            }
+        }
 
         $queryComplaint = new ComplaintTypeQuery();
         $listTeamHandlingComplaint = $queryComplaint->getSeksiWithComplaint($validated['complainType'])->seksis;
@@ -94,21 +111,21 @@ class DashboardComplaintController extends Controller
             $complaintHandling->complaint_id = $complaint->id;
             $complaintHandling->seksi_id = $seksi->id;
             $complaintHandling->status_id = $status->getComplaintStatusBySlug('ditunda')->id;
-            // $complaintHandling->save();
+            $complaintHandling->save();
         }
 
         $notification = new Notification();
         $notification->user_email = $validated['userEmail'];
         $notification->title = "Pengaduan Baru ".$validated['certificateNumber'];
         $notification->content = "Pengaduan sedang diproses oleh Kepala Seksi terkait." . "Dengan Data sertifikasi:" . $validated['certificateNumber'] . "Dengan Deskripsi:" . $validated['description'];
-        // $notification->save();
+        $notification->save();
 
         $notificationQuery = new NotificationQuery();
 
-        // event(new ComplaintRegister(
-        //     $validated['userEmail'],
-        //     $notificationQuery->getAllNotification($validated['userEmail'])
-        // ));
+        event(new ComplaintRegister(
+            $validated['userEmail'],
+            $notificationQuery->getAllNotification($validated['userEmail'])
+        ));
 
         return redirect()->route('complaint.index')->with('message', 'Pengaduan Berhasil Diajukan');
     }

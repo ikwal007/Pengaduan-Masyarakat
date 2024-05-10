@@ -16,6 +16,13 @@ class Archives extends Model
     protected $table = 'archives';
     public $incrementing = false;
 
+    /**
+     * The attributes that aren't mass assignable.
+     *
+     * @var array
+     */
+    protected $guarded = ['id'];
+
     public function complaint(): BelongsTo
     {
         return $this->belongsTo(Complaint::class, 'complaint_id', 'id');
