@@ -1,10 +1,9 @@
-import { Link, usePage } from "@inertiajs/react";
+import { usePage } from "@inertiajs/react";
 import { useEffect, useState } from "react";
 import GlobalLink from "../Atoms/GlobalLink";
 import { MdAdd, MdCreate } from "react-icons/md";
 import { IoHomeOutline } from "react-icons/io5";
 import Typography from "../Atoms/Typography";
-import Button from "../Atoms/Button";
 
 /**
  * Desktop component representing the sidebar for desktop view.
@@ -103,6 +102,30 @@ const Desktop = () => {
                                     </Typography>
                                     <Typography tag="span" className="ml-4">
                                         Dashboard
+                                    </Typography>
+                                </GlobalLink>
+                            </li>
+                            <li className="relative px-6 py-3">
+                                {route().current(
+                                    "pelayanan.complaint-verification-dashboard-*"
+                                ) ? (
+                                    <span
+                                        className="absolute inset-y-0 left-0 w-1 bg-purple-600 rounded-tr-lg rounded-br-lg"
+                                        aria-hidden="true"
+                                    />
+                                ) : null}
+                                <GlobalLink
+                                    theme="transparent"
+                                    className="flex flex-col justify-center"
+                                    href={route(
+                                        "pelayanan.complaint-verification-dashboard-index"
+                                    )}
+                                >
+                                    <Typography tag="span">
+                                        <IoHomeOutline className="w-5 h-5" />
+                                    </Typography>
+                                    <Typography tag="span" className="ml-4 pr-4">
+                                        Dashboard Verifikasi Pengaduan
                                     </Typography>
                                 </GlobalLink>
                             </li>

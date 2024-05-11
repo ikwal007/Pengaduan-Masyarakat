@@ -3,7 +3,6 @@
 namespace App\Queries;
 
 use App\Models\Complaint;
-
 class ComplaintQuery extends Complaint
 {
     public function getAllCountComplaint()
@@ -12,6 +11,11 @@ class ComplaintQuery extends Complaint
         $count = $this->count();
 
         return $count;
+    }
+
+    public function getAllCountComplaintNotConfirmed()
+    {
+        return $this->where('confirmed', 0)->count();
     }
 
     public function getAllCountComplaintOnSpecificUser(String $email)
@@ -50,6 +54,23 @@ class ComplaintQuery extends Complaint
         }
 
         $res = $this->with(['complaintStatus', 'complaintType', 'complaintMediaType', 'user', 'village', 'subdistrict'])->paginate(10);
+
+        return $res;
+    }
+    
+    public function complaintWithPaginationBasedConfirmed(Bool $confirmed, String $filterByStatus =  null)
+    {
+        $res = null;
+
+        if ($filterByStatus) {
+            $res = $this->where('confirmed', $confirmed)->whereHas('complaintStatus', function ($query) use ($filterByStatus) {
+                $query->where('slug', $filterByStatus);
+            })->with(['complaintStatus', 'complaintType', 'complaintMediaType', 'user', 'village', 'subdistrict'])->paginate(10);
+
+            return $res;
+        }
+
+        $res = $this->where('confirmed', $confirmed)->with(['complaintStatus', 'complaintType', 'complaintMediaType', 'user', 'village', 'subdistrict'])->paginate(10);
 
         return $res;
     }

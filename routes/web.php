@@ -3,6 +3,7 @@
 use App\Http\Controllers\General\PasswordController;
 use App\Http\Controllers\General\ProfileController as GeneralProfileController;
 use App\Http\Controllers\Masyarakat\DashboardComplaintController;
+use App\Http\Controllers\Pelayanan\ComplaintVerificationDashboardController;
 use App\Http\Controllers\Pelayanan\CreateComplaintController;
 use App\Http\Controllers\Pelayanan\DashboardPengaduanController;
 use App\Http\Controllers\Pelayanan\RegisterdUserController;
@@ -43,6 +44,9 @@ Route::middleware('auth')->group(function () {
     Route::middleware('role:Pelayanan_Publik')->prefix('pelayanan-publik')->group(function () {
         Route::controller(DashboardPengaduanController::class)->group(function () {
             Route::get('/dashboard-pengaduan', 'index')->name('pelayanan.dashboard-complaints-index');
+        });
+        Route::controller(ComplaintVerificationDashboardController::class)->group(function () {
+            Route::get('/dashboard-pengaduan-verifikasi', 'index')->name('pelayanan.complaint-verification-dashboard-index');
         });
         Route::controller(CreateComplaintController::class)->group(function () {
             Route::get('/create-complaint', 'create')->name('pelayanan.create-complaint');
