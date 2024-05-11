@@ -20,7 +20,7 @@ class DashboardPengaduanController extends Controller
         $allCountComplaintByStatusDone = $complaint->getAllCountComplaintByStatus('diselesaikan');
         $allCountComplaintByStatusReject = $complaint->getAllCountComplaintByStatus('ditolak');
         $allCountComplaintByStatusPending = $complaint->getAllCountComplaintByStatus('ditunda');
-        $paginationComplaint = $complaint->complaintWithPagination();
+        $paginationComplaint = $complaint->complaintWithPaginationBasedConfirmed(1);
         return Inertia::render('Pelayanan/DashboardPengaduan/Index', [
             'countComplaint' => $allCountComplaint,
             'countComplaintByStatusProsessing' => $allCountComplaintByStatusProsessing,
