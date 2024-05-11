@@ -47,6 +47,7 @@ Route::middleware('auth')->group(function () {
         });
         Route::controller(ComplaintVerificationDashboardController::class)->group(function () {
             Route::get('/dashboard-pengaduan-verifikasi', 'index')->name('pelayanan.complaint-verification-dashboard-index');
+            Route::get('/dashboard-pengaduan-verifikasi/{id}/edit', 'edit')->name('pelayanan.complaint-verification-dashboard-edit');
         });
         Route::controller(CreateComplaintController::class)->group(function () {
             Route::get('/create-complaint', 'create')->name('pelayanan.create-complaint');
