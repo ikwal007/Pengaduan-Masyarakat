@@ -4,6 +4,7 @@ import GlobalLink from "../Atoms/GlobalLink";
 import { MdAdd, MdCreate } from "react-icons/md";
 import { IoHomeOutline } from "react-icons/io5";
 import Typography from "../Atoms/Typography";
+import { GrDocumentVerified } from "react-icons/gr";
 
 /**
  * Desktop component representing the sidebar for desktop view.
@@ -122,7 +123,7 @@ const Desktop = () => {
                                     )}
                                 >
                                     <Typography tag="span">
-                                        <IoHomeOutline className="w-5 h-5" />
+                                        <GrDocumentVerified className="w-5 h-5" />
                                     </Typography>
                                     <Typography tag="span" className="ml-4 pr-4">
                                         Dashboard Verifikasi Pengaduan
