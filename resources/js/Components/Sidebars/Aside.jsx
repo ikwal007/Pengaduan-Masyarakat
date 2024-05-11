@@ -1,9 +1,9 @@
 import { usePage } from "@inertiajs/react";
-import { useEffect, useRef } from "react";
 import GlobalLink from "../Atoms/GlobalLink";
 import { IoHomeOutline } from "react-icons/io5";
 import { MdAdd, MdCreate } from "react-icons/md";
 import Typography from "../Atoms/Typography";
+import { GrDocumentVerified } from "react-icons/gr";
 
 const Aside = () => {
     const { auth } = usePage().props;
@@ -69,6 +69,30 @@ const Aside = () => {
                             >
                                 <Typography tag="span">
                                     <IoHomeOutline className="w-5 h-5" />
+                                </Typography>
+                                <Typography tag="span" className="ml-4">
+                                    Dashboard
+                                </Typography>
+                            </GlobalLink>
+                        </li>
+                        <li className="relative px-6 py-3">
+                            {route().current(
+                                "pelayanan.complaint-verification-dashboard-*"
+                            ) ? (
+                                <span
+                                    className="absolute inset-y-0 left-0 w-1 bg-purple-600 rounded-tr-lg rounded-br-lg"
+                                    aria-hidden="true"
+                                />
+                            ) : null}
+                            <GlobalLink
+                                theme="transparent"
+                                className="justify-start"
+                                href={route(
+                                    "pelayanan.complaint-verification-dashboard-index"
+                                )}
+                            >
+                                <Typography tag="span">
+                                    <GrDocumentVerified className="w-5 h-5" />
                                 </Typography>
                                 <Typography tag="span" className="ml-4">
                                     Dashboard
