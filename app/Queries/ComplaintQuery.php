@@ -111,7 +111,7 @@ class ComplaintQuery extends Complaint
 
         return $this->whereHas('user', function ($query) use ($email) {
             $query->where('email', $email);
-        })->with(['complaintStatus', 'complaintType', 'complaintMediaType', 'user', 'village', 'subdistrict'])->paginate(10);
+        })->with(['complaintStatus', 'complaintType', 'complaintMediaType', 'user', 'village', 'subdistrict'])->latest()->paginate(10);
     }
 
     public function getDetailComplaintOnSeksiWithComplaintHandling(String $complaintHandlingId)
