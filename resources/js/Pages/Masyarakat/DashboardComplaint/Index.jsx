@@ -13,6 +13,9 @@ import { useDeferredValue, useEffect, useRef, useState } from "react";
 import CardCount from "@/Components/Molecules/Cards/CardCount";
 import axios from "axios";
 import Select from "@/Components/Molecules/Select";
+import { FaRegEdit, FaRegEye } from "react-icons/fa";
+import GlobalLink from "@/Components/Atoms/GlobalLink";
+import { MdDeleteForever } from "react-icons/md";
 
 const Index = () => {
     // Destructure props from usePage()
@@ -201,6 +204,7 @@ const Index = () => {
                         <Table.Th>media</Table.Th>
                         <Table.Th>kecamatan</Table.Th>
                         <Table.Th>desa</Table.Th>
+                        <Table.Th>Action</Table.Th>
                     </Table.TableHead>
                     <Table.TableBody>
                         {loading === false ? (
@@ -239,6 +243,51 @@ const Index = () => {
                                         <Table.TdBasic>
                                             {data.village.name}
                                         </Table.TdBasic>
+                                        {data.complaint_status.slug ===
+                                        "ditolak" ? (
+                                            <div className="flex gap-4 w-full">
+                                                <GlobalLink
+                                                    href={route(
+                                                        "pelayanan.complaint-verification-dashboard-edit",
+                                                        {
+                                                            id: data.id,
+                                                        }
+                                                    )}
+                                                    children={
+                                                        <FaRegEdit className="w-5 h-5" />
+                                                    }
+                                                    theme="warning"
+                                                    maxWidth="max"
+                                                />
+                                                <GlobalLink
+                                                    href={route(
+                                                        "pelayanan.complaint-verification-dashboard-edit",
+                                                        {
+                                                            id: data.id,
+                                                        }
+                                                    )}
+                                                    children={
+                                                        <MdDeleteForever className="w-5 h-5" />
+                                                    }
+                                                    theme="danger"
+                                                    maxWidth="max"
+                                                />
+                                            </div>
+                                        ) : (
+                                            <GlobalLink
+                                                href={route(
+                                                    "pelayanan.complaint-verification-dashboard-edit",
+                                                    {
+                                                        id: data.id,
+                                                    }
+                                                )}
+                                                children={
+                                                    <FaRegEye className="w-5 h-5" />
+                                                }
+                                                theme="info"
+                                                maxWidth="max"
+                                            />
+                                        )}
                                     </Table.Tr>
                                 ))
                             ) : (
