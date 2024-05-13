@@ -11,8 +11,6 @@ import Table from "@/Components/Tables/Table";
 import Notif1 from "@/Components/Notifications/Notif1";
 import { useDeferredValue, useEffect, useRef, useState } from "react";
 import CardCount from "@/Components/Molecules/Cards/CardCount";
-import { IoSearchOutline } from "react-icons/io5";
-import Input from "@/Components/Input/Input";
 import axios from "axios";
 import Select from "@/Components/Molecules/Select";
 
@@ -69,8 +67,6 @@ const Index = () => {
             setSearchResults({ ...paginationComplaint, data: res });
         }
     };
-
-    console.log(searchResults);
     const handlerSearch = async () => {
         setLoading(true);
         const res = await axios.get(route("masyarakat.complaints-index"), {
@@ -148,19 +144,6 @@ const Index = () => {
 
             {/* Main Table Component */}
             <Table>
-                <div className="flex lg:justify-end lg:mt-5 lg:mr-32 w-full">
-                    <Input className={"basis-2/5"}>
-                        <Input.Label>
-                            <Input.InputText
-                                maxWidth="xl"
-                                placeholder="Search Pengaduan Dari Status..."
-                                onChange={(e) => setKeyword(e.target.value)}
-                                leftIcon={<IoSearchOutline />}
-                            />
-                        </Input.Label>
-                    </Input>
-                </div>
-
                 <Table.Main className="mt-5">
                     <Table.TableHead>
                         <Table.Th>Nama Pemohon</Table.Th>
