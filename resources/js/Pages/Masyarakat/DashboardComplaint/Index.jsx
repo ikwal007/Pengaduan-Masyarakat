@@ -1,25 +1,15 @@
 import AuthenticatedLayout2 from "@/Layouts/AuthenticatedLayout2";
-// import { useEcho } from "@/utils/EchoContext";
-import { HiMiniUserGroup } from "react-icons/hi2";
-import { FaUserTie, FaUserCheck, FaClipboardUser } from "react-icons/fa6";
-import { MdModeEditOutline } from "react-icons/md";
-import { IoMdEye } from "react-icons/io";
+import { FaClipboardUser } from "react-icons/fa6";
 import { usePage } from "@inertiajs/react";
-import {
-    LuClipboardCheck,
-    LuClipboardCopy,
-    LuClipboardList,
-    LuClipboardSignature,
-    LuClipboardX,
-} from "react-icons/lu";
+import { LuClipboardCheck, LuClipboardList, LuClipboardSignature, LuClipboardX } from "react-icons/lu";
 import Table from "@/Components/Tables/Table";
-import GlobalLink from "@/Components/Atoms/GlobalLink";
 import Notif1 from "@/Components/Notifications/Notif1";
 import { useDeferredValue, useEffect, useRef, useState } from "react";
 import CardCount from "@/Components/Molecules/Cards/CardCount";
 import { IoSearchOutline } from "react-icons/io5";
 import Input from "@/Components/Input/Input";
 import axios from "axios";
+import Select from "@/Components/Molecules/Select";
 
 const Index = () => {
     // Destructure props from usePage()
@@ -152,7 +142,51 @@ const Index = () => {
                 <Table.Main className="mt-5">
                     <Table.TableHead>
                         <Table.Th>Nama Pemohon</Table.Th>
-                        <Table.Th>status</Table.Th>
+                        <Table.Th>
+                            <Select>
+                                <Select
+                                    className={"basis-2/5"}
+                                    children={
+                                        <Select.Label
+                                            id={"confirmation"}
+                                            value={"data.confirmation"}
+                                            // onChange={handlerDataChange}
+                                            // theme={
+                                            //     formErrors.confirmation
+                                            //         ? "error"
+                                            //         : "primary"
+                                            // }
+                                            required
+                                            // message={formErrors.confirmation}
+                                            children={
+                                                <>
+                                                    <Select.Option
+                                                        title={
+                                                            "Pilih Aksi Untuk Permohonan"
+                                                        }
+                                                        value={""}
+                                                        disabled
+                                                        hidden
+                                                    />
+                                                    <Select.Option
+                                                        title={
+                                                            "Tolak Pengaduan"
+                                                        }
+                                                        value={"ditolak"}
+                                                    />
+                                                    <Select.Option
+                                                        title={
+                                                            "Setujui Pengaduan"
+                                                        }
+                                                        value={"disetujui"}
+                                                    />
+                                                </>
+                                            }
+                                        />
+                                    }
+                                />
+                            </Select>
+                        </Table.Th>
                         <Table.Th>media</Table.Th>
                         <Table.Th>kecamatan</Table.Th>
                         <Table.Th>desa</Table.Th>

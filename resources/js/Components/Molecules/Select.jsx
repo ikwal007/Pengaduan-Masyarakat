@@ -6,6 +6,7 @@ const themeColors = {
     success: "select-success",
     warning: "select-warning",
     error: "select-error",
+    ghost: "select-ghost",
 };
 
 const maxWidthClass = {
