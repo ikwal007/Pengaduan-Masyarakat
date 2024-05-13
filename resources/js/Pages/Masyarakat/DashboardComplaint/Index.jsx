@@ -1,7 +1,12 @@
 import AuthenticatedLayout2 from "@/Layouts/AuthenticatedLayout2";
 import { FaClipboardUser } from "react-icons/fa6";
 import { usePage } from "@inertiajs/react";
-import { LuClipboardCheck, LuClipboardList, LuClipboardSignature, LuClipboardX } from "react-icons/lu";
+import {
+    LuClipboardCheck,
+    LuClipboardList,
+    LuClipboardSignature,
+    LuClipboardX,
+} from "react-icons/lu";
 import Table from "@/Components/Tables/Table";
 import Notif1 from "@/Components/Notifications/Notif1";
 import { useDeferredValue, useEffect, useRef, useState } from "react";
@@ -21,16 +26,18 @@ const Index = () => {
         countComplaintByStatusDone,
         countComplaintByStatusReject,
         paginationComplaint,
+        allStatus,
         flash,
         ...props
     } = usePage().props;
     // const echo = useEcho();
     const [show, setShow] = useState(true);
-    const [searchResults, setSearchResults] = useState(null);
+    const [searchResults, setSearchResults] = useState(paginationComplaint);
     const [keyword, setKeyword] = useState("");
     const [loading, setLoading] = useState(false);
     const deferredSearch = useDeferredValue(keyword);
     const isFirstMount = useRef(true);
+    const [status, setStatus] = useState("");
 
     const complaintStatus = (status) => {
         switch (status) {
@@ -49,6 +56,21 @@ const Index = () => {
         }
     };
 
+    const handlerDataChange = (e) => {
+        const { id, value } = e.target;
+        setStatus(value);
+        if (value == "semua") {
+            setSearchResults({ ...paginationComplaint });
+        } else {
+            const res = paginationComplaint.data.filter(
+                (data) => data.complaint_status.id === value
+            );
+
+            setSearchResults({ ...paginationComplaint, data: res });
+        }
+    };
+
+    console.log(searchResults);
     const handlerSearch = async () => {
         setLoading(true);
         const res = await axios.get(route("masyarakat.complaints-index"), {
@@ -149,20 +171,15 @@ const Index = () => {
                                     children={
                                         <Select.Label
                                             id={"confirmation"}
-                                            value={"data.confirmation"}
-                                            // onChange={handlerDataChange}
-                                            // theme={
-                                            //     formErrors.confirmation
-                                            //         ? "error"
-                                            //         : "primary"
-                                            // }
+                                            value={status}
+                                            onChange={handlerDataChange}
+                                            theme={"ghost"}
                                             required
-                                            // message={formErrors.confirmation}
                                             children={
                                                 <>
                                                     <Select.Option
                                                         title={
-                                                            "Pilih Aksi Untuk Permohonan"
+                                                            "Status Pengaduan"
                                                         }
                                                         value={""}
                                                         disabled
@@ -170,16 +187,24 @@ const Index = () => {
                                                     />
                                                     <Select.Option
                                                         title={
-                                                            "Tolak Pengaduan"
+                                                            "Semua Status Pengaduan"
                                                         }
-                                                        value={"ditolak"}
+                                                        value={"semua"}
                                                     />
-                                                    <Select.Option
-                                                        title={
-                                                            "Setujui Pengaduan"
-                                                        }
-                                                        value={"disetujui"}
-                                                    />
+                                                    {allStatus.length > 0 &&
+                                                        allStatus.map(
+                                                            (data, index) => (
+                                                                <Select.Option
+                                                                    key={index}
+                                                                    title={
+                                                                        data.name
+                                                                    }
+                                                                    value={
+                                                                        data.id
+                                                                    }
+                                                                />
+                                                            )
+                                                        )}
                                                 </>
                                             }
                                         />
@@ -193,62 +218,8 @@ const Index = () => {
                     </Table.TableHead>
                     <Table.TableBody>
                         {loading === false ? (
-                            searchResults !== null && deferredSearch !== "" ? (
-                                searchResults.data.length > 0 ? (
-                                    searchResults.data.map((data, index) => (
-                                        <Table.Tr key={index}>
-                                            <Table.TdProfile
-                                                name={data.user.full_name}
-                                                email={data.user.email}
-                                                src={data.user.avatar}
-                                            />
-                                            <Table.TdStatus
-                                                status={
-                                                    data.complaint_status.name
-                                                }
-                                                description={
-                                                    data.complaint_status
-                                                        .description
-                                                }
-                                                theme={complaintStatus(
-                                                    data.complaint_status.slug
-                                                )}
-                                            />
-                                            <Table.TdBasic>
-                                                <div
-                                                    className="tooltip tooltip-left"
-                                                    data-tip={
-                                                        data
-                                                            .complaint_media_type
-                                                            .description
-                                                    }
-                                                >
-                                                    {
-                                                        data
-                                                            .complaint_media_type
-                                                            .name
-                                                    }
-                                                </div>
-                                            </Table.TdBasic>
-                                            <Table.TdBasic>
-                                                {data.subdistrict.name}
-                                            </Table.TdBasic>
-                                            <Table.TdBasic>
-                                                {data.village.name}
-                                            </Table.TdBasic>
-                                        </Table.Tr>
-                                    ))
-                                ) : (
-                                    <Table.Tr>
-                                        <Table.TdBasic
-                                            children={"no data record"}
-                                            colSpan="5"
-                                            className="text-center"
-                                        />
-                                    </Table.Tr>
-                                )
-                            ) : paginationComplaint.data.length > 0 ? (
-                                paginationComplaint.data.map((data, index) => (
+                            searchResults?.data.length > 0 ? (
+                                searchResults.data.map((data, index) => (
                                     <Table.Tr key={index}>
                                         <Table.TdProfile
                                             name={data.user.full_name}

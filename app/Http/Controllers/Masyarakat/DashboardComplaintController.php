@@ -27,6 +27,8 @@ class DashboardComplaintController extends Controller
     public function index()
     {
         $complaint = new ComplaintQuery();
+        $status = new ComplaintStatusQuery();
+        $allStatus = $status->getAll();
         $allCountComplaint = $complaint->getAllCountComplaintOnSpecificUser(auth()->user()->email);
         $allCountComplaintByStatusProsessing = $complaint->getAllCountComplaintByStatusOnSpecificUser('diproses', auth()->user()->email);
         $allCountComplaintByStatusDone = $complaint->getAllCountComplaintByStatusOnSpecificUser('diselesaikan', auth()->user()->email);
@@ -39,7 +41,8 @@ class DashboardComplaintController extends Controller
             'countComplaintByStatusDone' => $allCountComplaintByStatusDone,
             'countComplaintByStatusReject' => $allCountComplaintByStatusReject,
             'countComplaintByStatusPending' => $allCountComplaintByStatusPending,
-            'paginationComplaint' => $paginationComplaint
+            'paginationComplaint' => $paginationComplaint,
+            'allStatus' => $allStatus,
         ]);
     }
 
