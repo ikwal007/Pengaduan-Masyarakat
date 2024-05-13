@@ -55,16 +55,19 @@ const Index = () => {
     };
 
     const handlerDataChange = (e) => {
+        setLoading(true);
         const { id, value } = e.target;
         setStatus(value);
         if (value == "semua") {
             setSearchResults({ ...paginationComplaint });
+            setLoading(false);
         } else {
             const res = paginationComplaint.data.filter(
                 (data) => data.complaint_status.id === value
             );
 
             setSearchResults({ ...paginationComplaint, data: res });
+            setLoading(false);
         }
     };
     const handlerSearch = async () => {
