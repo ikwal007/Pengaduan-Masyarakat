@@ -86,7 +86,7 @@ const Aside = () => {
                             ) : null}
                             <GlobalLink
                                 theme="transparent"
-                                className="justify-start"
+                                className="flex flex-col justify-center"
                                 href={route(
                                     "pelayanan.complaint-verification-dashboard-index"
                                 )}
@@ -94,8 +94,8 @@ const Aside = () => {
                                 <Typography tag="span">
                                     <GrDocumentVerified className="w-5 h-5" />
                                 </Typography>
-                                <Typography tag="span" className="ml-4">
-                                    Dashboard
+                                <Typography tag="span" className="ml-4 pr-4">
+                                    Dashboard Verifikasi Pengaduan
                                 </Typography>
                             </GlobalLink>
                         </li>

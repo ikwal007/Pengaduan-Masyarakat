@@ -70,7 +70,9 @@ class ComplaintQuery extends Complaint
             return $res;
         }
 
-        $res = $this->where('confirmed', $confirmed)->with(['complaintStatus', 'complaintType', 'complaintMediaType', 'user', 'village', 'subdistrict'])->paginate(10);
+        $res = $this->where('confirmed', $confirmed)->whereHas('complaintStatus', function ($query) {
+            $query->where('slug', '!=', 'ditolak');
+        })->with(['complaintStatus', 'complaintType', 'complaintMediaType', 'user', 'village', 'subdistrict'])->paginate(10);
 
         return $res;
     }
@@ -117,5 +119,10 @@ class ComplaintQuery extends Complaint
         return $this->whereHas('complaintHandling', function ($complaintHandling) use ($complaintHandlingId) {
             $complaintHandling->where('id', $complaintHandlingId);
         })->with(['complaintStatus', 'complaintType', 'complaintMediaType', 'user', 'village', 'subdistrict', 'complaintHandling'])->first();
+    }
+
+    public function getDetailComplaint(String $complaintId)
+    {
+        return $this->where('id', $complaintId)->with(['complaintStatus', 'complaintType', 'complaintMediaType', 'user', 'village', 'subdistrict', "complaintHandling", "archives"])->first();
     }
 }

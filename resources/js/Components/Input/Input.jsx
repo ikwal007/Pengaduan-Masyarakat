@@ -93,6 +93,7 @@ const InputText = ({
     id,
     onChange,
     value,
+    disabled = false,
     ...props
 }) => {
     // Use vaiabel to manage color based on theme
@@ -101,16 +102,18 @@ const InputText = ({
     const inputSizeConfig = inputSizeClass[inputSize];
     return (
         <div
-            className={`input flex items-center focus-within:outline-none gap-2 ${themeConfig} ${inputSizeConfig} ${maxWidthConfig}`}
+            className={`input flex items-center focus-within:outline-none gap-2 ${themeConfig} ${inputSizeConfig} ${maxWidthConfig} dark:bg-[#B3B6BA]`}
+            disabled={disabled}
         >
             {leftIcon && leftIcon}
             <input
                 id={id}
                 type="text"
                 placeholder={placeholder}
-                className={`grow border-0 focus:ring-0`}
+                className={`grow border-0 focus:ring-0 disabled:cursor-not-allowed disabled:text-slate-950 dark:disabled:bg-[#B3B6BA]`}
                 onChange={onChange}
                 value={value}
+                disabled={disabled}
                 {...props}
             />
             {rightIcon && rightIcon}
@@ -127,6 +130,7 @@ const InputEmail = ({
     id,
     onChange,
     value,
+    disabled = false,
     ...props
 }) => {
     // Use vaiabel to manage color based on theme
@@ -135,16 +139,18 @@ const InputEmail = ({
     const inputSizeConfig = inputSizeClass[inputSize];
     return (
         <div
-            className={`input input-bordere flex items-center gap-2 ${themeConfig} ${inputSizeConfig} ${maxWidthConfig}`}
+            className={`input input-bordere flex items-center gap-2 ${themeConfig} ${inputSizeConfig} ${maxWidthConfig} dark:bg-[#B3B6BA]`}
+            disabled={disabled}
         >
             {leftIcon && leftIcon}
             <input
                 id={id}
                 type="email"
                 placeholder={placeholder}
-                className={`grow border-0 focus:ring-0`}
+                className={`grow border-0 focus:ring-0 disabled:cursor-not-allowed disabled:text-slate-950 dark:disabled:bg-[#B3B6BA]`}
                 onChange={onChange}
                 value={value}
+                disabled={disabled}
                 {...props}
             />
             {rightIcon && rightIcon}
@@ -211,7 +217,7 @@ const InputTextarea = ({
             id={id}
             type="number"
             placeholder={placeholder}
-            className={`focus:border-0 focus:ring-0 textarea textarea-bordered flex items-center gap-2 ${themeConfig} ${inputSizeConfig} ${maxWidthConfig}`}
+            className={`focus:border-0 focus:ring-0 textarea textarea-bordered flex items-center gap-2 ${themeConfig} ${inputSizeConfig} ${maxWidthConfig} disabled:text-slate-950 dark:disabled:bg-[#B3B6BA]`}
             onChange={onChange}
             value={value}
             {...props}

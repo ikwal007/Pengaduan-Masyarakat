@@ -52,7 +52,7 @@ const Label = ({
             <select
                 {...props}
                 id={id}
-                className={`select focus:border-0 focus:ring-0 ${themeConfig} ${maxWidthConfig}`}
+                className={`select focus:border-0 focus:ring-0 ${themeConfig} ${maxWidthConfig} disabled:text-gray-950 text-sm`}
                 value={value}
                 onChange={onChange}
             >
