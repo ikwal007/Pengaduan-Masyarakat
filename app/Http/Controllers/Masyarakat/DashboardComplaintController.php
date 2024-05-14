@@ -138,7 +138,12 @@ class DashboardComplaintController extends Controller
      */
     public function show(string $id)
     {
-        //
+        $complaint = new ComplaintQuery();
+        $detailComplaint = $complaint->getDetailComplaint($id);
+        if ($detailComplaint->complaintStatus->slug === 'ditolak') {
+            return redirect()->route("complaint.index");
+        }
+        dd($detailComplaint->complaintStatus);
     }
 
     /**

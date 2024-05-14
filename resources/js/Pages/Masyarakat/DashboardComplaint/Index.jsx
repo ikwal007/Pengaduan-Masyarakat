@@ -276,9 +276,9 @@ const Index = () => {
                                         ) : (
                                             <GlobalLink
                                                 href={route(
-                                                    "pelayanan.complaint-verification-dashboard-edit",
+                                                    "complaint.show",
                                                     {
-                                                        id: data.id,
+                                                        complaint: data.id,
                                                     }
                                                 )}
                                                 children={
