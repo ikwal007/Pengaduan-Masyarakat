@@ -153,7 +153,16 @@ class DashboardComplaintController extends Controller
      */
     public function edit(string $id)
     {
-        //
+        $complainType = new ComplaintTypeQuery();
+        $allComplainType = $complainType->getComplaintTypeExcept("pelanggaran-disiplin-pegawai-negeri-sipil");
+
+        $subdistrict = new SubdistrictQuery();
+        $subdistricts = $subdistrict->getAllSubdistrictWithVillage();
+
+        return inertia('Masyarakat/CreateComplaint/Create', [
+            'allComplainType' => $allComplainType,
+            'subdistricts' => $subdistricts,
+        ]);
     }
 
     /**
