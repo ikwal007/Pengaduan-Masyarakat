@@ -18,9 +18,9 @@ class DeleteImageComplaintController extends Controller
         if (!is_null($findArchive)) {
             Storage::delete($findArchive->resource);
             $findArchive->delete();
-            return response()->json(['message' => 'success', 'status' => '200'], 200);
+            return response()->json(['message' => 'success', 'status' => 200], 200);
         } else {
-            return response()->json(['message' => 'failed', 'status' => '404'], 404);
+            return response()->json(['message' => 'failed', 'status' => 404], 404);
         }
     }
 }

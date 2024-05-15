@@ -1,6 +1,6 @@
 import AuthenticatedLayout2 from "@/Layouts/AuthenticatedLayout2";
 import { PiKeyThin } from "react-icons/pi";
-import { useForm, usePage } from "@inertiajs/react";
+import { router, useForm, usePage } from "@inertiajs/react";
 import Notif1 from "@/Components/Notifications/Notif1";
 import { useEffect, useState } from "react";
 import Typography from "@/Components/Atoms/Typography";
@@ -191,10 +191,19 @@ const Edit = () => {
     };
 
     const handleDeleteImg = async (id) => {
-        const res = await fetch()
-        console.log(id);
-
-    }
+        const res = await fetch(
+            route("masyarakat.complaints-image-destroy", { id: id }),
+            {
+                method: "DELETE",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+            }
+        ).then((res) => res.json()).catch((err) => console.log(err));
+        if (res.status === 200) {
+            router.reload()
+        }
+    };
 
     useEffect(() => {
         setShow(true);
