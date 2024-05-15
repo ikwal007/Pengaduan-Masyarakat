@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\General\GetNotificationController;
+use App\Http\Controllers\Masyarakat\DeleteImageComplaintController;
 use App\Http\Controllers\Masyarakat\GetComplaintController;
 use App\Http\Controllers\Pelayanan\GetComplaintController as PelayananGetComplaintController;
 use App\Http\Controllers\Seksi\GetComplaintController as SeksiGetComplaintController;
@@ -32,6 +33,9 @@ Route::prefix('complaints')->group(function () {
     });
     Route::prefix('seksi')->group(function () {
         Route::get('/search', [SeksiGetComplaintController::class, 'index'])->name('seksi.complaints-index');
+    });
+    Route::prefix('Masyarakat')->group(function () {
+        Route::delete('/oomplaint/{id}/delete', [DeleteImageComplaintController::class, 'destroy'])->name('masyarakat.complaints-image-destroy');
     });
 });
 
