@@ -18,12 +18,24 @@ const Edit = () => {
         flash,
         errors,
         allComplainType,
-        defaultComplaintMediaTypeForMasyarakat,
+        detailComplaint,
         subdistricts,
         defaultComplaintStatus,
     } = usePage().props;
 
-    const [subdistrictSelected, setSubdistrictSelected] = useState([]);
+    const {
+        complaint_type,
+        complaint_media_type,
+        user,
+        subdistrict,
+        village,
+        certificate_no,
+        description,
+        complaint_status,
+        archives,
+    } = detailComplaint;
+
+    const [subdistrictSelected, setSubdistrictSelected] = useState(subdistrict);
 
     const [show, setShow] = useState(true);
     const [inputFiles, setInputFiles] = useState([]);
@@ -41,16 +53,17 @@ const Edit = () => {
         setError,
         clearErrors,
     } = useForm({
-        complainType: "",
-        complainMediaType: defaultComplaintMediaTypeForMasyarakat,
-        userEmail: auth.user.email,
-        subdistricts: "",
-        village: "",
-        certificateNumber: "",
-        description: "",
-        complainStatus: defaultComplaintStatus.id,
+        complainType: complaint_type.id || "",
+        complainMediaType: complaint_media_type.id || "",
+        userEmail: user.email,
+        subdistricts: subdistrict.id || "",
+        village: village.id || "",
+        certificateNumber: certificate_no || "",
+        description: description || "",
+        complainStatus: complaint_status.id,
         inputFiles: [],
     });
+    console.log(detailComplaint);
 
     const handlerDataChange = (e) => {
         const { id, value } = e.target;
@@ -118,7 +131,6 @@ const Edit = () => {
                 updatePreviewValuesImg = previewImage.concat([
                     { id: parseInt(id), imageUrl },
                 ]);
-                
             }
             setPreviewImage(updatePreviewValuesImg);
         };
@@ -126,15 +138,14 @@ const Edit = () => {
     };
 
     const renderImagePreviewSrc = (id) => {
-        let src = null
-        previewImage.forEach(data => {
+        let src = null;
+        previewImage.forEach((data) => {
             if (data.id === id) {
-                src = data.imageUrl
-                
+                src = data.imageUrl;
             }
         });
-        return src
-    }
+        return src;
+    };
 
     const getVillageOptions = () => {
         if (subdistrictSelected && subdistrictSelected.village) {
@@ -178,6 +189,11 @@ const Edit = () => {
         setInputFiles(updateInputFiles);
         setPreviewImage(updatePreviewValue);
     };
+
+    const handleDeleteImg = (id) => {
+        console.log(id);
+
+    }
 
     useEffect(() => {
         setShow(true);
@@ -358,6 +374,53 @@ const Edit = () => {
                         </Input>
 
                         <div className="flex flex-wrap w-full gap-3 p-3">
+                            {archives.length > 0 &&
+                                archives.map((data, i) => {
+                                    return (
+                                        <div key={i} className="relative">
+                                            <Input maxWidth="max">
+                                                <Input.Label
+                                                    htmlFor={"avatar"}
+                                                    message={formErrors.avatar}
+                                                >
+                                                    <div className="flex flex-col items-center">
+                                                        <div className="flex relative w-max bg-purple-500 rounded-lg hover:cursor-pointer overflow-hidden border-4 group">
+                                                            <img
+                                                                src={
+                                                                    data.resource
+                                                                }
+                                                                alt="Preview"
+                                                                className="w-40 h-40"
+                                                            />
+                                                        </div>
+                                                    </div>
+                                                </Input.Label>
+                                                <Input.InputFile
+                                                    id={data.id}
+                                                    name={"avatar"}
+                                                    disabled
+                                                    accept=".jpg, .jpeg, .png, .gif"
+                                                    onChange={
+                                                        handleInputFileChange
+                                                    }
+                                                />
+                                            </Input>
+                                            <Button
+                                                theme="primary"
+                                                maxWidth="max"
+                                                type="button"
+                                                onClick={() =>
+                                                    handleDeleteImg(data.id)
+                                                }
+                                                className="absolute !p-0 !rounded-full -right-3 -top-3"
+                                            >
+                                                <TiDeleteOutline className="w-8 h-8 text-white" />
+                                            </Button>
+                                        </div>
+                                    );
+                                })}
+                        </div>
+                        <div className="flex flex-wrap w-full gap-3 p-3">
                             {inputFiles.length > 0 &&
                                 inputFiles.map((data, i) => {
                                     return (
@@ -368,12 +431,14 @@ const Edit = () => {
                                                     message={formErrors.avatar}
                                                 >
                                                     <div className="flex flex-col items-center">
-                                                        {renderImagePreviewSrc(data.id) || data.avatar ? (
+                                                        {renderImagePreviewSrc(
+                                                            data.id
+                                                        ) || data.avatar ? (
                                                             <div className="flex relative w-max bg-purple-500 rounded-lg hover:cursor-pointer overflow-hidden border-4 group">
                                                                 <img
-                                                                    src={
-                                                                        renderImagePreviewSrc(data.id)
-                                                                    }
+                                                                    src={renderImagePreviewSrc(
+                                                                        data.id
+                                                                    )}
                                                                     alt="Preview"
                                                                     className="w-40 h-40"
                                                                 />

@@ -307,11 +307,12 @@ const InputCheckbox = ({ children }) => {
     );
 };
 
-const InputFile = ({ id, name, onChange, value, accept, maxWidth = "max" }) => {
+const InputFile = ({ id, name, onChange, value, accept, maxWidth = "max", ...props }) => {
     const maxWidthConfig = maxWidthClass[maxWidth];
     return (
         <div className="flex items-center">
             <input
+                {...props}
                 id={id}
                 name={name}
                 type="file"

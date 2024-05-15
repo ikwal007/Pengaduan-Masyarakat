@@ -153,6 +153,9 @@ class DashboardComplaintController extends Controller
      */
     public function edit(string $id)
     {
+        $complaint = new ComplaintQuery();
+        $detailComplaint = $complaint->getDetailComplaint($id);
+
         $complainType = new ComplaintTypeQuery();
         $allComplainType = $complainType->getComplaintTypeExcept("pelanggaran-disiplin-pegawai-negeri-sipil");
 
@@ -160,6 +163,7 @@ class DashboardComplaintController extends Controller
         $subdistricts = $subdistrict->getAllSubdistrictWithVillage();
 
         return inertia('Masyarakat/EditComplaint/Edit', [
+            'detailComplaint' => $detailComplaint,
             'allComplainType' => $allComplainType,
             'subdistricts' => $subdistricts,
         ]);

@@ -51,7 +51,7 @@ class Complaint extends Model
 
     public function subdistrict(): BelongsTo
     {
-        return $this->belongsTo(Subdistrict::class, 'complaint_subdistrict_id');
+        return $this->belongsTo(Subdistrict::class, 'complaint_subdistrict_id')->with('village');
     }
 
     public function complaintHandling(): HasMany
