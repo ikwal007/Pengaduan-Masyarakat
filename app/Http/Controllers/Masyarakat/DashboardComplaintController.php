@@ -159,7 +159,7 @@ class DashboardComplaintController extends Controller
         $subdistrict = new SubdistrictQuery();
         $subdistricts = $subdistrict->getAllSubdistrictWithVillage();
 
-        return inertia('Masyarakat/CreateComplaint/Create', [
+        return inertia('Masyarakat/EditComplaint/Edit', [
             'allComplainType' => $allComplainType,
             'subdistricts' => $subdistricts,
         ]);

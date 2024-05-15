@@ -248,7 +248,7 @@ const Index = () => {
                                             <Table.TdBasic className="flex gap-4 w-full">
                                                 <GlobalLink
                                                     href={route(
-                                                        "pelayanan.complaint-verification-dashboard-edit",
+                                                        "complaint.edit",
                                                         {
                                                             id: data.id,
                                                         }
