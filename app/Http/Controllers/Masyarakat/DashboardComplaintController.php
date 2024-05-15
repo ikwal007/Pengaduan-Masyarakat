@@ -143,7 +143,9 @@ class DashboardComplaintController extends Controller
         if ($detailComplaint->complaintStatus->slug === 'ditolak') {
             return redirect()->route("complaint.index");
         }
-        dd($detailComplaint->complaintStatus);
+        return inertia('Masyarakat/ShowComplaint/Show', [
+            "detailComplaint" => $detailComplaint
+        ]);
     }
 
     /**

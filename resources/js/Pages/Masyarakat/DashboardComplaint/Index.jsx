@@ -245,7 +245,7 @@ const Index = () => {
                                         </Table.TdBasic>
                                         {data.complaint_status.slug ===
                                         "ditolak" ? (
-                                            <div className="flex gap-4 w-full">
+                                            <Table.TdBasic className="flex gap-4 w-full">
                                                 <GlobalLink
                                                     href={route(
                                                         "pelayanan.complaint-verification-dashboard-edit",
@@ -272,9 +272,10 @@ const Index = () => {
                                                     theme="danger"
                                                     maxWidth="max"
                                                 />
-                                            </div>
+                                            </Table.TdBasic>
                                         ) : (
-                                            <GlobalLink
+                                            <Table.TdBasic>
+                                                <GlobalLink
                                                 href={route(
                                                     "complaint.show",
                                                     {
@@ -287,6 +288,7 @@ const Index = () => {
                                                 theme="info"
                                                 maxWidth="max"
                                             />
+                                            </Table.TdBasic>
                                         )}
                                     </Table.Tr>
                                 ))
