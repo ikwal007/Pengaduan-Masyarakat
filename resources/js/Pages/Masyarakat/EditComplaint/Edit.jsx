@@ -190,7 +190,8 @@ const Edit = () => {
         setPreviewImage(updatePreviewValue);
     };
 
-    const handleDeleteImg = (id) => {
+    const handleDeleteImg = async (id) => {
+        const res = await fetch()
         console.log(id);
 
     }

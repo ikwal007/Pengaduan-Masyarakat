@@ -35,7 +35,7 @@ Route::prefix('complaints')->group(function () {
         Route::get('/search', [SeksiGetComplaintController::class, 'index'])->name('seksi.complaints-index');
     });
     Route::prefix('Masyarakat')->group(function () {
-        Route::delete('/oomplaint/{id}/delete', [DeleteImageComplaintController::class, 'destroy'])->name('masyarakat.complaints-image-destroy');
+        Route::delete('/image/{id}/delete', [DeleteImageComplaintController::class, 'destroy'])->name('masyarakat.complaints-image-destroy');
     });
 });
 
