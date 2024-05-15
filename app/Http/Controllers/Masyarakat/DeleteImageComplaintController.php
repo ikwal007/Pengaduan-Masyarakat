@@ -15,8 +15,12 @@ class DeleteImageComplaintController extends Controller
     public function destroy(string $id)
     {
         $findArchive = Archives::find($id);
-        Storage::delete($findArchive->resource);
-        $findArchive->delete();
-        return response()->json(['message' => 'success'], 200);
+        if (!is_null($findArchive)) {
+            Storage::delete($findArchive->resource);
+            $findArchive->delete();
+            return response()->json(['message' => 'success', 'status' => '200'], 200);
+        } else {
+            return response()->json(['message' => 'failed', 'status' => '404'], 404);
+        }
     }
 }
