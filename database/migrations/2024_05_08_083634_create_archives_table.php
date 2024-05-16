@@ -12,7 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('archives', function (Blueprint $table) {
-            $table->foreignUlid('complaint_id')->constrained(table: 'complaints', column: 'id', indexName: 'archive_complaint_id');
+            $table->foreignUlid('complaint_id')->constrained(table: 'complaints', column: 'id', indexName: 'archive_complaint_id')->onDelete('cascade');
             $table->ulid('id')->primary()->unique();
             $table->string('resource');
             $table->timestamps();

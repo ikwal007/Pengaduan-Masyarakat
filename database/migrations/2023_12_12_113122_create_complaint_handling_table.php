@@ -12,7 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('complaint_handling', function (Blueprint $table) {
-            $table->foreignUlid('complaint_id')->constrained(table: 'complaints', column: 'id', indexName: 'complaint_id');
+            $table->foreignUlid('complaint_id')->constrained(table: 'complaints', column: 'id', indexName: 'complaint_id')->onDelete('cascade');
             $table->foreignUlid('seksi_id')->constrained(table: 'seksis', column: 'id', indexName: 'seksi_id');
             $table->ulid('id')->primary()->unique();
             $table->foreignUlid('status_id')->constrained(table: 'complaint_statuses', column: 'id', indexName: 'status_id');

@@ -1,6 +1,6 @@
 import AuthenticatedLayout2 from "@/Layouts/AuthenticatedLayout2";
 import { FaClipboardUser } from "react-icons/fa6";
-import { usePage } from "@inertiajs/react";
+import { router, usePage } from "@inertiajs/react";
 import {
     LuClipboardCheck,
     LuClipboardList,
@@ -16,6 +16,7 @@ import Select from "@/Components/Molecules/Select";
 import { FaRegEdit, FaRegEye } from "react-icons/fa";
 import GlobalLink from "@/Components/Atoms/GlobalLink";
 import { MdDeleteForever } from "react-icons/md";
+import Pusher from "pusher-js";
 
 const Index = () => {
     // Destructure props from usePage()
@@ -96,17 +97,39 @@ const Index = () => {
         }
     }, [deferredSearch]);
 
-    // useEffect(() => {
-    //     const channel = echo.channel("user-status");
+    useEffect(() => {
+        Pusher.logToConsole = true;
 
-    //     channel.listen("UpdateUserStatusListener", (data) => {
-    //         console.log("ini adalah callback event: ", data);
-    //     });
+        const pusher = new Pusher("515f5459102b8e74d3ae", {
+            app_id: "1731889",
+            secret: "ed1c32d26e2374f6ef09",
+            cluster: "ap1",
+        });
 
-    //     // return () => {
-    //     //   listener.stopListening(); // Unbind the event listener when the component unmounts
-    //     // };
-    // }, [echo]);
+        pusher
+            .subscribe("notification-to-masyarakat")
+            .bind("ComplaintRegister", function ({ email, notification }) {
+                if (email === auth.user.email) {
+                    router.reload({
+                        only: [
+                            "countComplaint",
+                            "countComplaintByStatusProsessing",
+                            "countComplaintByStatusPending",
+                            "countComplaintByStatusDone",
+                            "countComplaintByStatusReject",
+                            "paginationComplaint",
+                            "allStatus",
+                        ],
+                    });
+                }
+            });
+
+        return () => {
+            pusher.unbind("ComplaintRegister");
+            pusher.unsubscribe("notification-to-masyarakat");
+            pusher.disconnect();
+        };
+    }, []);
 
     return (
         <>
@@ -260,8 +283,10 @@ const Index = () => {
                                                     maxWidth="max"
                                                 />
                                                 <GlobalLink
+                                                    as={"button"}
+                                                    method="delete"
                                                     href={route(
-                                                        "pelayanan.complaint-verification-dashboard-edit",
+                                                        "complaint.destroy",
                                                         {
                                                             id: data.id,
                                                         }
@@ -276,18 +301,18 @@ const Index = () => {
                                         ) : (
                                             <Table.TdBasic>
                                                 <GlobalLink
-                                                href={route(
-                                                    "complaint.show",
-                                                    {
-                                                        complaint: data.id,
+                                                    href={route(
+                                                        "complaint.show",
+                                                        {
+                                                            complaint: data.id,
+                                                        }
+                                                    )}
+                                                    children={
+                                                        <FaRegEye className="w-5 h-5" />
                                                     }
-                                                )}
-                                                children={
-                                                    <FaRegEye className="w-5 h-5" />
-                                                }
-                                                theme="info"
-                                                maxWidth="max"
-                                            />
+                                                    theme="info"
+                                                    maxWidth="max"
+                                                />
                                             </Table.TdBasic>
                                         )}
                                     </Table.Tr>
@@ -296,7 +321,7 @@ const Index = () => {
                                 <Table.Tr>
                                     <Table.TdBasic
                                         children={"no data record"}
-                                        colSpan="5"
+                                        colSpan="6"
                                         className="text-center"
                                     />
                                 </Table.Tr>
@@ -307,7 +332,7 @@ const Index = () => {
                                     children={
                                         <span className="loading loading-dots loading-lg"></span>
                                     }
-                                    colSpan="5"
+                                    colSpan="6"
                                     className="text-center"
                                 />
                             </Table.Tr>

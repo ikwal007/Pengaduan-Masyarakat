@@ -18,6 +18,7 @@ use App\Queries\ComplaintMediaTypeQuery;
 use App\Events\Masyarakat\ComplaintRegister;
 use App\Http\Requests\General\ComplaintPostRequest;
 use App\Models\Archives;
+use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Validator;
 
 class DashboardComplaintController extends Controller
@@ -37,12 +38,12 @@ class DashboardComplaintController extends Controller
         $allCountComplaintByStatusPending = $complaint->getAllCountComplaintByStatusOnSpecificUser('ditunda', auth()->user()->email);
         $paginationComplaint = $complaint->complaintWithPaginationOnSpecificUser(auth()->user()->email);
         return inertia('Masyarakat/DashboardComplaint/Index', [
-            'countComplaint' => $allCountComplaint,
-            'countComplaintByStatusProsessing' => $allCountComplaintByStatusProsessing,
-            'countComplaintByStatusDone' => $allCountComplaintByStatusDone,
-            'countComplaintByStatusReject' => $allCountComplaintByStatusReject,
-            'countComplaintByStatusPending' => $allCountComplaintByStatusPending,
-            'paginationComplaint' => $paginationComplaint,
+            'countComplaint' => fn () => $allCountComplaint,
+            'countComplaintByStatusProsessing' => fn () => $allCountComplaintByStatusProsessing,
+            'countComplaintByStatusDone' => fn () => $allCountComplaintByStatusDone,
+            'countComplaintByStatusReject' => fn () => $allCountComplaintByStatusReject,
+            'countComplaintByStatusPending' => fn () => $allCountComplaintByStatusPending,
+            'paginationComplaint' => fn () => $paginationComplaint,
             'allStatus' => $allStatus,
         ]);
     }
@@ -80,6 +81,9 @@ class DashboardComplaintController extends Controller
     {
         $validated = $request->validated();
 
+        $statusComplaint = new ComplaintStatusQuery();
+        $defaultComplaintStatus = $statusComplaint->getComplaintStatusBySlug('ditunda')->id;
+
         $complaint = new Complaint();
         $complaint->complaint_type_id = $validated['complainType'];
         $complaint->complaint_media_types_id = $validated['complainMediaType'];
@@ -88,7 +92,7 @@ class DashboardComplaintController extends Controller
         $complaint->complaint_subdistrict_id = $validated['subdistricts'];
         $complaint->certificate_no = $validated['certificateNumber'];
         $complaint->description = $validated['description'];
-        $complaint->complaint_statuses_id = $validated['complainStatus'];
+        $complaint->complaint_statuses_id = $defaultComplaintStatus;
         $complaint->confirmed = 0;
         $complaint->save();
 
@@ -253,6 +257,29 @@ class DashboardComplaintController extends Controller
      */
     public function destroy(string $id)
     {
-        //
+        $findComplaint = Complaint::with(['archives', 'complaintHandling'])->find($id);
+
+        if (!empty($findComplaint->archives)) {
+            foreach ($findComplaint->archives as $data) {
+                File::delete(public_path($data->resource));
+            }
+        }
+
+
+        $notification = new Notification();
+        $notification->user_email = $findComplaint->user_email;
+        $notification->title = "Hapus Pengaduan" . " - " . $findComplaint->certificate_no;
+        $notification->content = "Pengaduan Telah dihapus." . "Dengan Data sertifikasi:" . $findComplaint->certificate_no . "Dengan Deskripsi:" . $findComplaint->description;
+        $notification->save();
+        $findComplaint->delete();
+
+        $notificationQuery = new NotificationQuery();
+
+        event(new ComplaintRegister(
+            $findComplaint->user_email,
+            $notificationQuery->getAllNotification($findComplaint->user_email)
+        ));
+
+        return redirect()->route('complaint.index')->with('message', 'Pengaduan Berhasil Dihapus');
     }
 }
