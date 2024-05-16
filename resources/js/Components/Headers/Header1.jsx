@@ -125,10 +125,10 @@ const Header1 = () => {
 
         Pusher.logToConsole = true;
 
-        const pusher = new Pusher("515f5459102b8e74d3ae", {
-            app_id: "1731889",
-            secret: "ed1c32d26e2374f6ef09",
-            cluster: "ap1",
+        const pusher = new Pusher(import.meta.env.VITE_PUSHER_APP_KEY, {
+            app_id: import.meta.env.VITE_PUSHER_APP_ID,
+            secret: import.meta.env.VITE_PUSHER_APP_SECRET,
+            cluster: import.meta.env.VITE_PUSHER_APP_CLUSTER,
         });
 
         pusher
@@ -219,7 +219,7 @@ const Header1 = () => {
                             </Button>
                             {isNotificationsMenuOpen && (
                                 <div>
-                                    <ul className="absolute right-0 w-56 p-2 mt-2 space-y-2 text-gray-600 bg-white border border-gray-100 rounded-md shadow-md dark:text-gray-300 dark:border-gray-700 dark:bg-gray-700">
+                                    <ul className="absolute right-0 w-56 max-h-[400px] overflow-auto p-2 mt-2 space-y-2 text-gray-600 bg-white border border-gray-100 rounded-md shadow-md dark:text-gray-300 dark:border-gray-700 dark:bg-gray-700">
                                         {dataNotification.length > 0 ? (
                                             dataNotification.map((data, i) => (
                                                 <li className="flex" key={i}>
