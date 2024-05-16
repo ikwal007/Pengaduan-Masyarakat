@@ -18,6 +18,7 @@ use App\Queries\ComplaintMediaTypeQuery;
 use App\Events\Masyarakat\ComplaintRegister;
 use App\Http\Requests\General\ComplaintPostRequest;
 use App\Models\Archives;
+use Illuminate\Support\Facades\Validator;
 
 class DashboardComplaintController extends Controller
 {
@@ -94,7 +95,7 @@ class DashboardComplaintController extends Controller
         if (!empty($request['inputFiles'])) {
             foreach ($request['inputFiles'] as $data) {
                 $archives = new Archives();
-                $patch = '/upload/archives/'.$validated['userEmail'].'/';
+                $patch = '/upload/archives/' . $validated['userEmail'] . '/';
                 $avatar = $data['file'];
                 $slug = Str::slug($avatar->getClientOriginalName());
                 $filename = time() . '-' . $slug . '.' . $avatar->getClientOriginalExtension();
@@ -119,8 +120,8 @@ class DashboardComplaintController extends Controller
 
         $notification = new Notification();
         $notification->user_email = $validated['userEmail'];
-        $notification->title = "Pengaduan Baru ".$validated['certificateNumber'];
-        $notification->content = "Pengaduan sedang diproses oleh Kepala Seksi terkait." . "Dengan Data sertifikasi:" . $validated['certificateNumber'] . "Dengan Deskripsi:" . $validated['description'];
+        $notification->title = "Pengaduan Baru " . $validated['certificateNumber'];
+        $notification->content = "Pengaduan sedang ditinjau oleh pelayanan." . "Dengan Data sertifikasi:" . $validated['certificateNumber'] . "Dengan Deskripsi:" . $validated['description'];
         $notification->save();
 
         $notificationQuery = new NotificationQuery();
@@ -174,7 +175,77 @@ class DashboardComplaintController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        //
+        $findComplaint = Complaint::with('archives')->find($id);
+        $statusComplaint = new ComplaintStatusQuery();
+        $defaultComplaintStatus = $statusComplaint->getComplaintStatusBySlug('ditunda')->id;
+        $request->validate([
+            "data.complainType" => "required",
+            "data.complainMediaType" => "required",
+            "data.userEmail" => ['required', 'email:rfc,dns'],
+            "data.subdistricts" => "required",
+            "data.village" => "required",
+            "data.certificateNumber" => "required",
+            "data.description" => "required",
+        ]);
+
+        if ($findComplaint->complaint_type_id !== $request->data['complainType']) {
+            $findComplaint->complaint_type_id = $request->data['complainType'];
+        }
+        if ($findComplaint->complaint_media_types_id !== $request->data['complainMediaType']) {
+            $findComplaint->complaint_media_types_id = $request->data['complainMediaType'];
+        }
+
+        if ($findComplaint->complaint_village_id !== $request->data['village']) {
+            $findComplaint->complaint_village_id = $request->data['village'];
+        }
+        if ($findComplaint->complaint_subdistrict_id !== $request->data['subdistricts']) {
+            $findComplaint->complaint_subdistrict_id = $request->data['subdistricts'];
+        }
+
+        if ($findComplaint->certificate_no !== $request->data['certificateNumber']) {
+            $findComplaint->certificate_no = $request->data['certificateNumber'];
+        }
+
+        if ($findComplaint->description !== $request->data['description']) {
+            $findComplaint->description = $request->data['description'];
+        }
+
+        if ($findComplaint->complaint_statuses_id !== $defaultComplaintStatus) {
+            $findComplaint->complaint_statuses_id = $defaultComplaintStatus;
+        }
+
+        $findComplaint->confirmed = 0;
+
+        $findComplaint->save();
+
+        if (!empty($request->data['inputFiles'])) {
+            foreach ($request->data['inputFiles'] as $data) {
+                $archives = new Archives();
+                $patch = '/upload/archives/' . $request->data['userEmail'] . '/';
+                $avatar = $data['file'];
+                $slug = Str::slug($avatar->getClientOriginalName());
+                $filename = time() . '-' . $slug . '.' . $avatar->getClientOriginalExtension();
+                $avatar->move(public_path($patch), $filename);
+                $archives->complaint_id = $findComplaint->id;
+                $archives->resource = $patch . $filename;
+                $archives->save();
+            }
+        }
+
+        $notification = new Notification();
+        $notification->user_email = $request->data['userEmail'];
+        $notification->title = "Edit Pengaduan" . " - " . $request->data['certificateNumber'];
+        $notification->content = "Pengaduan sedang ditinjau oleh pelayanan." . "Dengan Data sertifikasi:" . $request->data['certificateNumber'] . "Dengan Deskripsi:" . $request->data['description'] . "Untuk informasi lanjut silahkan lihat di menu notifikasi";
+        $notification->save();
+
+        $notificationQuery = new NotificationQuery();
+
+        event(new ComplaintRegister(
+            $request->data['userEmail'],
+            $notificationQuery->getAllNotification($request->data['userEmail'])
+        ));
+
+        return redirect()->route('complaint.index')->with('message', 'Pengaduan Berhasil Diupdate');
     }
 
     /**

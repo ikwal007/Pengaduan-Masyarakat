@@ -24,9 +24,9 @@ const Edit = () => {
     } = usePage().props;
 
     const {
+        id,
         complaint_type,
         complaint_media_type,
-        user,
         subdistrict,
         village,
         certificate_no,
@@ -45,17 +45,18 @@ const Edit = () => {
     const {
         data,
         setData,
-        post,
+        put,
         processing,
         errors: formErrors,
         reset,
         errors: errorForm,
+        transform,
         setError,
         clearErrors,
     } = useForm({
         complainType: complaint_type.id || "",
         complainMediaType: complaint_media_type.id || "",
-        userEmail: user.email,
+        userEmail: auth.user.email,
         subdistricts: subdistrict.id || "",
         village: village.id || "",
         certificateNumber: certificate_no || "",
@@ -63,7 +64,6 @@ const Edit = () => {
         complainStatus: complaint_status.id,
         inputFiles: [],
     });
-    console.log(detailComplaint);
 
     const handlerDataChange = (e) => {
         const { id, value } = e.target;
@@ -160,7 +160,9 @@ const Edit = () => {
 
     const submit = (e) => {
         e.preventDefault();
-        post(route("complaint.store"), {
+        router.post(route("complaint.update", { id: id }), {
+            _method: "put",
+            data,
             onSuccess: () => reset(),
             onError: () => setError(errors),
         });
@@ -199,9 +201,11 @@ const Edit = () => {
                     "Content-Type": "application/json",
                 },
             }
-        ).then((res) => res.json()).catch((err) => console.log(err));
+        )
+            .then((res) => res.json())
+            .catch((err) => console.log(err));
         if (res.status === 200) {
-            router.reload()
+            router.reload();
         }
     };
 
@@ -244,12 +248,6 @@ const Edit = () => {
                                     message={formErrors.complainType}
                                     children={
                                         <>
-                                            <Select.Option
-                                                title={"Pilih Jenis Pengaduan"}
-                                                value={""}
-                                                disabled
-                                                hidden
-                                            />
                                             {allComplainType &&
                                                 allComplainType.map(
                                                     ({ id, name }, i) => (

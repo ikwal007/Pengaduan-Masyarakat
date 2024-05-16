@@ -29,7 +29,6 @@ class ComplaintPostRequest extends FormRequest
             "village" => "required",
             "certificateNumber" => "required",
             "description" => "required",
-            "complainStatus" => "required",
         ];
     }
 }
