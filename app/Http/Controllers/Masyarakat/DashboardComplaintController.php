@@ -44,7 +44,7 @@ class DashboardComplaintController extends Controller
             'countComplaintByStatusReject' => fn () => $allCountComplaintByStatusReject,
             'countComplaintByStatusPending' => fn () => $allCountComplaintByStatusPending,
             'paginationComplaint' => fn () => $paginationComplaint,
-            'allStatus' => $allStatus,
+            'allStatus' => fn () => $allStatus,
         ]);
     }
 

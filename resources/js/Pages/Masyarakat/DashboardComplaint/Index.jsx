@@ -9,9 +9,8 @@ import {
 } from "react-icons/lu";
 import Table from "@/Components/Tables/Table";
 import Notif1 from "@/Components/Notifications/Notif1";
-import { useDeferredValue, useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import CardCount from "@/Components/Molecules/Cards/CardCount";
-import axios from "axios";
 import Select from "@/Components/Molecules/Select";
 import { FaRegEdit, FaRegEye } from "react-icons/fa";
 import GlobalLink from "@/Components/Atoms/GlobalLink";
@@ -32,14 +31,10 @@ const Index = () => {
         flash,
         ...props
     } = usePage().props;
-    // const echo = useEcho();
-    const [show, setShow] = useState(true);
-    const [searchResults, setSearchResults] = useState(paginationComplaint);
-    const [keyword, setKeyword] = useState("");
+    const [showNotification, setShowNotification] = useState(true);
+    const [filteredComplaints, setFilteredComplaints] = useState(null);
     const [loading, setLoading] = useState(false);
-    const deferredSearch = useDeferredValue(keyword);
-    const isFirstMount = useRef(true);
-    const [status, setStatus] = useState("");
+    const [selectedStatus, setSelectedStatus] = useState("");
 
     const complaintStatus = (status) => {
         switch (status) {
@@ -47,13 +42,13 @@ const Index = () => {
                 return "info";
                 break;
             case "ditunda":
-                return "error";
+                return "warning";
                 break;
             case "diselesaikan":
                 return "success";
                 break;
             case "ditolak":
-                return "warning";
+                return "error";
                 break;
         }
     };
@@ -61,44 +56,22 @@ const Index = () => {
     const handlerDataChange = (e) => {
         setLoading(true);
         const { id, value } = e.target;
-        setStatus(value);
+        setSelectedStatus(value);
         if (value == "semua") {
-            setSearchResults({ ...paginationComplaint });
+            setFilteredComplaints(null);
             setLoading(false);
         } else {
             const res = paginationComplaint.data.filter(
                 (data) => data.complaint_status.id === value
             );
 
-            setSearchResults({ ...paginationComplaint, data: res });
+            setFilteredComplaints({ ...paginationComplaint, data: res });
             setLoading(false);
         }
     };
-    const handlerSearch = async () => {
-        setLoading(true);
-        const res = await axios.get(route("masyarakat.complaints-index"), {
-            params: {
-                keyword: deferredSearch,
-                email: auth.user.email,
-            },
-        });
-        setLoading(false);
-        setSearchResults(res.data);
-    };
 
     useEffect(() => {
-        if (isFirstMount.current) {
-            // Set isFirstMount ke false setelah komponen pertama kali dimuat
-            isFirstMount.current = false;
-            return;
-        }
-        if (deferredSearch) {
-            handlerSearch();
-        }
-    }, [deferredSearch]);
-
-    useEffect(() => {
-        Pusher.logToConsole = true;
+        // Pusher.logToConsole = true;
 
         const pusher = new Pusher(import.meta.env.VITE_PUSHER_APP_KEY, {
             app_id: import.meta.env.VITE_PUSHER_APP_ID,
@@ -110,17 +83,7 @@ const Index = () => {
             .subscribe("notification-to-masyarakat")
             .bind("ComplaintRegister", function ({ email, notification }) {
                 if (email === auth.user.email) {
-                    router.reload({
-                        only: [
-                            "countComplaint",
-                            "countComplaintByStatusProsessing",
-                            "countComplaintByStatusPending",
-                            "countComplaintByStatusDone",
-                            "countComplaintByStatusReject",
-                            "paginationComplaint",
-                            "allStatus",
-                        ],
-                    });
+                    router.reload();
                 }
             });
 
@@ -133,8 +96,8 @@ const Index = () => {
 
     return (
         <>
-            {flash.message && show && (
-                <Notif1 message={flash.message} show={show} setShow={setShow} />
+            {flash.message && showNotification && (
+                <Notif1 message={flash.message} show={showNotification} setShow={setShowNotification} />
             )}
 
             {/* <!-- Cards --> */}
@@ -175,6 +138,7 @@ const Index = () => {
             <Table>
                 <Table.Main className="mt-5">
                     <Table.TableHead>
+                        <Table.Th>No</Table.Th>
                         <Table.Th>Nama Pemohon</Table.Th>
                         <Table.Th>
                             <Select>
@@ -183,7 +147,7 @@ const Index = () => {
                                     children={
                                         <Select.Label
                                             id={"confirmation"}
-                                            value={status}
+                                            value={selectedStatus}
                                             onChange={handlerDataChange}
                                             theme={"ghost"}
                                             required
@@ -231,9 +195,10 @@ const Index = () => {
                     </Table.TableHead>
                     <Table.TableBody>
                         {loading === false ? (
-                            searchResults?.data.length > 0 ? (
-                                searchResults.data.map((data, index) => (
+                            filteredComplaints?.data.length > 0 ? (
+                                filteredComplaints.data.map((data, index) => (
                                     <Table.Tr key={index}>
+                                        <Table.TdBasic>{index + 1}</Table.TdBasic>
                                         <Table.TdProfile
                                             name={data.user.full_name}
                                             email={data.user.email}
@@ -318,13 +283,102 @@ const Index = () => {
                                     </Table.Tr>
                                 ))
                             ) : (
-                                <Table.Tr>
-                                    <Table.TdBasic
-                                        children={"no data record"}
-                                        colSpan="6"
-                                        className="text-center"
-                                    />
-                                </Table.Tr>
+                                paginationComplaint?.data.length > 0 ? (
+                                    paginationComplaint.data.map((data, index) => (
+                                        <Table.Tr key={index}>
+                                            <Table.TdBasic>{index + 1}</Table.TdBasic>
+                                            <Table.TdProfile
+                                                name={data.user.full_name}
+                                                email={data.user.email}
+                                                src={data.user.avatar}
+                                            />
+                                            <Table.TdStatus
+                                                status={data.complaint_status.name}
+                                                description={
+                                                    data.complaint_status
+                                                        .description
+                                                }
+                                                theme={complaintStatus(
+                                                    data.complaint_status.slug
+                                                )}
+                                            />
+                                            <Table.TdBasic>
+                                                <div
+                                                    className="tooltip tooltip-left"
+                                                    data-tip={
+                                                        data.complaint_media_type
+                                                            .description
+                                                    }
+                                                >
+                                                    {data.complaint_media_type.name}
+                                                </div>
+                                            </Table.TdBasic>
+                                            <Table.TdBasic>
+                                                {data.subdistrict.name}
+                                            </Table.TdBasic>
+                                            <Table.TdBasic>
+                                                {data.village.name}
+                                            </Table.TdBasic>
+                                            {data.complaint_status.slug ===
+                                            "ditolak" ? (
+                                                <Table.TdBasic className="flex gap-4 w-full">
+                                                    <GlobalLink
+                                                        href={route(
+                                                            "complaint.edit",
+                                                            {
+                                                                id: data.id,
+                                                            }
+                                                        )}
+                                                        children={
+                                                            <FaRegEdit className="w-5 h-5" />
+                                                        }
+                                                        theme="warning"
+                                                        maxWidth="max"
+                                                    />
+                                                    <GlobalLink
+                                                        as={"button"}
+                                                        method="delete"
+                                                        href={route(
+                                                            "complaint.destroy",
+                                                            {
+                                                                id: data.id,
+                                                            }
+                                                        )}
+                                                        children={
+                                                            <MdDeleteForever className="w-5 h-5" />
+                                                        }
+                                                        theme="danger"
+                                                        maxWidth="max"
+                                                    />
+                                                </Table.TdBasic>
+                                            ) : (
+                                                <Table.TdBasic>
+                                                    <GlobalLink
+                                                        href={route(
+                                                            "complaint.show",
+                                                            {
+                                                                complaint: data.id,
+                                                            }
+                                                        )}
+                                                        children={
+                                                            <FaRegEye className="w-5 h-5" />
+                                                        }
+                                                        theme="info"
+                                                        maxWidth="max"
+                                                    />
+                                                </Table.TdBasic>
+                                            )}
+                                        </Table.Tr>
+                                    ))
+                                ) : (
+                                    <Table.Tr>
+                                        <Table.TdBasic
+                                            children={"no data record"}
+                                            colSpan="7"
+                                            className="text-center"
+                                        />
+                                    </Table.Tr>
+                                )
                             )
                         ) : (
                             <Table.Tr>
@@ -332,7 +386,7 @@ const Index = () => {
                                     children={
                                         <span className="loading loading-dots loading-lg"></span>
                                     }
-                                    colSpan="6"
+                                    colSpan="7"
                                     className="text-center"
                                 />
                             </Table.Tr>

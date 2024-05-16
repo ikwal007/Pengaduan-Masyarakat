@@ -123,7 +123,7 @@ const Header1 = () => {
     useEffect(() => {
         handlerGetNotification();
 
-        Pusher.logToConsole = true;
+        // Pusher.logToConsole = true;
 
         const pusher = new Pusher(import.meta.env.VITE_PUSHER_APP_KEY, {
             app_id: import.meta.env.VITE_PUSHER_APP_ID,
