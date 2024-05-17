@@ -40,16 +40,12 @@ const Index = () => {
         switch (status) {
             case "diproses":
                 return "info";
-                break;
             case "ditunda":
                 return "warning";
-                break;
             case "diselesaikan":
                 return "success";
-                break;
             case "ditolak":
                 return "error";
-                break;
         }
     };
 
@@ -71,10 +67,25 @@ const Index = () => {
     };
 
     const handlePusherEvent = (data) => {
-        router.reload();
+        router.reload({
+            only: [
+                "countComplaint",
+                "countComplaintByStatusProsessing",
+                "countComplaintByStatusPending",
+                "countComplaintByStatusDone",
+                "countComplaintByStatusReject",
+                "paginationComplaint",
+                "allStatus",
+            ],
+        });
     };
 
-    usePusher(auth, "notification-to-masyarakat", "ComplaintRegister", handlePusherEvent);
+    usePusher(
+        auth,
+        "notification-to-masyarakat",
+        "ComplaintRegister",
+        handlePusherEvent
+    );
 
     return (
         <>

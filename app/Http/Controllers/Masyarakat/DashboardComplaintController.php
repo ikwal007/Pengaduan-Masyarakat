@@ -128,11 +128,8 @@ class DashboardComplaintController extends Controller
         $notification->content = "Pengaduan sedang ditinjau oleh pelayanan." . "Dengan Data sertifikasi:" . $validated['certificateNumber'] . "Dengan Deskripsi:" . $validated['description'];
         $notification->save();
 
-        $notificationQuery = new NotificationQuery();
-
         event(new ComplaintRegister(
-            $validated['userEmail'],
-            $notificationQuery->getAllNotification($validated['userEmail'])
+            $validated['userEmail']
         ));
 
         return redirect()->route('complaint.index')->with('message', 'Pengaduan Berhasil Diajukan');
@@ -242,8 +239,6 @@ class DashboardComplaintController extends Controller
         $notification->content = "Pengaduan sedang ditinjau oleh pelayanan." . "Dengan Data sertifikasi:" . $request->data['certificateNumber'] . "Dengan Deskripsi:" . $request->data['description'] . "Untuk informasi lanjut silahkan lihat di menu notifikasi";
         $notification->save();
 
-        $notificationQuery = new NotificationQuery();
-
         event(new ComplaintRegister(
             $request->data['userEmail']
         ));
@@ -272,11 +267,8 @@ class DashboardComplaintController extends Controller
         $notification->save();
         $findComplaint->delete();
 
-        $notificationQuery = new NotificationQuery();
-
         event(new ComplaintRegister(
             $findComplaint->user_email,
-            $notificationQuery->getAllNotification($findComplaint->user_email)
         ));
 
         return redirect()->route('complaint.index')->with('message', 'Pengaduan Berhasil Dihapus');

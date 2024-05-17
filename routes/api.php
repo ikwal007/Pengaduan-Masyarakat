@@ -49,4 +49,5 @@ Route::prefix('super-admin')->group(function () {
 Route::prefix('general')->group(function () {
     Route::get('/notification', [GetNotificationController::class, 'index'])->name('general.get-notification-index');
     Route::get('/notification/{id}/{email}', [GetNotificationController::class, 'update'])->name('general.get-notification-update');
+    Route::delete('/notification/{id}', [GetNotificationController::class, 'destroy'])->name('general.get-notification-destroy');
 });

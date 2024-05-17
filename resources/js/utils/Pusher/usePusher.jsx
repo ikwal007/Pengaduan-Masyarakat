@@ -3,7 +3,6 @@ import initPusher from "./Init";
 
 const usePusher = (auth, channelName, eventName, callback) => {
     useEffect(() => {
-        console.log(auth, channelName, eventName, callback);
         const pusher = initPusher();
         const channel = pusher.subscribe(channelName);
 
@@ -20,7 +19,7 @@ const usePusher = (auth, channelName, eventName, callback) => {
             pusher.unsubscribe(channelName);
             pusher.disconnect();
         };
-    }, [auth, channelName, eventName, callback]);
+    }, []);
 };
 
 export default usePusher;

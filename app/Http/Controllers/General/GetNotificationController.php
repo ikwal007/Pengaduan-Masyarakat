@@ -44,4 +44,14 @@ class GetNotificationController extends Controller
         }
         return response()->json([]);
     }
+    
+    public function destroy($id)
+    {
+        if ($id) {
+            $notification = Notification::find($id);
+            $notification->delete();
+            return response()->json(['message' => 'success', 'status' => 200]);
+        }
+        return response()->json(["message" => "failed", "status" => 404]);
+    }
 }

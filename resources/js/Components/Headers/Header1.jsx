@@ -9,7 +9,7 @@ import { IoMoonSharp, IoNotifications, IoSunny } from "react-icons/io5";
 import Avatar from "../Atoms/Avatar";
 import Typography from "../Atoms/Typography";
 import NotificationBar from "../Notifications/NotificationBar";
-import Pusher from "pusher-js";
+import usePusher from "@/utils/Pusher/usePusher";
 
 const Header1 = () => {
     // state variables
@@ -30,8 +30,10 @@ const Header1 = () => {
     const mobileMenuRef = useRef(null);
 
     const handlerFirstOpenNotification = async (id) => {
-       const res = await axios.get(route("general.get-notification-update", [id, auth.user.email]));
-       return res;
+        const res = await axios.get(
+            route("general.get-notification-update", [id, auth.user.email])
+        );
+        return res;
     };
 
     // Function to handle profile and notifications button clicks
@@ -45,7 +47,9 @@ const Header1 = () => {
                 break;
             case "notificationBar":
                 if (dataDetailNotification.read === 0) {
-                    await handlerFirstOpenNotification(dataDetailNotification.id);
+                    await handlerFirstOpenNotification(
+                        dataDetailNotification.id
+                    );
                     setShowDetailNotification(dataDetailNotification);
 
                     setNotificationsBarMenu(!notificationsBarMenu);
@@ -122,29 +126,18 @@ const Header1 = () => {
 
     useEffect(() => {
         handlerGetNotification();
-
-        // Pusher.logToConsole = true;
-
-        const pusher = new Pusher(import.meta.env.VITE_PUSHER_APP_KEY, {
-            app_id: import.meta.env.VITE_PUSHER_APP_ID,
-            secret: import.meta.env.VITE_PUSHER_APP_SECRET,
-            cluster: import.meta.env.VITE_PUSHER_APP_CLUSTER,
-        });
-
-        pusher
-            .subscribe("notification-to-masyarakat")
-            .bind("ComplaintRegister", function ({ email, notification }) {
-                if (email === auth.user.email) {
-                    setDataNotification(notification)
-                }
-            });
-
-        return () => {
-            pusher.unbind("ComplaintRegister");
-            pusher.unsubscribe("notification-to-masyarakat");
-            pusher.disconnect();
-        };
     }, []);
+
+    const handlePusherEvent = (data) => {
+        handlerGetNotification();
+    };
+
+    usePusher(
+        auth,
+        "notification-to-masyarakat",
+        "ComplaintRegister",
+        handlePusherEvent
+    );
 
     // JSX structure for the header
     return (
@@ -239,7 +232,7 @@ const Header1 = () => {
                                                             <span className="inline-flex items-center justify-center px-2 py-1 text-xs font-bold leading-none text-red-600 bg-red-100 rounded-full dark:text-red-100 dark:bg-red-600">
                                                                 New
                                                             </span>
-                                                        ): null}
+                                                        ) : null}
                                                     </button>
                                                 </li>
                                             ))
@@ -264,6 +257,7 @@ const Header1 = () => {
                                 setNotificationsBarMenu={
                                     setNotificationsBarMenu
                                 }
+                                handlerGetNotification={handlerGetNotification}
                             />
                         )}
                         {/* <!-- Profile menu --> */}
