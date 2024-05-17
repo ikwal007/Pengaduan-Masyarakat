@@ -245,8 +245,7 @@ class DashboardComplaintController extends Controller
         $notificationQuery = new NotificationQuery();
 
         event(new ComplaintRegister(
-            $request->data['userEmail'],
-            $notificationQuery->getAllNotification($request->data['userEmail'])
+            $request->data['userEmail']
         ));
 
         return redirect()->route('complaint.index')->with('message', 'Pengaduan Berhasil Diupdate');

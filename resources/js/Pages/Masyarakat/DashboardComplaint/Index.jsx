@@ -9,13 +9,13 @@ import {
 } from "react-icons/lu";
 import Table from "@/Components/Tables/Table";
 import Notif1 from "@/Components/Notifications/Notif1";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import CardCount from "@/Components/Molecules/Cards/CardCount";
 import Select from "@/Components/Molecules/Select";
 import { FaRegEdit, FaRegEye } from "react-icons/fa";
 import GlobalLink from "@/Components/Atoms/GlobalLink";
 import { MdDeleteForever } from "react-icons/md";
-import Pusher from "pusher-js";
+import usePusher from "@/utils/Pusher/usePusher";
 
 const Index = () => {
     // Destructure props from usePage()
@@ -70,34 +70,20 @@ const Index = () => {
         }
     };
 
-    useEffect(() => {
-        // Pusher.logToConsole = true;
+    const handlePusherEvent = (data) => {
+        router.reload();
+    };
 
-        const pusher = new Pusher(import.meta.env.VITE_PUSHER_APP_KEY, {
-            app_id: import.meta.env.VITE_PUSHER_APP_ID,
-            secret: import.meta.env.VITE_PUSHER_APP_SECRET,
-            cluster: import.meta.env.VITE_PUSHER_APP_CLUSTER,
-        });
-
-        pusher
-            .subscribe("notification-to-masyarakat")
-            .bind("ComplaintRegister", function ({ email, notification }) {
-                if (email === auth.user.email) {
-                    router.reload();
-                }
-            });
-
-        return () => {
-            pusher.unbind("ComplaintRegister");
-            pusher.unsubscribe("notification-to-masyarakat");
-            pusher.disconnect();
-        };
-    }, []);
+    usePusher(auth, "notification-to-masyarakat", "ComplaintRegister", handlePusherEvent);
 
     return (
         <>
             {flash.message && showNotification && (
-                <Notif1 message={flash.message} show={showNotification} setShow={setShowNotification} />
+                <Notif1
+                    message={flash.message}
+                    show={showNotification}
+                    setShow={setShowNotification}
+                />
             )}
 
             {/* <!-- Cards --> */}
@@ -198,7 +184,98 @@ const Index = () => {
                             filteredComplaints?.data.length > 0 ? (
                                 filteredComplaints.data.map((data, index) => (
                                     <Table.Tr key={index}>
-                                        <Table.TdBasic>{index + 1}</Table.TdBasic>
+                                        <Table.TdBasic>
+                                            {index + 1}
+                                        </Table.TdBasic>
+                                        <Table.TdProfile
+                                            name={data.user.full_name}
+                                            email={data.user.email}
+                                            src={data.user.avatar}
+                                        />
+                                        <Table.TdStatus
+                                            status={data.complaint_status.name}
+                                            description={
+                                                data.complaint_status
+                                                    .description
+                                            }
+                                            theme={complaintStatus(
+                                                data.complaint_status.slug
+                                            )}
+                                        />
+                                        <Table.TdBasic>
+                                            <div
+                                                className="tooltip tooltip-left"
+                                                data-tip={
+                                                    data.complaint_media_type
+                                                        .description
+                                                }
+                                            >
+                                                {data.complaint_media_type.name}
+                                            </div>
+                                        </Table.TdBasic>
+                                        <Table.TdBasic>
+                                            {data.subdistrict.name}
+                                        </Table.TdBasic>
+                                        <Table.TdBasic>
+                                            {data.village.name}
+                                        </Table.TdBasic>
+                                        {data.complaint_status.slug ===
+                                        "ditolak" ? (
+                                            <Table.TdBasic className="flex gap-4 w-full">
+                                                <GlobalLink
+                                                    href={route(
+                                                        "complaint.edit",
+                                                        {
+                                                            id: data.id,
+                                                        }
+                                                    )}
+                                                    children={
+                                                        <FaRegEdit className="w-5 h-5" />
+                                                    }
+                                                    theme="warning"
+                                                    maxWidth="max"
+                                                />
+                                                <GlobalLink
+                                                    as={"button"}
+                                                    method="delete"
+                                                    href={route(
+                                                        "complaint.destroy",
+                                                        {
+                                                            id: data.id,
+                                                        }
+                                                    )}
+                                                    children={
+                                                        <MdDeleteForever className="w-5 h-5" />
+                                                    }
+                                                    theme="danger"
+                                                    maxWidth="max"
+                                                />
+                                            </Table.TdBasic>
+                                        ) : (
+                                            <Table.TdBasic>
+                                                <GlobalLink
+                                                    href={route(
+                                                        "complaint.show",
+                                                        {
+                                                            complaint: data.id,
+                                                        }
+                                                    )}
+                                                    children={
+                                                        <FaRegEye className="w-5 h-5" />
+                                                    }
+                                                    theme="info"
+                                                    maxWidth="max"
+                                                />
+                                            </Table.TdBasic>
+                                        )}
+                                    </Table.Tr>
+                                ))
+                            ) : paginationComplaint?.data.length > 0 ? (
+                                paginationComplaint.data.map((data, index) => (
+                                    <Table.Tr key={index}>
+                                        <Table.TdBasic>
+                                            {index + 1}
+                                        </Table.TdBasic>
                                         <Table.TdProfile
                                             name={data.user.full_name}
                                             email={data.user.email}
@@ -283,102 +360,13 @@ const Index = () => {
                                     </Table.Tr>
                                 ))
                             ) : (
-                                paginationComplaint?.data.length > 0 ? (
-                                    paginationComplaint.data.map((data, index) => (
-                                        <Table.Tr key={index}>
-                                            <Table.TdBasic>{index + 1}</Table.TdBasic>
-                                            <Table.TdProfile
-                                                name={data.user.full_name}
-                                                email={data.user.email}
-                                                src={data.user.avatar}
-                                            />
-                                            <Table.TdStatus
-                                                status={data.complaint_status.name}
-                                                description={
-                                                    data.complaint_status
-                                                        .description
-                                                }
-                                                theme={complaintStatus(
-                                                    data.complaint_status.slug
-                                                )}
-                                            />
-                                            <Table.TdBasic>
-                                                <div
-                                                    className="tooltip tooltip-left"
-                                                    data-tip={
-                                                        data.complaint_media_type
-                                                            .description
-                                                    }
-                                                >
-                                                    {data.complaint_media_type.name}
-                                                </div>
-                                            </Table.TdBasic>
-                                            <Table.TdBasic>
-                                                {data.subdistrict.name}
-                                            </Table.TdBasic>
-                                            <Table.TdBasic>
-                                                {data.village.name}
-                                            </Table.TdBasic>
-                                            {data.complaint_status.slug ===
-                                            "ditolak" ? (
-                                                <Table.TdBasic className="flex gap-4 w-full">
-                                                    <GlobalLink
-                                                        href={route(
-                                                            "complaint.edit",
-                                                            {
-                                                                id: data.id,
-                                                            }
-                                                        )}
-                                                        children={
-                                                            <FaRegEdit className="w-5 h-5" />
-                                                        }
-                                                        theme="warning"
-                                                        maxWidth="max"
-                                                    />
-                                                    <GlobalLink
-                                                        as={"button"}
-                                                        method="delete"
-                                                        href={route(
-                                                            "complaint.destroy",
-                                                            {
-                                                                id: data.id,
-                                                            }
-                                                        )}
-                                                        children={
-                                                            <MdDeleteForever className="w-5 h-5" />
-                                                        }
-                                                        theme="danger"
-                                                        maxWidth="max"
-                                                    />
-                                                </Table.TdBasic>
-                                            ) : (
-                                                <Table.TdBasic>
-                                                    <GlobalLink
-                                                        href={route(
-                                                            "complaint.show",
-                                                            {
-                                                                complaint: data.id,
-                                                            }
-                                                        )}
-                                                        children={
-                                                            <FaRegEye className="w-5 h-5" />
-                                                        }
-                                                        theme="info"
-                                                        maxWidth="max"
-                                                    />
-                                                </Table.TdBasic>
-                                            )}
-                                        </Table.Tr>
-                                    ))
-                                ) : (
-                                    <Table.Tr>
-                                        <Table.TdBasic
-                                            children={"no data record"}
-                                            colSpan="7"
-                                            className="text-center"
-                                        />
-                                    </Table.Tr>
-                                )
+                                <Table.Tr>
+                                    <Table.TdBasic
+                                        children={"no data record"}
+                                        colSpan="7"
+                                        className="text-center"
+                                    />
+                                </Table.Tr>
                             )
                         ) : (
                             <Table.Tr>
