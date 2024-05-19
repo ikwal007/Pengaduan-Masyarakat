@@ -106,6 +106,19 @@ const Header1 = () => {
         setDataNotification(res.data);
     };
 
+    const handlerStyleNewNotification = () => {
+        const themeColor = dataNotification.find((item) => {
+            return item.read == 0;
+        });
+
+        if (themeColor) {
+            return "bg-red-500";
+        }
+
+        return "bg-purple-500";
+    };
+    console.log(handlerStyleNewNotification());
+
     // Effect to add or remove click outside listener based on menu visibility
     useEffect(() => {
         if (
@@ -126,6 +139,7 @@ const Header1 = () => {
 
     useEffect(() => {
         handlerGetNotification();
+        handlerStyleNewNotification();
     }, []);
 
     const handlePusherEvent = (data) => {
@@ -206,8 +220,12 @@ const Header1 = () => {
                                 <IoNotifications className="w-5 h-5 text-purple-600 group-hover:text-purple-500" />
                                 {/* <!-- Notification badge --> */}
                                 <span className="absolute flex h-3 w-3 top-1 right-4">
-                                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-gray-400 opacity-75"></span>
-                                    <span className="relative inline-flex rounded-full h-3 w-3 bg-gray-500 border-2 border-white"></span>
+                                    <span
+                                        className={`animate-ping absolute inline-flex h-full w-full rounded-full opacity-75 ${handlerStyleNewNotification()}`}
+                                    ></span>
+                                    <span
+                                        className={`relative inline-flex rounded-full h-3 w-3 border-2 border-white ${handlerStyleNewNotification()}`}
+                                    ></span>
                                 </span>
                             </Button>
                             {isNotificationsMenuOpen && (
