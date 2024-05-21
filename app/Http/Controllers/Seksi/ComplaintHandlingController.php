@@ -2,7 +2,9 @@
 
 namespace App\Http\Controllers\Seksi;
 
+use App\Events\Masyarakat\ComplaintRegister;
 use App\Http\Controllers\Controller;
+use App\Models\Notification;
 use App\Queries\ComplaintHandlingQuery;
 use App\Queries\ComplaintQuery;
 use App\Queries\ComplaintStatusQuery;
@@ -29,7 +31,7 @@ class ComplaintHandlingController extends Controller
             'countComplaintByStatusDone' => $allCountComplaintByStatusDone,
             'countComplaintByStatusReject' => $allCountComplaintByStatusReject,
             'countComplaintByStatusPending' => $allCountComplaintByStatusPending,
-            'paginationComplaint' => $paginationComplaint
+            'paginationComplaint' => fn () => $paginationComplaint
         ]);
     }
 
@@ -80,8 +82,8 @@ class ComplaintHandlingController extends Controller
         $complaintHandlingFind->status_id = $request->complaintHandlingStatus;
         $complaintHandlingFind->save();
 
-        $complaintHandling = new ComplaintQuery();
-        $detailComplaint = $complaintHandling->getDetailComplaintOnSeksiWithComplaintHandling($id);
+        $complaint = new ComplaintQuery();
+        $detailComplaint = $complaint->getDetailComplaintOnSeksiWithComplaintHandling($id);
         $statuses = collect($detailComplaint->complaintHandling)->pluck('complaintStatus')->pluck('slug');
 
         // Memeriksa apakah ada setidaknya satu 'diproses' dalam array
@@ -89,6 +91,16 @@ class ComplaintHandlingController extends Controller
             $complaintStatus = new ComplaintStatusQuery();
             $detailComplaint->complaint_statuses_id = $complaintStatus->getComplaintStatusBySlug('diproses')->id;
             $detailComplaint->save();
+
+            $notification = new Notification();
+            $notification->user_email = $detailComplaint->user_email;
+            $notification->title = "Pengaduan Sedang Diperoses Oleh Petugas" . $complaint->certificate_no;
+            $notification->content = "Dengan ini dari pihak pemohon untuk dapat menunggu peroses dari pengaduan yang akan ditangani oleh seksi terkait.";
+            $notification->save();
+
+            event(new ComplaintRegister(
+                $complaint->user_email
+            ));
         }
 
         // Memeriksa apakah semua elemen dalam array adalah 'tunda'
@@ -96,18 +108,48 @@ class ComplaintHandlingController extends Controller
             $complaintStatus = new ComplaintStatusQuery();
             $detailComplaint->complaint_statuses_id = $complaintStatus->getComplaintStatusBySlug('ditunda')->id;
             $detailComplaint->save();
+
+            $notification = new Notification();
+            $notification->user_email = $detailComplaint->user_email;
+            $notification->title = "Pengaduan Sedang Ditunda Oleh Petugas" . $complaint->certificate_no;
+            $notification->content = "Dengan ini dari pihak pemohon untuk dapat menunggu peroses dari pengaduan yang akan ditangani oleh seksi terkait.";
+            $notification->save();
+
+            event(new ComplaintRegister(
+                $complaint->user_email
+            ));
         }
 
         if ($this->isAllStatus($statuses, 'diselesaikan')) {
             $complaintStatus = new ComplaintStatusQuery();
             $detailComplaint->complaint_statuses_id = $complaintStatus->getComplaintStatusBySlug('diselesaikan')->id;
             $detailComplaint->save();
+
+            $notification = new Notification();
+            $notification->user_email = $detailComplaint->user_email;
+            $notification->title = "Pengaduan Telah Diselesaikan Oleh Petugas" . $complaint->certificate_no;
+            $notification->content = "Dengan ini dari pihak pemohon untuk dapat menuju kekantor.";
+            $notification->save();
+
+            event(new ComplaintRegister(
+                $complaint->user_email
+            ));
         }
 
         if ($this->isAllStatus($statuses, 'ditolak')) {
             $complaintStatus = new ComplaintStatusQuery();
             $detailComplaint->complaint_statuses_id = $complaintStatus->getComplaintStatusBySlug('ditolak')->id;
             $detailComplaint->save();
+
+            $notification = new Notification();
+            $notification->user_email = $detailComplaint->user_email;
+            $notification->title = "Pengaduan Telah Ditolak Oleh Petugas" . $complaint->certificate_no;
+            $notification->content = "Mohon Maaf kepada pemohon, pengaduan yang anda ajukan ditolak.";
+            $notification->save();
+
+            event(new ComplaintRegister(
+                $complaint->user_email
+            ));
         }
 
         return redirect()->route('complaint-handling.index')->with('message', 'Perubahan Penanganan Pengaduan Berhasil Disimpan');

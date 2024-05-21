@@ -118,7 +118,7 @@ class ComplaintQuery extends Complaint
     {
         return $this->whereHas('complaintHandling', function ($complaintHandling) use ($complaintHandlingId) {
             $complaintHandling->where('id', $complaintHandlingId);
-        })->with(['complaintStatus', 'complaintType', 'complaintMediaType', 'user', 'village', 'subdistrict', 'complaintHandling'])->first();
+        })->with(['complaintStatus', 'complaintType', 'complaintMediaType', 'user', 'village', 'subdistrict', 'complaintHandling', "archives"])->first();
     }
 
     public function getDetailComplaint(String $complaintId)

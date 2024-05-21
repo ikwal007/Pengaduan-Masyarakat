@@ -11,9 +11,11 @@ class ComplaintHandlingQuery extends ComplaintHandling
         return $this->where('id', $id)->with(['complaint', 'complaintStatus'])->first();
     }
 
-    public function getAllCountComplaintOnSpecificSeksi(String $seksisName)
+    public function getAllCountComplaintOnSpecificSeksi(string $seksisName)
     {
-        return $this->whereHas('seksis', function ($seksis) use ($seksisName) {
+        return $this->whereHas("complaint", function ($complaint) {
+            $complaint->where('confirmed', 1);
+        })->whereHas('seksis', function ($seksis) use ($seksisName) {
             $seksis->where('name', 'like', '%' . $seksisName . '%');
         })->count();
     }
@@ -22,6 +24,8 @@ class ComplaintHandlingQuery extends ComplaintHandling
     {
         return $this->whereHas('seksis', function ($seksis) use ($seksisName) {
             $seksis->where('name', 'like', '%' . $seksisName . '%');
+        })->whereHas('complaint', function ($complaint) {
+            $complaint->where('confirmed', 1);
         })->whereHas('complaintStatus', function ($complaintStatus) use ($statusSlug) {
             $complaintStatus->where('slug', $statusSlug);
         })->count();
@@ -30,12 +34,16 @@ class ComplaintHandlingQuery extends ComplaintHandling
     public function complaintWithPaginationOnSpecificSeksi(String $seksisName, String $search = null)
     {
         if ($search == null) {
-            return $this->whereHas('seksis', function ($seksis) use ($seksisName) {
+            return $this->whereHas('complaint', function ($complaint) {
+                $complaint->where('confirmed', 1);
+            })->whereHas('seksis', function ($seksis) use ($seksisName) {
                 $seksis->where('name', 'like', '%' . $seksisName . '%');
             })->with(['complaint', 'complaintStatus', 'seksis'])->paginate(10);
         }
 
-        return $this->whereHas('seksis', function ($seksis) use ($seksisName) {
+        return $this->whereHas("complaint", function ($complaint) {
+            $complaint->where('confirmed', 1);
+        })->whereHas('seksis', function ($seksis) use ($seksisName) {
             $seksis->where('name', 'like', '%' . $seksisName . '%');
         })->whereHas('complaint', function ($complaint) use ($search) {
             $complaint->where('user_email', 'like', '%' . $search . '%')

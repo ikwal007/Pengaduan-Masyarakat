@@ -117,8 +117,7 @@ const Header1 = () => {
 
         return "bg-purple-500";
     };
-    console.log(handlerStyleNewNotification());
-
+    
     // Effect to add or remove click outside listener based on menu visibility
     useEffect(() => {
         if (

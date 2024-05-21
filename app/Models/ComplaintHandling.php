@@ -25,7 +25,7 @@ class ComplaintHandling extends Model
 
     public function complaint(): BelongsTo
     {
-        return $this->belongsTo(Complaint::class, 'complaint_id', 'id')->with(['complaintStatus', 'complaintType', 'complaintMediaType', 'user', 'village', 'subdistrict']);
+        return $this->belongsTo(Complaint::class, 'complaint_id', 'id')->with(['complaintStatus', 'complaintType', 'complaintMediaType', 'user', 'village', 'subdistrict', 'archives']);
     }
 
     public function complaintStatus(): BelongsTo

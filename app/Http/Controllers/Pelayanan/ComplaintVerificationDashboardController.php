@@ -115,11 +115,8 @@ class ComplaintVerificationDashboardController extends Controller
             $notification->content = $request->deskripsiPenolakan . " " . "Dengan ini dari pihak pemohon untuk dapat melengkapi data pada halaman penolakan pengaduan.";
             $notification->save();
 
-            $notificationQuery = new NotificationQuery();
-
             event(new ComplaintRegister(
-                $complaint->user_email,
-                $notificationQuery->getAllNotification($complaint->user_email)
+                $complaint->user_email
             ));
 
             return redirect()->route('pelayanan.complaint-verification-dashboard-index')->with('message', 'Pengaduan Telah Diverifikasi');
@@ -133,11 +130,8 @@ class ComplaintVerificationDashboardController extends Controller
             $notification->content = "Dengan ini dari pihak pemohon untuk dapat menunggu peroses dari pengaduan yang akan ditangani oleh seksi terkait.";
             $notification->save();
 
-            $notificationQuery = new NotificationQuery();
-
             event(new ComplaintRegister(
-                $complaint->user_email,
-                $notificationQuery->getAllNotification($complaint->user_email)
+                $complaint->user_email
             ));
             return redirect()->route('pelayanan.complaint-verification-dashboard-index')->with('message', 'Pengaduan Telah Diverifikasi');
         }
