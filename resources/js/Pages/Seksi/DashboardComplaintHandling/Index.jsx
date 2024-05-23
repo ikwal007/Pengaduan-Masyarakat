@@ -1,14 +1,9 @@
-import Card from "@/Components/Cards/Card";
 import AuthenticatedLayout2 from "@/Layouts/AuthenticatedLayout2";
-// import { useEcho } from "@/utils/EchoContext";
-import { HiMiniUserGroup } from "react-icons/hi2";
-import { FaUserTie, FaUserCheck, FaClipboardUser } from "react-icons/fa6";
-import { MdEdit, MdModeEditOutline } from "react-icons/md";
-import { IoMdEye } from "react-icons/io";
+import { FaClipboardUser } from "react-icons/fa6";
+import { MdEdit } from "react-icons/md";
 import { usePage } from "@inertiajs/react";
 import {
     LuClipboardCheck,
-    LuClipboardCopy,
     LuClipboardList,
     LuClipboardSignature,
     LuClipboardX,
@@ -20,6 +15,7 @@ import { useDeferredValue, useEffect, useRef, useState } from "react";
 import CardCount from "@/Components/Molecules/Cards/CardCount";
 import { IoSearchOutline } from "react-icons/io5";
 import Input from "@/Components/Input/Input";
+import { FaRegEye } from "react-icons/fa";
 
 const Index = () => {
     // Destructure props from usePage()
@@ -208,7 +204,20 @@ const Index = () => {
                                                 <Table.TdBasic>
                                                     {complaint.village.name}
                                                 </Table.TdBasic>
-                                                <Table.TdBasic>
+                                                <Table.TdBasic className={"flex gap-2"}>
+                                                    <GlobalLink
+                                                        href={route(
+                                                            "complaint-handling.show",
+                                                            {
+                                                                complaint_handling: id,
+                                                            }
+                                                        )}
+                                                        children={
+                                                            <FaRegEye className="w-5 h-5" />
+                                                        }
+                                                        theme="info"
+                                                        maxWidth="max"
+                                                    />
                                                     <GlobalLink
                                                         href={route(
                                                             "complaint-handling.edit",
@@ -276,7 +285,20 @@ const Index = () => {
                                             <Table.TdBasic>
                                                 {complaint.village.name}
                                             </Table.TdBasic>
-                                            <Table.TdBasic>
+                                            <Table.TdBasic className={"flex gap-2"}>
+                                                <GlobalLink
+                                                    href={route(
+                                                        "complaint-handling.show",
+                                                        {
+                                                            complaint_handling: id,
+                                                        }
+                                                    )}
+                                                    children={
+                                                        <FaRegEye className="w-5 h-5" />
+                                                    }
+                                                    theme="info"
+                                                    maxWidth="max"
+                                                />
                                                 <GlobalLink
                                                     href={route(
                                                         "complaint-handling.edit",
@@ -285,8 +307,8 @@ const Index = () => {
                                                     children={
                                                         <MdEdit className="w-5 h-5 group-hover:text-white transition duration-300 ease-in-out" />
                                                     }
-                                                    theme="daisyui-waring"
-                                                    className="btn-outline group"
+                                                    theme="warning"
+                                                    maxWidth="max"
                                                 />
                                             </Table.TdBasic>
                                         </Table.Tr>

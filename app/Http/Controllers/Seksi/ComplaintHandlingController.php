@@ -56,7 +56,10 @@ class ComplaintHandlingController extends Controller
      */
     public function show(string $id)
     {
-        //
+        $complaint = new ComplaintHandlingQuery();
+        return inertia('Seksi/DashboardComplaintHandling/Show', [
+            "detailComplaintHandling" => fn () => $complaint->getDetailComplaintHandling($id)
+        ]);
     }
 
     /**

@@ -13,6 +13,7 @@ use App\Queries\ComplaintTypeQuery;
 use App\Queries\NotificationQuery;
 use App\Queries\SubdistrictQuery;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cache;
 
 class ComplaintVerificationDashboardController extends Controller
 {
@@ -67,32 +68,37 @@ class ComplaintVerificationDashboardController extends Controller
      */
     public function edit(string $id, Request $request)
     {
-        $complaint = new ComplaintQuery();
-        $detailComplaint = $complaint->getDetailComplaint($id);
+        $lock = Cache::lock("verifikasi", 30, auth()->user()->id);
 
-        $complaintMediaType = new ComplaintMediaTypeQuery();
-        $allComplaintMediaType = $complaintMediaType->getAll();
+        if ($lock->get()) {
+            $complaint = new ComplaintQuery();
+            $detailComplaint = $complaint->getDetailComplaint($id);
 
-        $complaintStatus = new ComplaintStatusQuery();
-        $allComplaintStatus = $complaintStatus->getAll();
+            $complaintMediaType = new ComplaintMediaTypeQuery();
+            $allComplaintMediaType = $complaintMediaType->getAll();
 
-        $complainType = new ComplaintTypeQuery();
-        $allComplainType = $complainType->getComplaintTypeExcept("pelanggaran-disiplin-pegawai-negeri-sipil");
+            $complaintStatus = new ComplaintStatusQuery();
+            $allComplaintStatus = $complaintStatus->getAll();
 
-        $subdistrict = new SubdistrictQuery();
-        $subdistricts = $subdistrict->getAllSubdistrictWithVillage();
+            $complainType = new ComplaintTypeQuery();
+            $allComplainType = $complainType->getComplaintTypeExcept("pelanggaran-disiplin-pegawai-negeri-sipil");
 
-        $dataOnSession = $request->session()->get('complain', null);
+            $subdistrict = new SubdistrictQuery();
+            $subdistricts = $subdistrict->getAllSubdistrictWithVillage();
 
-        return inertia('Pelayanan/EditVerificationComplaint/Edit', [
-            'allComplaintMediaType' => $allComplaintMediaType,
-            'allComplaintStatus' => $allComplaintStatus,
-            'allComplainType' => $allComplainType,
-            'subdistricts' => $subdistricts,
-            'defaultComplaintStatus' => $complaintStatus->getComplaintStatusBySlug('diproses'),
-            'oldDataFormOnSession' => $dataOnSession,
-            "detailComplaint" => $detailComplaint
-        ]);
+            $dataOnSession = $request->session()->get('complain', null);
+
+            return inertia('Pelayanan/EditVerificationComplaint/Edit', [
+                'allComplaintMediaType' => $allComplaintMediaType,
+                'allComplaintStatus' => $allComplaintStatus,
+                'allComplainType' => $allComplainType,
+                'subdistricts' => $subdistricts,
+                'defaultComplaintStatus' => $complaintStatus->getComplaintStatusBySlug('diproses'),
+                'oldDataFormOnSession' => $dataOnSession,
+                "detailComplaint" => $detailComplaint
+            ]);
+            $lock->release();
+        }
     }
 
     /**

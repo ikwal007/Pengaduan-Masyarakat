@@ -21,6 +21,8 @@
         "vite": "^4.0.0"
     },
     "dependencies": {
+        "html2canvas-pro": "^1.4.3",
+        "jspdf": "^2.5.1",
         "laravel-echo": "^1.15.3",
         "pusher-js": "^8.4.0-rc2",
         "react-echo": "^1.0.12",

@@ -3,9 +3,9 @@ import laravel from "laravel-vite-plugin";
 import react from "@vitejs/plugin-react";
 
 export default defineConfig({
-    server: {
-        host: "10.140.183.25",
-    },
+    // server: {
+    //     host: "192.168.100.12",
+    // },
     plugins: [
         laravel({
             input: "resources/js/app.jsx",

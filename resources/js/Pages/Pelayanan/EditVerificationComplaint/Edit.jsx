@@ -318,7 +318,7 @@ const Edit = () => {
                         <Input className={"basis-2/5"}>
                             <Input.Label
                                 htmlFor={"deskripsiPenolakan"}
-                                labelName={"Masukan Deskripsi Penolakan"}
+                                labelName={"Masukan Deskripsi Verifikasi Permohonan"}
                                 message={formErrors.deskripsiPenolakan}
                                 disabled={true}
                                 children={
