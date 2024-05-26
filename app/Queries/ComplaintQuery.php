@@ -80,23 +80,35 @@ class ComplaintQuery extends Complaint
 
     public function searchComplaintWithPagination(String $search)
     {
-        return $this->where(function ($complaint) use ($search) {
-            $complaint->where('user_email', 'like', '%' . $search . '%')
+        $res = $this->where('confirmed', true)
+        ->where(function ($query) use ($search) {
+            $query->where('user_email', 'like', '%' . $search . '%')
                 ->orWhere('certificate_no', 'like', '%' . $search . '%')
-                ->orWhere('description', 'like', '%' . $search . '%');
-        })->orWhereHas('user', function ($user) use ($search) {
-            $user->where('full_name', 'like', '%' . $search . '%');
-        })->orWhereHas('complaintType', function ($complaintType) use ($search) {
-            $complaintType->where('name', 'like', '%' . $search . '%');
-        })->orWhereHas('complaintMediaType', function ($complaintMediaType) use ($search) {
-            $complaintMediaType->where('name', 'like', '%' . $search . '%');
-        })->orWhereHas('complaintStatus', function ($complaintStatus) use ($search) {
-            $complaintStatus->where('name', 'like', '%' . $search . '%');
-        })->orWhereHas('village', function ($village) use ($search) {
-            $village->where('name', 'like', '%' . $search . '%');
-        })->orWhereHas('subdistrict', function ($subdistrict) use ($search) {
-            $subdistrict->where('name', 'like', '%' . $search . '%');
-        })->with(['complaintStatus', 'complaintType', 'complaintMediaType', 'user', 'village', 'subdistrict'])->paginate(10);
+                ->orWhere('description', 'like', '%' . $search . '%')
+                ->orWhere('created_at', $search)
+                ->orWhereDate('created_at', $search)
+                ->orWhereMonth('created_at', $search)
+                ->orWhereDay('created_at', $search)
+                ->orWhereYear('created_at', $search)
+                ->orWhereTime('created_at', $search)
+                ->orWhereHas('user', function ($query) use ($search) {
+                    $query->where('full_name', 'like', '%' . $search . '%');
+                })->orWhereHas('complaintType', function ($query) use ($search) {
+                    $query->where('name', 'like', '%' . $search . '%');
+                })->orWhereHas('complaintMediaType', function ($query) use ($search) {
+                    $query->where('name', 'like', '%' . $search . '%');
+                })->orWhereHas('complaintStatus', function ($query) use ($search) {
+                    $query->where('name', 'like', '%' . $search . '%');
+                })->orWhereHas('village', function ($query) use ($search) {
+                    $query->where('name', 'like', '%' . $search . '%');
+                })->orWhereHas('subdistrict', function ($query) use ($search) {
+                    $query->where('name', 'like', '%' . $search . '%');
+                });
+        })
+        ->with(['complaintStatus', 'complaintType', 'complaintMediaType', 'user', 'village', 'subdistrict'])
+        ->paginate(10);
+
+        return $res;
     }
 
     public function complaintWithPaginationOnSpecificUser(String $email, $dateFilter = null, String $filterByStatus = null)
