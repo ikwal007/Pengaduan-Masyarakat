@@ -10,6 +10,7 @@ use App\Http\Controllers\Masyarakat\DeleteImageComplaintController;
 use App\Http\Controllers\SuperAdmin\GetAllWorkerAccountsController;
 use App\Http\Controllers\Seksi\GetComplaintController as SeksiGetComplaintController;
 use App\Http\Controllers\Pelayanan\GetComplaintController as PelayananGetComplaintController;
+use App\Http\Controllers\Pelayanan\RefreshLockController;
 
 /*
 |--------------------------------------------------------------------------
@@ -31,6 +32,7 @@ Route::prefix('complaints')->group(function () {
     Route::get('/', [GetComplaintController::class, 'index'])->name('masyarakat.complaints-index');
     Route::prefix('pelayanan')->group(function () {
         Route::get('/search', [PelayananGetComplaintController::class, 'index'])->name('pelayanan.complaints-index');
+        Route::post('/{id}/{user}/refresh-lock', [RefreshLockController::class, 'refreshLock'])->name('pelayanan.complaints-refresh-lock');
     });
     Route::prefix('seksi')->group(function () {
         Route::get('/search', [SeksiGetComplaintController::class, 'index'])->name('seksi.complaints-index');

@@ -49,12 +49,12 @@ class ComplaintQuery extends Complaint
         if ($filterByStatus) {
             $res = $this->whereHas('complaintStatus', function ($query) use ($filterByStatus) {
                 $query->where('slug', $filterByStatus);
-            })->with(['complaintStatus', 'complaintType', 'complaintMediaType', 'user', 'village', 'subdistrict'])->paginate(10);
+            })->with(['complaintStatus', 'complaintType', 'complaintMediaType', 'user', 'village', 'subdistrict'])->latest()->paginate(10);
 
             return $res;
         }
 
-        $res = $this->with(['complaintStatus', 'complaintType', 'complaintMediaType', 'user', 'village', 'subdistrict'])->paginate(10);
+        $res = $this->with(['complaintStatus', 'complaintType', 'complaintMediaType', 'user', 'village', 'subdistrict'])->latest()->paginate(10);
 
         return $res;
     }
@@ -66,21 +66,21 @@ class ComplaintQuery extends Complaint
         if ($filterByStatus) {
             $res = $this->where('confirmed', $confirmed)->whereHas('complaintStatus', function ($query) use ($filterByStatus) {
                 $query->where('slug', $filterByStatus);
-            })->with(['complaintStatus', 'complaintType', 'complaintMediaType', 'user', 'village', 'subdistrict'])->paginate(10);
+            })->with(['complaintStatus', 'complaintType', 'complaintMediaType', 'user', 'village', 'subdistrict'])->latest()->paginate(10);
 
             return $res;
         }
 
         $res = $this->where('confirmed', $confirmed)->whereHas('complaintStatus', function ($query) {
             $query->where('slug', '!=', 'ditolak');
-        })->with(['complaintStatus', 'complaintType', 'complaintMediaType', 'user', 'village', 'subdistrict'])->paginate(10);
+        })->with(['complaintStatus', 'complaintType', 'complaintMediaType', 'user', 'village', 'subdistrict'])->latest()->paginate(10);
 
         return $res;
     }
 
-    public function searchComplaintWithPagination(String $search)
+    public function searchComplaintWithPagination(Bool $confirmed ,String $search)
     {
-        $res = $this->where('confirmed', true)
+        $res = $this->where('confirmed', $confirmed)
         ->where(function ($query) use ($search) {
             $query->where('user_email', 'like', '%' . $search . '%')
                 ->orWhere('certificate_no', 'like', '%' . $search . '%')
@@ -106,7 +106,8 @@ class ComplaintQuery extends Complaint
                 });
         })
         ->with(['complaintStatus', 'complaintType', 'complaintMediaType', 'user', 'village', 'subdistrict'])
-        ->paginate(10);
+        ->latest()
+        ->paginate(100);
 
         return $res;
     }

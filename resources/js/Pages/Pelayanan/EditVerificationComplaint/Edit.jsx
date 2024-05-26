@@ -6,10 +6,14 @@ import Typography from "@/Components/Atoms/Typography";
 import Input from "@/Components/Input/Input";
 import Select from "@/Components/Molecules/Select";
 import Button from "@/Components/Atoms/Button";
+import { IoMdArrowRoundBack } from "react-icons/io";
+import GlobalLink from "@/Components/Atoms/GlobalLink";
+import useRefreshLook from "@/Hooks/RefreshLook";
 
 const Edit = () => {
     // Destructure props from usePage()
     const {
+        auth,
         flash,
         errors,
         allComplainType,
@@ -65,16 +69,32 @@ const Edit = () => {
 
     const submit = (e) => {
         e.preventDefault();
-        patch(route("pelayanan.complaint-verification-dashboard-update", { id: detailComplaint.id}), {
-            onSuccess: () => reset(),
-            onError: () => setError(errors),
-        });
+        patch(
+            route("pelayanan.complaint-verification-dashboard-update", {
+                id: detailComplaint.id,
+            }),
+            {
+                onSuccess: () => reset(),
+                onError: () => setError(errors),
+            }
+        );
     };
 
-    console.log(data, "ini detailComplaint");
+    useRefreshLook(detailComplaint.id, auth.user.id);
 
     return (
         <>
+            <div className="w-max p-2">
+                <GlobalLink
+                    href={route(
+                        "pelayanan.complaint-verification-dashboard-index"
+                    )}
+                    className="flex items-center group"
+                >
+                    <IoMdArrowRoundBack />
+                    Kembali
+                </GlobalLink>
+            </div>
             <main className="h-full pb-16 overflow-y-auto mt-5">
                 <div className="container px-2 lg:px-6 mx-auto grid">
                     <form
@@ -288,6 +308,7 @@ const Edit = () => {
                                 ? archives.map((data, i) => {
                                       return (
                                           <div
+                                              key={i}
                                               id={`item${i + 1}`}
                                               className="carousel-item w-full"
                                           >
@@ -305,6 +326,7 @@ const Edit = () => {
                                 ? archives.map((data, i) => {
                                       return (
                                           <a
+                                              key={i}
                                               href={`#item${i + 1}`}
                                               className="btn btn-xs capitalize"
                                           >
@@ -318,7 +340,9 @@ const Edit = () => {
                         <Input className={"basis-2/5"}>
                             <Input.Label
                                 htmlFor={"deskripsiPenolakan"}
-                                labelName={"Masukan Deskripsi Verifikasi Permohonan"}
+                                labelName={
+                                    "Masukan Deskripsi Verifikasi Permohonan"
+                                }
                                 message={formErrors.deskripsiPenolakan}
                                 disabled={true}
                                 children={
@@ -347,7 +371,9 @@ const Edit = () => {
                                     value={data.confirmation}
                                     onChange={handlerDataChange}
                                     theme={
-                                        formErrors.confirmation ? "error" : "primary"
+                                        formErrors.confirmation
+                                            ? "error"
+                                            : "primary"
                                     }
                                     required
                                     message={formErrors.confirmation}

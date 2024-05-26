@@ -58,6 +58,7 @@ const Index = () => {
         setLoading(true);
         const res = await axios.get(route("pelayanan.complaints-index"), {
             params: {
+                confirmed: 1,
                 keyword: deferredSearch,
             },
         });

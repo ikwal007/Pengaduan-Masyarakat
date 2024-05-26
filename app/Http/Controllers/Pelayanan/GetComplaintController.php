@@ -15,7 +15,7 @@ class GetComplaintController extends Controller
     {
         if ($request->only('keyword')) {
             $compalaintQuery = new ComplaintQuery();
-            $result = $compalaintQuery->searchComplaintWithPagination($request->input('keyword'));
+            $result = $compalaintQuery->searchComplaintWithPagination($request->input('confirmed') ,$request->input('keyword'));
             return response()->json($result);
         }
         return response()->json([]);

@@ -15,6 +15,7 @@ import { IoSearchOutline } from "react-icons/io5";
 import Input from "@/Components/Input/Input";
 import GlobalLink from "@/Components/Atoms/GlobalLink";
 import { FaRegEdit } from "react-icons/fa";
+import DateConverter from "@/utils/DateTime/DateConverter";
 
 const Index = () => {
     // Destructure props from usePage()
@@ -57,6 +58,7 @@ const Index = () => {
         setLoading(true);
         const res = await axios.get(route("pelayanan.complaints-index"), {
             params: {
+                confirmed: 0,
                 keyword: deferredSearch,
             },
         });
@@ -149,7 +151,8 @@ const Index = () => {
                         <Table.Th>media</Table.Th>
                         <Table.Th>kecamatan</Table.Th>
                         <Table.Th>desa</Table.Th>
-                        <Table.Th>action</Table.Th>
+                        <Table.Th>waktu pengaduan dibuat</Table.Th>
+                        <Table.Th>Action</Table.Th>
                     </Table.TableHead>
                     <Table.TableBody>
                         {loading === false ? (
@@ -197,26 +200,30 @@ const Index = () => {
                                                 {data.village.name}
                                             </Table.TdBasic>
                                             <Table.TdBasic>
-                                            <GlobalLink
-                                                href={route(
-                                                    "pelayanan.complaint-verification-dashboard-edit", {
-                                                        id: data.id
+                                                {DateConverter(data.created_at)}
+                                            </Table.TdBasic>
+                                            <Table.TdBasic>
+                                                <GlobalLink
+                                                    href={route(
+                                                        "pelayanan.complaint-verification-dashboard-edit",
+                                                        {
+                                                            id: data.id,
+                                                        }
+                                                    )}
+                                                    children={
+                                                        <FaRegEdit className="w-5 h-5" />
                                                     }
-                                                )}
-                                                children={
-                                                    <FaRegEdit className="w-5 h-5" />
-                                                }
-                                                theme="warning"
-                                                maxWidth="max"
-                                            />
-                                        </Table.TdBasic>
+                                                    theme="warning"
+                                                    maxWidth="max"
+                                                />
+                                            </Table.TdBasic>
                                         </Table.Tr>
                                     ))
                                 ) : (
                                     <Table.Tr>
                                         <Table.TdBasic
                                             children={"no data record"}
-                                            colSpan="5"
+                                            colSpan="7"
                                             className="text-center"
                                         />
                                     </Table.Tr>
@@ -257,10 +264,14 @@ const Index = () => {
                                             {data.village.name}
                                         </Table.TdBasic>
                                         <Table.TdBasic>
+                                            {DateConverter(data.created_at)}
+                                        </Table.TdBasic>
+                                        <Table.TdBasic>
                                             <GlobalLink
                                                 href={route(
-                                                    "pelayanan.complaint-verification-dashboard-edit", {
-                                                        id: data.id
+                                                    "pelayanan.complaint-verification-dashboard-edit",
+                                                    {
+                                                        id: data.id,
                                                     }
                                                 )}
                                                 children={
@@ -276,7 +287,7 @@ const Index = () => {
                                 <Table.Tr>
                                     <Table.TdBasic
                                         children={"no data record"}
-                                        colSpan="5"
+                                        colSpan="7"
                                         className="text-center"
                                     />
                                 </Table.Tr>
@@ -287,21 +298,23 @@ const Index = () => {
                                     children={
                                         <span className="loading loading-dots loading-lg"></span>
                                     }
-                                    colSpan="5"
+                                    colSpan="7"
                                     className="text-center"
                                 />
                             </Table.Tr>
                         )}
                     </Table.TableBody>
                 </Table.Main>
-                <Table.Footer
-                    showFrom={paginationComplaint.from}
-                    showTo={paginationComplaint.to}
-                    total={paginationComplaint.total}
-                    links={paginationComplaint.links}
-                    last_page_url={paginationComplaint.last_page_url}
-                    first_page_url={paginationComplaint.first_page_url}
-                />
+                {searchResults === null && (
+                    <Table.Footer
+                        showFrom={paginationComplaint.from}
+                        showTo={paginationComplaint.to}
+                        total={paginationComplaint.total}
+                        links={paginationComplaint.links}
+                        last_page_url={paginationComplaint.last_page_url}
+                        first_page_url={paginationComplaint.first_page_url}
+                    />
+                )}
             </Table>
         </>
     );
