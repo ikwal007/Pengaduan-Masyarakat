@@ -1,14 +1,15 @@
 <?php
 
-use App\Http\Controllers\General\GetNotificationController;
-use App\Http\Controllers\Masyarakat\DeleteImageComplaintController;
-use App\Http\Controllers\Masyarakat\GetComplaintController;
-use App\Http\Controllers\Pelayanan\GetComplaintController as PelayananGetComplaintController;
-use App\Http\Controllers\Seksi\GetComplaintController as SeksiGetComplaintController;
-use App\Http\Controllers\SuperAdmin\GetAllWorkerAccountsController;
-use App\Http\Controllers\SuperAdmin\GetWorkerAccountsController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\General\GetNotificationController;
+use App\Http\Controllers\Masyarakat\FilterByDateController;
+use App\Http\Controllers\Masyarakat\GetComplaintController;
+use App\Http\Controllers\SuperAdmin\GetWorkerAccountsController;
+use App\Http\Controllers\Masyarakat\DeleteImageComplaintController;
+use App\Http\Controllers\SuperAdmin\GetAllWorkerAccountsController;
+use App\Http\Controllers\Seksi\GetComplaintController as SeksiGetComplaintController;
+use App\Http\Controllers\Pelayanan\GetComplaintController as PelayananGetComplaintController;
 
 /*
 |--------------------------------------------------------------------------
@@ -34,8 +35,9 @@ Route::prefix('complaints')->group(function () {
     Route::prefix('seksi')->group(function () {
         Route::get('/search', [SeksiGetComplaintController::class, 'index'])->name('seksi.complaints-index');
     });
-    Route::prefix('Masyarakat')->group(function () {
+    Route::prefix('masyarakat')->group(function () {
         Route::delete('/image/{id}/delete', [DeleteImageComplaintController::class, 'destroy'])->name('masyarakat.complaints-image-destroy');
+        Route::get("/filter-by-date", [FilterByDateController::class, 'index'])->name('masyarakat.complaints-filter-by-date');
     });
 });
 

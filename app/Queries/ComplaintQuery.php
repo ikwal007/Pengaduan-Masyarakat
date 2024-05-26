@@ -3,6 +3,7 @@
 namespace App\Queries;
 
 use App\Models\Complaint;
+
 class ComplaintQuery extends Complaint
 {
     public function getAllCountComplaint()
@@ -57,7 +58,7 @@ class ComplaintQuery extends Complaint
 
         return $res;
     }
-    
+
     public function complaintWithPaginationBasedConfirmed(Bool $confirmed, String $filterByStatus =  null)
     {
         $res = null;
@@ -98,15 +99,29 @@ class ComplaintQuery extends Complaint
         })->with(['complaintStatus', 'complaintType', 'complaintMediaType', 'user', 'village', 'subdistrict'])->paginate(10);
     }
 
-    public function complaintWithPaginationOnSpecificUser(String $email, String $filterByStatus = null)
+    public function complaintWithPaginationOnSpecificUser(String $email, $dateFilter = null, String $filterByStatus = null)
     {
+        if (!empty($dateFilter)) {
+            if (!empty($filterByStatus)) {
+                return $this->whereHas('user', function ($user) use ($email) {
+                    $user->where('email', $email);
+                })->whereHas('complaintStatus', function ($complaintStatus) use ($filterByStatus) {
+                    $complaintStatus->where('id', $filterByStatus);
+                })->whereDate('created_at', $dateFilter)
+                    ->with(['complaintStatus', 'complaintType', 'complaintMediaType', 'user', 'village', 'subdistrict'])->latest()->paginate(10);
+            }
+            return $this->whereHas('user', function ($user) use ($email) {
+                $user->where('email', $email);
+            })->whereDate('created_at', $dateFilter)
+                ->with(['complaintStatus', 'complaintType', 'complaintMediaType', 'user', 'village', 'subdistrict'])->latest()->paginate(10);
+        }
 
-        if ($filterByStatus) {
+        if (!empty($filterByStatus)) {
             return $this->whereHas('user', function ($user) use ($email) {
                 $user->where('email', $email);
             })->whereHas('complaintStatus', function ($complaintStatus) use ($filterByStatus) {
-                $complaintStatus->where('slug', 'like', '%' . $filterByStatus . '%');
-            })->with(['complaintStatus', 'complaintType', 'complaintMediaType', 'user', 'village', 'subdistrict'])->paginate(10);
+                $complaintStatus->where('id', $filterByStatus);
+            })->with(['complaintStatus', 'complaintType', 'complaintMediaType', 'user', 'village', 'subdistrict'])->latest()->paginate(10);
         }
 
         return $this->whereHas('user', function ($query) use ($email) {

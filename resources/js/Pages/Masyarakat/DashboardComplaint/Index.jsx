@@ -12,10 +12,16 @@ import Notif1 from "@/Components/Notifications/Notif1";
 import { useState } from "react";
 import CardCount from "@/Components/Molecules/Cards/CardCount";
 import Select from "@/Components/Molecules/Select";
-import { FaRegEdit, FaRegEye } from "react-icons/fa";
+import { FaFilter, FaRegEdit, FaRegEye } from "react-icons/fa";
 import GlobalLink from "@/Components/Atoms/GlobalLink";
-import { MdDeleteForever } from "react-icons/md";
+import { MdDelete, MdDeleteForever } from "react-icons/md";
 import usePusher from "@/utils/Pusher/usePusher";
+import DateConverter from "@/utils/DateTime/DateConverter";
+import Button from "@/Components/Atoms/Button";
+import Typography from "@/Components/Atoms/Typography";
+import { IoCloseOutline } from "react-icons/io5";
+import { Calendar } from "@nextui-org/react";
+import { parseDate } from "@internationalized/date";
 
 const Index = () => {
     // Destructure props from usePage()
@@ -29,12 +35,13 @@ const Index = () => {
         paginationComplaint,
         allStatus,
         flash,
-        ...props
     } = usePage().props;
     const [showNotification, setShowNotification] = useState(true);
     const [filteredComplaints, setFilteredComplaints] = useState(null);
-    const [loading, setLoading] = useState(false);
+    const [showFilterModal, setShowFilterModal] = useState(false);
+    const [dateValue, setDateValue] = useState(parseDate("2024-05-25"));
     const [selectedStatus, setSelectedStatus] = useState("");
+    const [loading, setLoading] = useState(false);
 
     const complaintStatus = (status) => {
         switch (status) {
@@ -50,20 +57,8 @@ const Index = () => {
     };
 
     const handlerDataChange = (e) => {
-        setLoading(true);
-        const { id, value } = e.target;
+        const { value } = e.target;
         setSelectedStatus(value);
-        if (value == "semua") {
-            setFilteredComplaints(null);
-            setLoading(false);
-        } else {
-            const res = paginationComplaint.data.filter(
-                (data) => data.complaint_status.id === value
-            );
-
-            setFilteredComplaints({ ...paginationComplaint, data: res });
-            setLoading(false);
-        }
     };
 
     const handlePusherEvent = (data) => {
@@ -86,6 +81,39 @@ const Index = () => {
         "ComplaintRegister",
         handlePusherEvent
     );
+
+    const handlerSubmitFilter = async () => {
+        setLoading(true);
+        try {
+            const response = await fetch(
+                route("masyarakat.complaints-filter-by-date", {
+                    email: auth.user.email,
+                    dateFilter: dateValue,
+                    statusFilter: selectedStatus,
+                }),
+                {
+                    method: "GET",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                }
+            );
+
+            if (!response.ok) {
+                throw new Error(`Error: ${response.status}`);
+            }
+
+            const data = await response.json();
+            setFilteredComplaints(data.data);
+            setLoading(false);
+            setShowFilterModal(false);
+        } catch (error) {
+            setLoading(false);
+            console.error("Error fetching data:", error);
+        }
+    };
+
+    console.log(filteredComplaints);
 
     return (
         <>
@@ -131,13 +159,55 @@ const Index = () => {
                 />
             </div>
 
-            {/* Main Table Component */}
-            <Table>
-                <Table.Main className="mt-5">
-                    <Table.TableHead>
-                        <Table.Th>No</Table.Th>
-                        <Table.Th>Nama Pemohon</Table.Th>
-                        <Table.Th>
+            <div className="flex gap-5 justify-end ">
+                <Button
+                    maxWidth="max"
+                    theme="danger"
+                    className={
+                        "group relative overflow-hidden flex items-center"
+                    }
+                    onClick={() => setFilteredComplaints(null)}
+                >
+                    <MdDelete className={"w-5 h-5"} />
+                    <Typography
+                        theme="primary"
+                        tag="span"
+                        className={
+                            "absolute group-hover:relative ml-2 transition-transform transform translate-x-full opacity-0 group-hover:translate-x-0 group-hover:opacity-100 duration-700 ease-in-out capitalize"
+                        }
+                    >
+                        hapus filter
+                    </Typography>
+                </Button>
+                <Button
+                    maxWidth="max"
+                    className={
+                        "group relative overflow-hidden flex items-center"
+                    }
+                    onClick={() => setShowFilterModal(true)}
+                >
+                    <FaFilter className={"w-5 h-5"} />
+                    <Typography
+                        theme="primary"
+                        tag="span"
+                        className={
+                            "absolute group-hover:relative ml-2 transition-transform transform translate-x-full opacity-0 group-hover:translate-x-0 group-hover:opacity-100 duration-700 ease-in-out capitalize"
+                        }
+                    >
+                        tambahkan filter
+                    </Typography>
+                </Button>
+            </div>
+
+            {showFilterModal && (
+                <div className="absolute grid justify-items-center content-center bg-black/50 top-0 left-0 right-0 bottom-0 z-20">
+                    <div className="bg-white dark:bg-zinc-800 opacity-100 flex flex-col relative rounded-xl max-w-xl p-5 gap-3">
+                        <div className="flex flex-col gap-5">
+                            <Calendar
+                                aria-label="Date"
+                                value={dateValue}
+                                onChange={setDateValue}
+                            />
                             <Select>
                                 <Select
                                     className={"basis-2/5"}
@@ -184,10 +254,38 @@ const Index = () => {
                                     }
                                 />
                             </Select>
-                        </Table.Th>
+                        </div>
+                        <div className="flex gap-5">
+                            <Button
+                                maxWidth="max"
+                                className={"!opacity-100"}
+                                onClick={() => setShowFilterModal(false)}
+                            >
+                                <IoCloseOutline className={"w-5 h-5"} />
+                            </Button>
+                            <Button
+                                maxWidth="max"
+                                theme="warning"
+                                onClick={handlerSubmitFilter}
+                            >
+                                <FaFilter className={"w-5 h-5"} />
+                            </Button>
+                        </div>
+                    </div>
+                </div>
+            )}
+
+            {/* Main Table Component */}
+            <Table>
+                <Table.Main className="mt-5">
+                    <Table.TableHead>
+                        <Table.Th>No</Table.Th>
+                        <Table.Th>Nama Pemohon</Table.Th>
+                        <Table.Th>Status Pengaduan</Table.Th>
                         <Table.Th>media</Table.Th>
                         <Table.Th>kecamatan</Table.Th>
                         <Table.Th>desa</Table.Th>
+                        <Table.Th>waktu pengaduan dibuat</Table.Th>
                         <Table.Th>Action</Table.Th>
                     </Table.TableHead>
                     <Table.TableBody>
@@ -229,6 +327,9 @@ const Index = () => {
                                         </Table.TdBasic>
                                         <Table.TdBasic>
                                             {data.village.name}
+                                        </Table.TdBasic>
+                                        <Table.TdBasic>
+                                            {DateConverter(data.created_at)}
                                         </Table.TdBasic>
                                         {data.complaint_status.slug ===
                                         "ditolak" ? (
@@ -319,6 +420,9 @@ const Index = () => {
                                         <Table.TdBasic>
                                             {data.village.name}
                                         </Table.TdBasic>
+                                        <Table.TdBasic>
+                                            {DateConverter(data.created_at)}
+                                        </Table.TdBasic>
                                         {data.complaint_status.slug ===
                                         "ditolak" ? (
                                             <Table.TdBasic className="flex gap-4 w-full">
@@ -374,7 +478,7 @@ const Index = () => {
                                 <Table.Tr>
                                     <Table.TdBasic
                                         children={"no data record"}
-                                        colSpan="7"
+                                        colSpan="8"
                                         className="text-center"
                                     />
                                 </Table.Tr>
@@ -385,21 +489,30 @@ const Index = () => {
                                     children={
                                         <span className="loading loading-dots loading-lg"></span>
                                     }
-                                    colSpan="7"
+                                    colSpan="8"
                                     className="text-center"
                                 />
                             </Table.Tr>
                         )}
                     </Table.TableBody>
                 </Table.Main>
-                <Table.Footer
+                {filteredComplaints?.data?.length > 0 ? (<Table.Footer2
+                    showFrom={filteredComplaints?.from}
+                    showTo={filteredComplaints?.to}
+                    total={filteredComplaints?.total}
+                    links={filteredComplaints?.links}
+                    last_page_url={filteredComplaints?.last_page_url}
+                    first_page_url={filteredComplaints?.first_page_url}
+                    setFilteredComplaints={setFilteredComplaints}
+                    setLoading={setLoading}
+                />) : (<Table.Footer
                     showFrom={paginationComplaint.from}
                     showTo={paginationComplaint.to}
                     total={paginationComplaint.total}
                     links={paginationComplaint.links}
                     last_page_url={paginationComplaint.last_page_url}
                     first_page_url={paginationComplaint.first_page_url}
-                />
+                />)}
             </Table>
         </>
     );

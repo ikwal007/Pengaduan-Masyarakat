@@ -1,7 +1,7 @@
 import { Link } from "@inertiajs/react";
 import { MdArrowBackIos, MdArrowForwardIos } from "react-icons/md";
-import Avatar from "../Atoms/Avatar";
 import { FaUserCircle } from "react-icons/fa";
+import Button from "../Atoms/Button";
 
 const themeColors = {
     primary: {
@@ -120,6 +120,104 @@ const TableFooter = ({
         </div>
     );
 };
+const TableFooter2 = ({
+    links,
+    showFrom,
+    showTo,
+    total,
+    first_page_url,
+    last_page_url,
+    setFilteredComplaints,
+    setLoading,
+}) => {
+    const handlerSubmit = async (link) => {
+        setLoading(true);
+        try {
+            const response = await fetch(link, {
+                method: "GET",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+            });
+
+            if (!response.ok) {
+                throw new Error(`Error: ${response.status}`);
+            }
+
+            const data = await response.json();
+            setFilteredComplaints(data.data);
+            setLoading(false);
+        } catch (error) {
+            setLoading(false);
+            console.error("Error fetching data:", error);
+        }
+    };
+    return (
+        <div className="grid px-4 py-3 text-xs font-semibold tracking-wide text-gray-500 uppercase border-t dark:border-gray-700 bg-gray-50 sm:grid-cols-9 dark:text-gray-400 dark:bg-gray-800">
+            <span className="flex items-center col-span-3">
+                Showing {showFrom}-{showTo} of {total}
+            </span>
+            <span className="col-span-2"></span>
+            {/* <!-- Pagination --> */}
+            <span className="flex col-span-4 mt-2 sm:mt-auto sm:justify-end">
+                <nav aria-label="Table navigation">
+                    <ul className="inline-flex items-center gap-2">
+                        <li>
+                            <Button
+                                theme="daisyui-ghost"
+                                maxWidth="max"
+                                onClick={() => handlerSubmit(first_page_url)}
+                            >
+                                <MdArrowBackIos className="w-5 h-5 hover:text-purple-600" />
+                            </Button>
+                        </li>
+                        {links.length > 0 &&
+                            links.map((link, index) => {
+                                // Temukan indeks data dengan link.active == true
+                                const activeIndex = links.findIndex(
+                                    (item) => item.active
+                                );
+                                // Tampilkan hanya jika bukan index pertama atau index terakhir
+                                if (
+                                    index !== 0 &&
+                                    index !== links.length - 1 &&
+                                    index >= activeIndex - 2 &&
+                                    index <= activeIndex + 2
+                                ) {
+                                    return (
+                                        <li key={index}>
+                                            <Button
+                                                theme={
+                                                    link.active
+                                                        ? "primary"
+                                                        : "daisyui-ghost"
+                                                }
+                                                onClick={() =>
+                                                    handlerSubmit(link.url)
+                                                }
+                                            >
+                                                {link.label}
+                                            </Button>
+                                        </li>
+                                    );
+                                } else {
+                                    return null; // Jangan tampilkan link untuk index pertama dan terakhir
+                                }
+                            })}
+                        <li>
+                            <Button
+                                theme="daisyui-ghost"
+                                onClick={() => handlerSubmit(last_page_url)}
+                            >
+                                <MdArrowForwardIos className="w-5 h-5 hover:text-purple-600" />
+                            </Button>
+                        </li>
+                    </ul>
+                </nav>
+            </span>
+        </div>
+    );
+};
 
 const TableHead = ({ children }) => (
     <thead>
@@ -200,5 +298,6 @@ Table.TdBasic = TdBasic;
 Table.TdStatus = TdStatus;
 Table.Main = TableMain;
 Table.Footer = TableFooter;
+Table.Footer2 = TableFooter2;
 
 export default Table;

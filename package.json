@@ -21,6 +21,9 @@
         "vite": "^4.0.0"
     },
     "dependencies": {
+        "@nextui-org/calendar": "^2.0.4",
+        "@nextui-org/react": "^2.3.6",
+        "framer-motion": "^11.2.6",
         "html2canvas-pro": "^1.4.3",
         "jspdf": "^2.5.1",
         "laravel-echo": "^1.15.3",

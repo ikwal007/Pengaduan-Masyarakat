@@ -5,6 +5,7 @@ import { createRoot } from "react-dom/client";
 import { createInertiaApp } from "@inertiajs/react";
 import AuthenticatedLayout from "./Layouts/AuthenticatedLayout2";
 import React from "react";
+import { NextUIProvider } from '@nextui-org/react';
 
 const appName = import.meta.env.VITE_APP_NAME || "Laravel";
 
@@ -25,7 +26,9 @@ createInertiaApp({
         const root = createRoot(el);
         root.render(
             <React.StrictMode>
-                <App {...props} />
+                <NextUIProvider>
+                    <App {...props} />
+                </NextUIProvider>
             </React.StrictMode>
         );
     },
