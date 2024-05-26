@@ -24,6 +24,8 @@ import { Calendar } from "@nextui-org/react";
 import { parseDate } from "@internationalized/date";
 
 const Index = () => {
+    const today = new Date();
+    const isoString = today.toISOString().split('T')[0];
     // Destructure props from usePage()
     const {
         auth,
@@ -39,7 +41,7 @@ const Index = () => {
     const [showNotification, setShowNotification] = useState(true);
     const [filteredComplaints, setFilteredComplaints] = useState(null);
     const [showFilterModal, setShowFilterModal] = useState(false);
-    const [dateValue, setDateValue] = useState(parseDate("2024-05-25"));
+    const [dateValue, setDateValue] = useState(parseDate(isoString));
     const [selectedStatus, setSelectedStatus] = useState("");
     const [loading, setLoading] = useState(false);
 
@@ -112,8 +114,6 @@ const Index = () => {
             console.error("Error fetching data:", error);
         }
     };
-
-    console.log(filteredComplaints);
 
     return (
         <>
