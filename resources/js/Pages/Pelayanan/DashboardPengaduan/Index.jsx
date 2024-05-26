@@ -1,25 +1,21 @@
-import Card from "@/Components/Cards/Card";
 import AuthenticatedLayout2 from "@/Layouts/AuthenticatedLayout2";
-// import { useEcho } from "@/utils/EchoContext";
-import { HiMiniUserGroup } from "react-icons/hi2";
-import { FaUserTie, FaUserCheck, FaClipboardUser } from "react-icons/fa6";
-import { MdModeEditOutline } from "react-icons/md";
-import { IoMdEye } from "react-icons/io";
+import { FaClipboardUser } from "react-icons/fa6";
 import { usePage } from "@inertiajs/react";
 import {
     LuClipboardCheck,
-    LuClipboardCopy,
     LuClipboardList,
     LuClipboardSignature,
     LuClipboardX,
 } from "react-icons/lu";
 import Table from "@/Components/Tables/Table";
-import GlobalLink from "@/Components/Atoms/GlobalLink";
 import Notif1 from "@/Components/Notifications/Notif1";
 import { useDeferredValue, useEffect, useRef, useState } from "react";
 import CardCount from "@/Components/Molecules/Cards/CardCount";
 import { IoSearchOutline } from "react-icons/io5";
 import Input from "@/Components/Input/Input";
+import DateConverter from "@/utils/DateTime/DateConverter";
+import GlobalLink from "@/Components/Atoms/GlobalLink";
+import { FaRegEye } from "react-icons/fa";
 
 const Index = () => {
     // Destructure props from usePage()
@@ -154,6 +150,8 @@ const Index = () => {
                         <Table.Th>media</Table.Th>
                         <Table.Th>kecamatan</Table.Th>
                         <Table.Th>desa</Table.Th>
+                        <Table.Th>waktu pengaduan dibuat</Table.Th>
+                        <Table.Th>Action</Table.Th>
                     </Table.TableHead>
                     <Table.TableBody>
                         {loading === false ? (
@@ -200,13 +198,28 @@ const Index = () => {
                                             <Table.TdBasic>
                                                 {data.village.name}
                                             </Table.TdBasic>
+                                            <Table.TdBasic>
+                                                {DateConverter(data.created_at)}
+                                            </Table.TdBasic>
+                                            <Table.TdBasic>
+                                                <GlobalLink
+                                                    href={route("pelayanan.dashboard-complaints-show", {
+                                                        id: data.id,
+                                                    })}
+                                                    children={
+                                                        <FaRegEye className="w-5 h-5" />
+                                                    }
+                                                    theme="info"
+                                                    maxWidth="max"
+                                                />
+                                            </Table.TdBasic>
                                         </Table.Tr>
                                     ))
                                 ) : (
                                     <Table.Tr>
                                         <Table.TdBasic
                                             children={"no data record"}
-                                            colSpan="5"
+                                            colSpan="7"
                                             className="text-center"
                                         />
                                     </Table.Tr>
@@ -246,13 +259,28 @@ const Index = () => {
                                         <Table.TdBasic>
                                             {data.village.name}
                                         </Table.TdBasic>
+                                        <Table.TdBasic>
+                                            {DateConverter(data.created_at)}
+                                        </Table.TdBasic>
+                                        <Table.TdBasic>
+                                            <GlobalLink
+                                                href={route("pelayanan.dashboard-complaints-show", {
+                                                    id: data.id,
+                                                })}
+                                                children={
+                                                    <FaRegEye className="w-5 h-5" />
+                                                }
+                                                theme="info"
+                                                maxWidth="max"
+                                            />
+                                        </Table.TdBasic>
                                     </Table.Tr>
                                 ))
                             ) : (
                                 <Table.Tr>
                                     <Table.TdBasic
                                         children={"no data record"}
-                                        colSpan="5"
+                                        colSpan="7"
                                         className="text-center"
                                     />
                                 </Table.Tr>
@@ -263,7 +291,7 @@ const Index = () => {
                                     children={
                                         <span className="loading loading-dots loading-lg"></span>
                                     }
-                                    colSpan="5"
+                                    colSpan="7"
                                     className="text-center"
                                 />
                             </Table.Tr>

@@ -44,6 +44,7 @@ Route::middleware('auth')->group(function () {
     Route::middleware('role:Pelayanan_Publik')->prefix('pelayanan-publik')->group(function () {
         Route::controller(DashboardPengaduanController::class)->group(function () {
             Route::get('/dashboard-pengaduan', 'index')->name('pelayanan.dashboard-complaints-index');
+            Route::get('/dashboard-pengaduan/{id}', 'show')->name('pelayanan.dashboard-complaints-show');
         });
         Route::controller(ComplaintVerificationDashboardController::class)->group(function () {
             Route::get('/dashboard-pengaduan-verifikasi', 'index')->name('pelayanan.complaint-verification-dashboard-index');
