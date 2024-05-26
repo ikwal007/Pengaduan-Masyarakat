@@ -203,9 +203,12 @@ const Index = () => {
                                             </Table.TdBasic>
                                             <Table.TdBasic>
                                                 <GlobalLink
-                                                    href={route("pelayanan.dashboard-complaints-show", {
-                                                        id: data.id,
-                                                    })}
+                                                    href={route(
+                                                        "pelayanan.dashboard-complaints-show",
+                                                        {
+                                                            id: data.id,
+                                                        }
+                                                    )}
                                                     children={
                                                         <FaRegEye className="w-5 h-5" />
                                                     }
@@ -264,9 +267,12 @@ const Index = () => {
                                         </Table.TdBasic>
                                         <Table.TdBasic>
                                             <GlobalLink
-                                                href={route("pelayanan.dashboard-complaints-show", {
-                                                    id: data.id,
-                                                })}
+                                                href={route(
+                                                    "pelayanan.dashboard-complaints-show",
+                                                    {
+                                                        id: data.id,
+                                                    }
+                                                )}
                                                 children={
                                                     <FaRegEye className="w-5 h-5" />
                                                 }
@@ -298,14 +304,16 @@ const Index = () => {
                         )}
                     </Table.TableBody>
                 </Table.Main>
-                <Table.Footer
-                    showFrom={paginationComplaint.from}
-                    showTo={paginationComplaint.to}
-                    total={paginationComplaint.total}
-                    links={paginationComplaint.links}
-                    last_page_url={paginationComplaint.last_page_url}
-                    first_page_url={paginationComplaint.first_page_url}
-                />
+                {searchResults === null && (
+                    <Table.Footer
+                        showFrom={paginationComplaint.from}
+                        showTo={paginationComplaint.to}
+                        total={paginationComplaint.total}
+                        links={paginationComplaint.links}
+                        last_page_url={paginationComplaint.last_page_url}
+                        first_page_url={paginationComplaint.first_page_url}
+                    />
+                )}
             </Table>
         </>
     );
