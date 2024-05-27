@@ -2,16 +2,20 @@
 
 namespace App\Http\Controllers\Pelayanan;
 
-use Illuminate\Http\Request;
-use App\Http\Controllers\Controller;
-use App\Http\Requests\General\ComplaintPostRequest;
-use App\Models\Complaint;
-use App\Models\ComplaintHandling;
+use App\Events\Masyarakat\ComplaintRegister;
 use App\Models\User;
-use App\Queries\ComplaintMediaTypeQuery;
-use App\Queries\ComplaintStatusQuery;
-use App\Queries\ComplaintTypeQuery;
+use App\Models\Archives;
+use App\Models\Complaint;
+use Illuminate\Support\Str;
+use Illuminate\Http\Request;
+use App\Models\ComplaintHandling;
 use App\Queries\SubdistrictQuery;
+use App\Queries\ComplaintTypeQuery;
+use App\Http\Controllers\Controller;
+use App\Queries\ComplaintStatusQuery;
+use App\Queries\ComplaintMediaTypeQuery;
+use App\Http\Requests\General\ComplaintPostRequest;
+use App\Models\Notification;
 
 class CreateComplaintController extends Controller
 {
@@ -28,7 +32,7 @@ class CreateComplaintController extends Controller
         $allComplaintStatus = $complaintStatus->getAll();
 
         $complainType = new ComplaintTypeQuery();
-        $allComplainType = $complainType->getComplaintTypeExcept("pelanggaran-disiplin-pegawai-negeri-sipil");
+        $allComplainType = $complainType->all();
 
         $subdistrict = new SubdistrictQuery();
         $subdistricts = $subdistrict->getAllSubdistrictWithVillage();
@@ -40,7 +44,7 @@ class CreateComplaintController extends Controller
             'allComplaintStatus' => $allComplaintStatus,
             'allComplainType' => $allComplainType,
             'subdistricts' => $subdistricts,
-            'defaultComplaintStatus' => $complaintStatus->getComplaintStatusBySlug('diproses'),
+            'defaultComplaintStatus' => fn () => $complaintStatus->getComplaintStatusBySlug('ditunda'),
             'oldDataFormOnSession' => $dataOnSession,
         ]);
     }
@@ -54,6 +58,8 @@ class CreateComplaintController extends Controller
 
         $userFail = User::where('email', $validated['userEmail'])->first();
 
+        $statusComplaint = new ComplaintStatusQuery();
+        $defaultComplaintStatus = $statusComplaint->getComplaintStatusBySlug('ditunda')->id;
 
         $complaint = new Complaint();
 
@@ -64,7 +70,8 @@ class CreateComplaintController extends Controller
         $complaint->complaint_subdistrict_id = $validated['subdistricts'];
         $complaint->certificate_no = $validated['certificateNumber'];
         $complaint->description = $validated['description'];
-        $complaint->complaint_statuses_id = $validated['complainStatus'];
+        $complaint->complaint_statuses_id = $defaultComplaintStatus;
+        $complaint->confirmed = 1;
 
         if ($userFail === null) {
             $request->session()->put('complain', $complaint->toArray());
@@ -74,6 +81,20 @@ class CreateComplaintController extends Controller
         $request->session()->forget('complain');
 
         $complaint->save();
+
+        if (!empty($request['inputFiles'])) {
+            foreach ($request['inputFiles'] as $data) {
+                $archives = new Archives();
+                $patch = '/upload/archives/' . $validated['userEmail'] . '/';
+                $avatar = $data['file'];
+                $slug = Str::slug($avatar->getClientOriginalName());
+                $filename = time() . '-' . $slug . '.' . $avatar->getClientOriginalExtension();
+                $avatar->move(public_path($patch), $filename);
+                $archives->complaint_id = $complaint->id;
+                $archives->resource = $patch . $filename;
+                $archives->save();
+            }
+        }
 
         $queryComplaint = new ComplaintTypeQuery();
         $listTeamHandlingComplaint = $queryComplaint->getSeksiWithComplaint($validated['complainType'])->seksis;
@@ -86,6 +107,16 @@ class CreateComplaintController extends Controller
             $complaintHandling->status_id = $status->getComplaintStatusBySlug('diproses')->id;
             $complaintHandling->save();
         }
+
+        $notification = new Notification();
+        $notification->user_email = $validated['userEmail'];
+        $notification->title = "Pengaduan Baru " . $validated['certificateNumber'];
+        $notification->content = "Pengaduan sedang ditinjau oleh pelayanan." . "Dengan Data sertifikasi:" . $validated['certificateNumber'] . "Dengan Deskripsi:" . $validated['description'];
+        $notification->save();
+
+        event(new ComplaintRegister(
+            $validated['userEmail']
+        ));
 
         return redirect()->route('pelayanan.dashboard-complaints-index')->with('message', 'Pengaduan Berhasil Disimpan');
     }

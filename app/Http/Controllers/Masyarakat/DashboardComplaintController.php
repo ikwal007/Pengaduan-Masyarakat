@@ -57,17 +57,15 @@ class DashboardComplaintController extends Controller
         $defaultComplaintMediaTypeForMasyarakat = $complaintMediaType->getDefaultComplaintMediaTypeForMasyarakat()->id;
 
         $complaintStatus = new ComplaintStatusQuery();
-        $allComplaintStatus = $complaintStatus->getAll();
 
         $complainType = new ComplaintTypeQuery();
-        $allComplainType = $complainType->getComplaintTypeExcept("pelanggaran-disiplin-pegawai-negeri-sipil");
+        $allComplainType = $complainType->all();
 
         $subdistrict = new SubdistrictQuery();
         $subdistricts = $subdistrict->getAllSubdistrictWithVillage();
 
         return inertia('Masyarakat/CreateComplaint/Create', [
             'defaultComplaintMediaTypeForMasyarakat' => $defaultComplaintMediaTypeForMasyarakat,
-            'allComplaintStatus' => $allComplaintStatus,
             'allComplainType' => $allComplainType,
             'subdistricts' => $subdistricts,
             'defaultComplaintStatus' => $complaintStatus->getComplaintStatusBySlug('ditunda'),
