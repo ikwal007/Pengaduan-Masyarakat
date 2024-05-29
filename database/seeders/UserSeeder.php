@@ -16,7 +16,7 @@ class UserSeeder extends Seeder
      */
     public function run(): void
     {
-        $faker = Faker::create();
+        $faker = Faker::create('id_ID');
 
         $admin = User::create([
             'full_name' => 'Super Admin',
@@ -51,12 +51,14 @@ class UserSeeder extends Seeder
                 'full_name' => 'junaidi bahar',
                 'email' => 'junaidi@masyarakat.co.ac',
                 'phone_number' => $faker->phoneNumber,
+                'nik' => $faker->nik,
                 'password' => Hash::make('password')
             ],
             [
                 'full_name' => 'sulisiati',
                 'email' => 'sulisiati@masyarakat.co.ac',
                 'phone_number' => $faker->phoneNumber,
+                'nik' => $faker->nik,
                 'password' => Hash::make('password')
             ],
         ];

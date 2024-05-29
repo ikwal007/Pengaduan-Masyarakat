@@ -25,7 +25,9 @@ const Create = () => {
         oldDataFormOnSession,
     } = usePage().props;
 
-    const [subdistrictSelected, setSubdistrictSelected] = useState([]);
+    const subdistrictsOnSession = subdistricts.find((subdistrict) => subdistrict.id == oldDataFormOnSession?.complaint?.subdistricts);
+
+    const [subdistrictSelected, setSubdistrictSelected] = useState(subdistrictsOnSession || []);
 
     const [show, setShow] = useState(true);
     const [inputFiles, setInputFiles] = useState([]);
@@ -43,17 +45,17 @@ const Create = () => {
         setError,
         clearErrors,
     } = useForm({
-        complainType: oldDataFormOnSession?.complaint_type_id || "",
-        complainMediaType: oldDataFormOnSession?.complaint_media_types_id || "",
-        userEmail: oldDataFormOnSession?.user_email || "",
-        subdistricts: oldDataFormOnSession?.complaint_subdistrict_id || "",
-        village: oldDataFormOnSession?.complaint_village_id || "",
-        certificateNumber: oldDataFormOnSession?.certificate_no || "",
-        description: oldDataFormOnSession?.description || "",
+        complainType: oldDataFormOnSession?.complaint?.complainType || "",
+        complainMediaType: oldDataFormOnSession?.complaint?.complainMediaType || "",
+        userEmail: oldDataFormOnSession?.complaint?.userEmail || "",
+        subdistricts: oldDataFormOnSession?.complaint?.subdistricts || "",
+        village: oldDataFormOnSession?.complaint?.village || "",
+        certificateNumber: oldDataFormOnSession?.complaint?.certificateNumber || "",
+        description: oldDataFormOnSession?.complaint?.description || "",
         complainStatus:
-            oldDataFormOnSession?.complaint_statuses_id ||
+            oldDataFormOnSession?.complaint?.complaintStatuses ||
             defaultComplaintStatus.id,
-        inputFiles: [],
+        inputFiles: oldDataFormOnSession?.temp_files || [],
     });
 
     const handlerDataChange = (e) => {
@@ -195,6 +197,7 @@ const Create = () => {
 
         setShow(true);
     }, [oldDataFormOnSession, subdistricts, flash]);
+
 
     return (
         <>

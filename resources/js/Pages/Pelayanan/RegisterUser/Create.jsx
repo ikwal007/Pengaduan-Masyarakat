@@ -1,13 +1,11 @@
 import AuthenticatedLayout2 from "@/Layouts/AuthenticatedLayout2";
-import { PiKeyThin } from "react-icons/pi";
-// import { useEcho } from "@/utils/EchoContext";
-import { MdAlternateEmail } from "react-icons/md";
+import { BiIdCard } from "react-icons/bi";
+import { MdAlternateEmail, MdOutlinePhoneAndroid } from "react-icons/md";
 import { useForm, usePage } from "@inertiajs/react";
 import Notif1 from "@/Components/Notifications/Notif1";
 import { useEffect, useState } from "react";
 import Typography from "@/Components/Atoms/Typography";
 import Input from "@/Components/Input/Input";
-import Select from "@/Components/Molecules/Select";
 import Button from "@/Components/Atoms/Button";
 import { FaRegUser } from "react-icons/fa";
 
@@ -38,6 +36,8 @@ const Create = () => {
         clearErrors,
     } = useForm({
         email: emailNewUser || '',
+        nik: "",
+        phone_number: "",
         fullName: "",
         password: "Password01*",
     });
@@ -146,6 +146,66 @@ const Create = () => {
                                             />
                                         }
                                         value={data.fullName}
+                                        onChange={handlerDataChange}
+                                    />
+                                }
+                            />
+                        </Input>
+                        
+                        <Input className={"basis-2/5"}>
+                            <Input.Label
+                                htmlFor={"nik"}
+                                labelName={"NIK"}
+                                message={formErrors.nik}
+                                children={
+                                    <Input.InputText
+                                        id={"nik"}
+                                        inputSize="md"
+                                        theme={
+                                            formErrors.nik
+                                                ? "error"
+                                                : "primary"
+                                        }
+                                        leftIcon={
+                                            <BiIdCard 
+                                                className={`w-7 h-7 ${
+                                                    formErrors.nik
+                                                        ? "text-error"
+                                                        : "text-primary"
+                                                } opacity-70`}
+                                            />
+                                        }
+                                        value={data.nik}
+                                        onChange={handlerDataChange}
+                                    />
+                                }
+                            />
+                        </Input>
+                        
+                        <Input className={"basis-2/5"}>
+                            <Input.Label
+                                htmlFor={"phhone_number"}
+                                labelName={"No Tlp"}
+                                message={formErrors.phone_number}
+                                children={
+                                    <Input.InputText
+                                        id={"phone_number"}
+                                        inputSize="md"
+                                        theme={
+                                            formErrors.phone_number
+                                                ? "error"
+                                                : "primary"
+                                        }
+                                        leftIcon={
+                                            <MdOutlinePhoneAndroid 
+                                                className={`w-7 h-7 ${
+                                                    formErrors.phone_number
+                                                        ? "text-error"
+                                                        : "text-primary"
+                                                } opacity-70`}
+                                            />
+                                        }
+                                        value={data.phone_number}
                                         onChange={handlerDataChange}
                                     />
                                 }

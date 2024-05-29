@@ -15,11 +15,11 @@ class DashboardPengaduanController extends Controller
     public function index()
     {
         $complaint = new ComplaintQuery();
-        $allCountComplaint = $complaint->getAllCountComplaint();
-        $allCountComplaintByStatusProsessing = $complaint->getAllCountComplaintByStatus('diproses');
-        $allCountComplaintByStatusDone = $complaint->getAllCountComplaintByStatus('diselesaikan');
-        $allCountComplaintByStatusReject = $complaint->getAllCountComplaintByStatus('ditolak');
-        $allCountComplaintByStatusPending = $complaint->getAllCountComplaintByStatus('ditunda');
+        $allCountComplaint = $complaint->getAllCountComplaintOnConditionConfirm(1);
+        $allCountComplaintByStatusProsessing = $complaint->getAllCountComplaintByStatusAndConditionConfirm('diproses', 1);
+        $allCountComplaintByStatusDone = $complaint->getAllCountComplaintByStatusAndConditionConfirm('diselesaikan', 1);
+        $allCountComplaintByStatusReject = $complaint->getAllCountComplaintByStatusAndConditionConfirm('ditolak', 1);
+        $allCountComplaintByStatusPending = $complaint->getAllCountComplaintByStatusAndConditionConfirm('ditunda', 1);
         $paginationComplaint = $complaint->complaintWithPaginationBasedConfirmed(1);
         return inertia('Pelayanan/DashboardPengaduan/Index', [
             'countComplaint' => $allCountComplaint,

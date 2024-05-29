@@ -292,6 +292,7 @@ const Edit = () => {
                                 ? archives.map((data, i) => {
                                       return (
                                           <div
+                                              key={i}
                                               id={`item${i + 1}`}
                                               className="carousel-item w-full"
                                           >

@@ -14,9 +14,9 @@ class ComplaintQuery extends Complaint
         return $count;
     }
 
-    public function getAllCountComplaintNotConfirmed()
+    public function getAllCountComplaintOnConditionConfirm($condition)
     {
-        return $this->where('confirmed', 0)->count();
+        return $this->where('confirmed', $condition)->count();
     }
 
     public function getAllCountComplaintOnSpecificUser(String $email)
@@ -24,6 +24,13 @@ class ComplaintQuery extends Complaint
         return $this->whereHas('user', function ($query) use ($email) {
             $query->where('email', $email);
         })->count();
+    }
+
+    public function getAllCountComplaintByStatusAndConditionConfirm(String $status, Bool $condition)
+    {
+        return $this->whereHas('complaintStatus', function ($query) use ($status) {
+            $query->where('slug', $status);
+        })->where('confirmed', $condition)->count();
     }
 
     public function getAllCountComplaintByStatus($status)

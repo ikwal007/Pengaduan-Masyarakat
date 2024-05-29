@@ -98,7 +98,7 @@ const Index = () => {
             {/* <!-- Cards --> */}
             <div className="grid place-content-center gap-6 mb-8 md:grid-cols-2 xl:grid-cols-3">
                 <CardCount
-                    title={"Total Pengaduan"}
+                    title={"Total semua Pengaduan Yang Telah Diverifikasi"}
                     value={countComplaint}
                     theme="primary"
                     icon={<FaClipboardUser className="w-5 h-5" />}

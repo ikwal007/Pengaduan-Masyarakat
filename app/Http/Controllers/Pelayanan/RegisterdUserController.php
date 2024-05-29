@@ -23,12 +23,12 @@ class RegisterdUserController extends Controller
      */
     public function create(Request $request)
     {
-        $dataOnSession = $request->session()->get('complain', null);
+        $dataOnSession = $request->session()->get('complaint.complaint', null);
         if ($dataOnSession === null) {
-            $dataOnSession['user_email'] = null;
+            $dataOnSession['userEmail'] = null;
         }
         return inertia('Pelayanan/RegisterUser/Create', [
-            'emailNewUser' => $dataOnSession['user_email'],
+            'emailNewUser' => $dataOnSession['userEmail'],
         ]);
     }
 
@@ -41,6 +41,8 @@ class RegisterdUserController extends Controller
 
         $user = User::create([
             'full_name' => $validated['fullName'],
+            'nik' => $request["nik"],
+            'phone_number' => $request["phone_number"],
             'email' => $validated['email'],
             'password' => Hash::make($validated['password']),
         ]);

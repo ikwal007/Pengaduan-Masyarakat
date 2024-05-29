@@ -37,7 +37,7 @@ class CreateComplaintController extends Controller
         $subdistrict = new SubdistrictQuery();
         $subdistricts = $subdistrict->getAllSubdistrictWithVillage();
 
-        $dataOnSession = $request->session()->get('complain', null);
+        $dataOnSession = $request->session()->get('complaint', null);
 
         return inertia('Pelayanan/CreateComplaint/Create', [
             'allComplaintMediaType' => $allComplaintMediaType,
@@ -74,11 +74,24 @@ class CreateComplaintController extends Controller
         $complaint->confirmed = 1;
 
         if ($userFail === null) {
-            $request->session()->put('complain', $complaint->toArray());
+            $tempFiles = [];
+
+            if ($request->hasFile('inputFiles')) {
+                foreach ($request->file('inputFiles') as $file) {
+                    $tempPath = $file->store('temp');
+                    $tempFiles[] = $tempPath;
+                }
+            }
+
+            $newDataToSession = [
+                'complaint' => $validated,
+                'temp_files' => $tempFiles,
+            ];
+            $request->session()->put('complaint', $newDataToSession);
             return redirect()->route('pelayanan.create_user')->with('message', 'Pengaduan Gagal Diproses, Email Belum Didaftarkan lanjut untuk medaftar akun');
         }
 
-        $request->session()->forget('complain');
+        $request->session()->forget('complaint');
 
         $complaint->save();
 

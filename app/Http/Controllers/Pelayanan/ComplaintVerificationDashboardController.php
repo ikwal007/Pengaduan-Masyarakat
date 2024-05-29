@@ -25,18 +25,10 @@ class ComplaintVerificationDashboardController extends Controller
     public function index()
     {
         $complaint = new ComplaintQuery();
-        $allCountComplaint = $complaint->getAllCountComplaintNotConfirmed();
-        $allCountComplaintByStatusProsessing = $complaint->getAllCountComplaintByStatus('diproses');
-        $allCountComplaintByStatusDone = $complaint->getAllCountComplaintByStatus('diselesaikan');
-        $allCountComplaintByStatusReject = $complaint->getAllCountComplaintByStatus('ditolak');
-        $allCountComplaintByStatusPending = $complaint->getAllCountComplaintByStatus('ditunda');
+        $allCountComplaint = $complaint->getAllCountComplaintOnConditionConfirm(0);
         $paginationComplaint = $complaint->complaintWithPaginationBasedConfirmed(0);
         return inertia('Pelayanan/DashboardVerifikasiPengaduan/Index', [
             'countComplaint' => $allCountComplaint,
-            'countComplaintByStatusProsessing' => $allCountComplaintByStatusProsessing,
-            'countComplaintByStatusDone' => $allCountComplaintByStatusDone,
-            'countComplaintByStatusReject' => $allCountComplaintByStatusReject,
-            'countComplaintByStatusPending' => $allCountComplaintByStatusPending,
             'paginationComplaint' => $paginationComplaint
         ]);
     }
@@ -109,7 +101,7 @@ class ComplaintVerificationDashboardController extends Controller
             'allComplaintStatus' => $allComplaintStatus,
             'allComplainType' => $allComplainType,
             'subdistricts' => $subdistricts,
-            'defaultComplaintStatus' => $complaintStatus->getComplaintStatusBySlug('diproses'),
+            'defaultComplaintStatus' => $complaintStatus->getComplaintStatusBySlug('ditunda'),
             'oldDataFormOnSession' => $dataOnSession,
             "detailComplaint" => $detailComplaint
         ]);

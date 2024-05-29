@@ -16,6 +16,7 @@ import CardCount from "@/Components/Molecules/Cards/CardCount";
 import { IoSearchOutline } from "react-icons/io5";
 import Input from "@/Components/Input/Input";
 import { FaRegEye } from "react-icons/fa";
+import DateConverter from "@/utils/DateTime/DateConverter";
 
 const Index = () => {
     // Destructure props from usePage()
@@ -99,7 +100,7 @@ const Index = () => {
             {/* <!-- Cards --> */}
             <div className="grid place-content-center gap-6 mb-8 md:grid-cols-2 xl:grid-cols-3">
                 <CardCount
-                    title={"Total Pengaduan"}
+                    title={"Total Pengaduan Yang Belum Diverifikasi"}
                     value={countComplaint}
                     theme="primary"
                     icon={<FaClipboardUser className="w-5 h-5" />}
@@ -152,6 +153,7 @@ const Index = () => {
                         <Table.Th>media</Table.Th>
                         <Table.Th>kecamatan</Table.Th>
                         <Table.Th>desa</Table.Th>
+                        <Table.Th>waktu pengaduan dibuat</Table.Th>
                         <Table.Th>Tindakan</Table.Th>
                     </Table.TableHead>
                     <Table.TableBody>
@@ -204,12 +206,20 @@ const Index = () => {
                                                 <Table.TdBasic>
                                                     {complaint.village.name}
                                                 </Table.TdBasic>
-                                                <Table.TdBasic className={"flex gap-2"}>
+                                                <Table.TdBasic>
+                                                    {DateConverter(
+                                                        complaint.created_at
+                                                    )}
+                                                </Table.TdBasic>
+                                                <Table.TdBasic
+                                                    className={"flex gap-2"}
+                                                >
                                                     <GlobalLink
                                                         href={route(
                                                             "complaint-handling.show",
                                                             {
-                                                                complaint_handling: id,
+                                                                complaint_handling:
+                                                                    id,
                                                             }
                                                         )}
                                                         children={
@@ -237,7 +247,7 @@ const Index = () => {
                                     <Table.Tr>
                                         <Table.TdBasic
                                             children={"no data record"}
-                                            colSpan="6"
+                                            colSpan="7"
                                             className="text-center"
                                         />
                                     </Table.Tr>
@@ -285,12 +295,18 @@ const Index = () => {
                                             <Table.TdBasic>
                                                 {complaint.village.name}
                                             </Table.TdBasic>
-                                            <Table.TdBasic className={"flex gap-2"}>
+                                            <Table.TdBasic>
+                                                {DateConverter(complaint.created_at)}
+                                            </Table.TdBasic>
+                                            <Table.TdBasic
+                                                className={"flex gap-2"}
+                                            >
                                                 <GlobalLink
                                                     href={route(
                                                         "complaint-handling.show",
                                                         {
-                                                            complaint_handling: id,
+                                                            complaint_handling:
+                                                                id,
                                                         }
                                                     )}
                                                     children={
@@ -318,7 +334,7 @@ const Index = () => {
                                 <Table.Tr>
                                     <Table.TdBasic
                                         children={"no data record"}
-                                        colSpan="6"
+                                        colSpan="7"
                                         className="text-center"
                                     />
                                 </Table.Tr>
@@ -329,7 +345,7 @@ const Index = () => {
                                     children={
                                         <span className="loading loading-dots loading-lg"></span>
                                     }
-                                    colSpan="6"
+                                    colSpan="7"
                                     className="text-center"
                                 />
                             </Table.Tr>

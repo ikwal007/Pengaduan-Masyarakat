@@ -1,7 +1,7 @@
 import { usePage } from "@inertiajs/react";
 import { useEffect, useState } from "react";
 import GlobalLink from "../Atoms/GlobalLink";
-import { MdAdd, MdCreate } from "react-icons/md";
+import { MdCreate } from "react-icons/md";
 import { IoHomeOutline } from "react-icons/io5";
 import Typography from "../Atoms/Typography";
 import { GrDocumentVerified } from "react-icons/gr";
@@ -223,7 +223,7 @@ const Desktop = () => {
                         </ul>
                     )}
 
-                    {auth.user.role.name === "Pelayanan_Publik" && (
+                    {/* {auth.user.role.name === "Pelayanan_Publik" && (
                         <div className="px-6 my-6 flex items-center">
                             <GlobalLink
                                 href={route("pelayanan.create_user")}
@@ -238,7 +238,7 @@ const Desktop = () => {
                                 </Typography>
                             </GlobalLink>
                         </div>
-                    )}
+                    )} */}
                 </div>
             </aside>
         </>

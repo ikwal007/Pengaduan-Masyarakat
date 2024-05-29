@@ -1,5 +1,4 @@
 import Typography from "@/Components/Atoms/Typography";
-import React from "react";
 
 const themeColors = {
     primary: {
@@ -7,6 +6,12 @@ const themeColors = {
         background: "bg-purple-100",
         darkText: "dark:text-purple-100",
         darkBackground: "dark:bg-purple-500",
+    },
+    secondary:{
+        text: "text-gray-500",
+        background: "bg-gray-100",
+        darkText: "dark:text-gray-100",
+        darkBackground: "dark:bg-gray-500",
     },
     warning: {
         text: "text-orange-500",

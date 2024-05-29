@@ -1,12 +1,5 @@
 import AuthenticatedLayout2 from "@/Layouts/AuthenticatedLayout2";
-import { FaClipboardUser } from "react-icons/fa6";
 import { usePage } from "@inertiajs/react";
-import {
-    LuClipboardCheck,
-    LuClipboardList,
-    LuClipboardSignature,
-    LuClipboardX,
-} from "react-icons/lu";
 import Table from "@/Components/Tables/Table";
 import Notif1 from "@/Components/Notifications/Notif1";
 import { useDeferredValue, useEffect, useRef, useState } from "react";
@@ -16,15 +9,12 @@ import Input from "@/Components/Input/Input";
 import GlobalLink from "@/Components/Atoms/GlobalLink";
 import { FaRegEdit } from "react-icons/fa";
 import DateConverter from "@/utils/DateTime/DateConverter";
+import { MdNewReleases } from "react-icons/md";
 
 const Index = () => {
     // Destructure props from usePage()
     const {
         countComplaint,
-        countComplaintByStatusProsessing,
-        countComplaintByStatusPending,
-        countComplaintByStatusDone,
-        countComplaintByStatusReject,
         paginationComplaint,
         flash,
         ...props
@@ -98,34 +88,10 @@ const Index = () => {
             {/* <!-- Cards --> */}
             <div className="grid place-content-center gap-6 mb-8 md:grid-cols-2 xl:grid-cols-3">
                 <CardCount
-                    title={"Total Pengaduan"}
+                    title={"Total Pengaduan Yang Belum Diverifikasi"}
                     value={countComplaint}
-                    theme="primary"
-                    icon={<FaClipboardUser className="w-5 h-5" />}
-                />
-                <CardCount
-                    title={"Total Pengaduan Proses"}
-                    value={countComplaintByStatusProsessing}
-                    theme="info"
-                    icon={<LuClipboardSignature className="w-5 h-5" />}
-                />
-                <CardCount
-                    title={"Total Pengaduan Selesai"}
-                    value={countComplaintByStatusDone}
-                    theme="success"
-                    icon={<LuClipboardCheck className="w-5 h-5" />}
-                />
-                <CardCount
-                    title={"Total Pengaduan Ditolak"}
-                    value={countComplaintByStatusReject}
-                    theme="danger"
-                    icon={<LuClipboardX className="w-5 h-5" />}
-                />
-                <CardCount
-                    title={"Total Pengaduan Ditunda"}
-                    value={countComplaintByStatusPending}
-                    theme="warning"
-                    icon={<LuClipboardList className="w-5 h-5" />}
+                    theme="secondary"
+                    icon={<MdNewReleases className="w-5 h-5" />}
                 />
             </div>
 
