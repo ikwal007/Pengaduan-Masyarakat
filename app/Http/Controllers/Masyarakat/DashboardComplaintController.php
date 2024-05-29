@@ -18,6 +18,7 @@ use App\Queries\ComplaintMediaTypeQuery;
 use App\Events\Masyarakat\ComplaintRegister;
 use App\Http\Requests\General\ComplaintPostRequest;
 use App\Models\Archives;
+use App\Queries\UserQuery;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Validator;
 
@@ -119,6 +120,22 @@ class DashboardComplaintController extends Controller
             $complaintHandling->status_id = $status->getComplaintStatusBySlug('ditunda')->id;
             $complaintHandling->save();
         }
+
+        $userQuery = new UserQuery();
+        $allPelayanan = $userQuery->getAllUserOnRole("Pelayanan_Publik");
+
+        foreach ($allPelayanan as $pelayanan) {
+            $notification = new Notification();
+            $notification->user_email = $pelayanan->email;
+            $notification->title = "Pengaduan Baru " . $validated['certificateNumber'];
+            $notification->content = "Dibutuhkan peninjauwan oleh pelayanan." . "Dengan Data sertifikasi:" . $validated['certificateNumber'] . "Dengan Deskripsi:" . $validated['description'];
+            $notification->save();
+
+            event(new ComplaintRegister(
+                $pelayanan->email
+            ));
+        }
+
 
         $notification = new Notification();
         $notification->user_email = $validated['userEmail'];

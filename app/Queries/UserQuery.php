@@ -85,4 +85,12 @@ class UserQuery extends User
         // Note: Eager loading is employed to retrieve roles along with the user in a more efficient manner
         return $user->where('id', $userUlid)->with('roles')->first();
     }
+
+    public function getAllUserOnRole($role)
+    {
+        $user = new User();
+        return $user->whereHas('roles', function ($query) use ($role) {
+            $query->where('name', $role);
+        })->get();
+    }
 }

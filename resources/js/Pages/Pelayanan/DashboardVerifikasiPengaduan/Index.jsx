@@ -1,5 +1,5 @@
 import AuthenticatedLayout2 from "@/Layouts/AuthenticatedLayout2";
-import { usePage } from "@inertiajs/react";
+import { router, usePage } from "@inertiajs/react";
 import Table from "@/Components/Tables/Table";
 import Notif1 from "@/Components/Notifications/Notif1";
 import { useDeferredValue, useEffect, useRef, useState } from "react";
@@ -10,15 +10,12 @@ import GlobalLink from "@/Components/Atoms/GlobalLink";
 import { FaRegEdit } from "react-icons/fa";
 import DateConverter from "@/utils/DateTime/DateConverter";
 import { MdNewReleases } from "react-icons/md";
+import usePusher from "@/utils/Pusher/usePusher";
 
 const Index = () => {
     // Destructure props from usePage()
-    const {
-        countComplaint,
-        paginationComplaint,
-        flash,
-        ...props
-    } = usePage().props;
+    const { countComplaint, paginationComplaint, flash, auth } =
+        usePage().props;
     // const echo = useEcho();
     const [show, setShow] = useState(true);
     const [searchResults, setSearchResults] = useState(null);
@@ -67,17 +64,18 @@ const Index = () => {
         }
     }, [deferredSearch]);
 
-    // useEffect(() => {
-    //     const channel = echo.channel("user-status");
+    const handlePusherEvent = (data) => {
+        router.reload({
+            only: ["countComplaint", "paginationComplaint"],
+        });
+    };
 
-    //     channel.listen("UpdateUserStatusListener", (data) => {
-    //         console.log("ini adalah callback event: ", data);
-    //     });
-
-    //     // return () => {
-    //     //   listener.stopListening(); // Unbind the event listener when the component unmounts
-    //     // };
-    // }, [echo]);
+    usePusher(
+        auth,
+        "notification-to-masyarakat",
+        "ComplaintRegister",
+        handlePusherEvent
+    );
 
     return (
         <>
