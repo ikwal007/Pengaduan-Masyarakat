@@ -57,7 +57,7 @@ class Complaint extends Model
 
     public function complaintHandling(): HasMany
     {
-        return $this->hasMany(ComplaintHandling::class, 'complaint_id', 'id')->with('complaintStatus');
+        return $this->hasMany(ComplaintHandling::class, 'complaint_id', 'id')->with(['complaintStatus', 'seksis']);
     }
 
     public function archives(): HasMany

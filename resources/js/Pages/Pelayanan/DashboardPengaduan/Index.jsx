@@ -1,6 +1,6 @@
 import AuthenticatedLayout2 from "@/Layouts/AuthenticatedLayout2";
 import { FaClipboardUser } from "react-icons/fa6";
-import { usePage } from "@inertiajs/react";
+import { router, usePage } from "@inertiajs/react";
 import {
     LuClipboardCheck,
     LuClipboardList,
@@ -16,6 +16,7 @@ import Input from "@/Components/Input/Input";
 import DateConverter from "@/utils/DateTime/DateConverter";
 import GlobalLink from "@/Components/Atoms/GlobalLink";
 import { FaRegEye } from "react-icons/fa";
+import usePusher from "@/utils/Pusher/usePusher";
 
 const Index = () => {
     // Destructure props from usePage()
@@ -27,9 +28,9 @@ const Index = () => {
         countComplaintByStatusReject,
         paginationComplaint,
         flash,
-        ...props
+        auth,
     } = usePage().props;
-    // const echo = useEcho();
+
     const [show, setShow] = useState(true);
     const [searchResults, setSearchResults] = useState(null);
     const [keyword, setKeyword] = useState("");
@@ -77,17 +78,25 @@ const Index = () => {
         }
     }, [deferredSearch]);
 
-    // useEffect(() => {
-    //     const channel = echo.channel("user-status");
+    const handlePusherEvent = (data) => {
+        router.reload({
+            only: [
+                "countComplaint",
+                "countComplaintByStatusProsessing",
+                "countComplaintByStatusPending",
+                "countComplaintByStatusDone",
+                "countComplaintByStatusReject",
+                "paginationComplaint",
+            ],
+        });
+    };
 
-    //     channel.listen("UpdateUserStatusListener", (data) => {
-    //         console.log("ini adalah callback event: ", data);
-    //     });
-
-    //     // return () => {
-    //     //   listener.stopListening(); // Unbind the event listener when the component unmounts
-    //     // };
-    // }, [echo]);
+    usePusher(
+        auth,
+        "notification-to-masyarakat",
+        "ComplaintRegister",
+        handlePusherEvent
+    );
 
     return (
         <>

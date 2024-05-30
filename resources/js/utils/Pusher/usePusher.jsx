@@ -7,7 +7,7 @@ const usePusher = (auth, channelName, eventName, callback) => {
         const channel = pusher.subscribe(channelName);
 
         const handler = (data) => {
-            if (data.email === auth.user.email) {
+            if (data.email === auth.user.email || auth.user.role.name === "Pelayanan_Publik") {
                 callback(data);
             }
         };

@@ -86,6 +86,14 @@ class UserQuery extends User
         return $user->where('id', $userUlid)->with('roles')->first();
     }
 
+    public function getDetailAccountByName($name)
+    {
+        $user = new User();
+        // Use the Eloquent ORM to fetch the user with roles
+        // Note: Eager loading is employed to retrieve roles along with the user in a more efficient manner
+        return $user->where('full_name', "like", "%" . $name . "%")->with('roles')->first();
+    }
+
     public function getAllUserOnRole($role)
     {
         $user = new User();

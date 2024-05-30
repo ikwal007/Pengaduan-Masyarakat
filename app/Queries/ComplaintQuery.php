@@ -85,36 +85,36 @@ class ComplaintQuery extends Complaint
         return $res;
     }
 
-    public function searchComplaintWithPagination(Bool $confirmed ,String $search)
+    public function searchComplaintWithPagination(Bool $confirmed, String $search)
     {
         $res = $this->where('confirmed', $confirmed)
-        ->where(function ($query) use ($search) {
-            $query->where('user_email', 'like', '%' . $search . '%')
-                ->orWhere('certificate_no', 'like', '%' . $search . '%')
-                ->orWhere('description', 'like', '%' . $search . '%')
-                ->orWhere('created_at', $search)
-                ->orWhereDate('created_at', $search)
-                ->orWhereMonth('created_at', $search)
-                ->orWhereDay('created_at', $search)
-                ->orWhereYear('created_at', $search)
-                ->orWhereTime('created_at', $search)
-                ->orWhereHas('user', function ($query) use ($search) {
-                    $query->where('full_name', 'like', '%' . $search . '%');
-                })->orWhereHas('complaintType', function ($query) use ($search) {
-                    $query->where('name', 'like', '%' . $search . '%');
-                })->orWhereHas('complaintMediaType', function ($query) use ($search) {
-                    $query->where('name', 'like', '%' . $search . '%');
-                })->orWhereHas('complaintStatus', function ($query) use ($search) {
-                    $query->where('name', 'like', '%' . $search . '%');
-                })->orWhereHas('village', function ($query) use ($search) {
-                    $query->where('name', 'like', '%' . $search . '%');
-                })->orWhereHas('subdistrict', function ($query) use ($search) {
-                    $query->where('name', 'like', '%' . $search . '%');
-                });
-        })
-        ->with(['complaintStatus', 'complaintType', 'complaintMediaType', 'user', 'village', 'subdistrict'])
-        ->latest()
-        ->paginate(100);
+            ->where(function ($query) use ($search) {
+                $query->where('user_email', 'like', '%' . $search . '%')
+                    ->orWhere('certificate_no', 'like', '%' . $search . '%')
+                    ->orWhere('description', 'like', '%' . $search . '%')
+                    ->orWhere('created_at', $search)
+                    ->orWhereDate('created_at', $search)
+                    ->orWhereMonth('created_at', $search)
+                    ->orWhereDay('created_at', $search)
+                    ->orWhereYear('created_at', $search)
+                    ->orWhereTime('created_at', $search)
+                    ->orWhereHas('user', function ($query) use ($search) {
+                        $query->where('full_name', 'like', '%' . $search . '%');
+                    })->orWhereHas('complaintType', function ($query) use ($search) {
+                        $query->where('name', 'like', '%' . $search . '%');
+                    })->orWhereHas('complaintMediaType', function ($query) use ($search) {
+                        $query->where('name', 'like', '%' . $search . '%');
+                    })->orWhereHas('complaintStatus', function ($query) use ($search) {
+                        $query->where('name', 'like', '%' . $search . '%');
+                    })->orWhereHas('village', function ($query) use ($search) {
+                        $query->where('name', 'like', '%' . $search . '%');
+                    })->orWhereHas('subdistrict', function ($query) use ($search) {
+                        $query->where('name', 'like', '%' . $search . '%');
+                    });
+            })
+            ->with(['complaintStatus', 'complaintType', 'complaintMediaType', 'user', 'village', 'subdistrict'])
+            ->latest()
+            ->paginate(100);
 
         return $res;
     }
@@ -159,5 +159,14 @@ class ComplaintQuery extends Complaint
     public function getDetailComplaint(String $complaintId)
     {
         return $this->where('id', $complaintId)->with(['complaintStatus', 'complaintType', 'complaintMediaType', 'user', 'village', 'subdistrict', "complaintHandling", "archives"])->first();
+    }
+
+    public function lockForUpdateComplaint(String $complaintId, String $userId)
+    {
+        return $this->where('id', $complaintId)
+            ->where('locked_by', $userId)
+            ->lockForUpdate()
+            ->with(['complaintStatus', 'complaintType', 'complaintMediaType', 'user', 'village', 'subdistrict', "complaintHandling", "archives"])
+            ->first();
     }
 }
